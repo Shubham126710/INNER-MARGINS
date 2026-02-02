@@ -1,0 +1,46 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  coverImage  String?
+  isFeatured  Boolean  @default(false)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  readTime    String
+  
+  tags        Tag[]
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  posts Post[]
+}
+
+model About {
+  id           String  @id @default(cuid())
+  title        String
+  subtitle     String
+  content      String
+  profileImage String?
+  
+  // Hobbies instead of Social Links
+  hobbies      String?  // Stored as JSON string or comma-separated
+  
+  updatedAt    DateTime @updatedAt
+}

@@ -1,26 +1,204 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@config "../../tailwind.config.mjs";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Retro Pixel Design */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --retro-bg: #F4CFCB;
+    --retro-text: #C9413C;
+    --retro-primary: #C9413C;
+    --retro-border: #E2554F;
+    --retro-surface: #F7DAD6;
   }
 }
 
+@layer components {
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 border-2 border-retro-border bg-retro-primary text-white font-display uppercase tracking-wider text-xs shadow-retro transition-all hover:-translate-y-1 hover:shadow-retro-hover active:translate-y-0 active:shadow-retro-sm;
+  }
+  
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 border-2 border-retro-border bg-retro-surface text-retro-text font-display uppercase tracking-wider text-xs shadow-retro transition-all hover:-translate-y-1 hover:shadow-retro-hover active:translate-y-0 active:shadow-retro-sm;
+  }
+
+  .clean-link {
+    @apply no-underline hover:underline decoration-2 underline-offset-4 decoration-retro-primary;
+  }
+  
+  .retro-card {
+    @apply border-2 border-retro-border bg-retro-surface shadow-retro transition-all hover:-translate-y-1 hover:shadow-retro-hover;
+  }
+
+  .retro-input {
+    @apply w-full px-4 py-3 bg-retro-surface border-2 border-retro-border shadow-retro-sm focus:outline-none focus:shadow-retro transition-all font-body text-lg text-retro-text placeholder:text-retro-muted;
+  }
+
+  .tag {
+    @apply inline-flex items-center px-3 py-1 bg-retro-surface border-2 border-retro-border text-xs font-display uppercase tracking-wide shadow-retro-sm hover:-translate-y-0.5 hover:shadow-retro transition-all;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--retro-surface); 
+  border-left: 2px solid var(--retro-border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--retro-text); 
+  border: 2px solid var(--retro-surface);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--retro-primary); 
+}
+
+/* Initial CSS Omitted */
+
+/* Cleaned up legacy styles */
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--retro-bg);
+  color: var(--retro-text);
+  /* font-family set in layout.tsx via classes */
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--retro-primary);
+  color: #fff;
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), monospace;
+  text-transform: uppercase;
+  color: var(--retro-text);
+}
+
+/* Link styling */
+a:not([class]) {
+  color: var(--retro-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+a:not([class]):hover {
+  background-color: var(--retro-primary);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Scrollbar styling - kept from previous edit */
+
+/* Card styling */
+.card {
+  background: var(--retro-surface);
+  border: 4px solid var(--retro-border);
+  box-shadow: 8px 8px 0 0 var(--retro-text);
+  transition: transform 0.1s;
+}
+
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 10px 10px 0 0 var(--retro-text);
+}
+
+/* Glass effect -> replaced with solid background for retro */
+.glass {
+  background: var(--retro-surface);
+  border-bottom: 4px solid var(--retro-border);
+}
+
+/* Gold gradient text -> replaced with solid primary */
+.text-gradient-gold {
+  color: var(--retro-text);
+  /* no gradient */
+}
+
+/* Decorative divider */
+.divider {
+  position: relative;
+  height: 4px;
+  background: var(--retro-border);
+  margin: 2rem 0;
+  border: none;
+}
+
+/* Rich text editor styles */
+.prose-editor {
+  line-height: 1.6;
+}
+
+.prose-editor h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 4px solid var(--retro-border);
+  padding-bottom: 0.5rem;
+}
+
+.prose-editor blockquote {
+  border-left: 6px solid var(--retro-primary);
+  padding-left: 1rem;
+  font-size: 1.1em;
+  font-family: monospace;
+  background: var(--retro-bg);
+  padding: 1rem;
+}
+
+.prose-editor img {
+  border: 4px solid var(--retro-border);
+  box-shadow: 8px 8px 0 0 var(--retro-text);
+}
+
+/* Table of contents */
+.toc {
+  background: var(--retro-surface);
+  border: 4px solid var(--retro-border);
+  padding: 1.5rem;
+  box-shadow: 4px 4px 0 0 var(--retro-text);
+}
+
+.toc-link {
+  display: block;
+  padding: 0.25rem 0;
+  color: var(--retro-text);
+  text-decoration: none;
+  border-left: 4px solid transparent;
+  padding-left: 1rem;
+}
+
+.toc-link:hover, .toc-link.active {
+  border-left-color: var(--retro-primary);
+  background-color: var(--retro-bg);
+}
+
+/* Animation utilities - simple fade */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes progress-load {
+  0% { transform: scaleX(0); }
+  50% { transform: scaleX(0.7); }
+  100% { transform: scaleX(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s steps(5) forwards;
+}
+
+.animate-progress {
+  transform-origin: left;
+  animation: progress-load 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

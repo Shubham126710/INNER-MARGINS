@@ -1,65 +1,140 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { PostCard, LoadingScreen } from '@/components';
+import { getPublishedPosts, getFeaturedPosts } from '@/actions/post.actions';
+import { BlogPost } from '@/lib/types';
+import { Suspense } from 'react';
 
-export default function Home() {
+export default async function Home() {
+  // Add a small artificial delay to show off the loading screen
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
+  const posts = await getPublishedPosts();
+  const featuredPosts = await getFeaturedPosts();
+
+  const regularPosts = posts.filter(p => !p.isFeatured);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
+      {/* Hero Section */}
+      <section className="relative py-12 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 text-center">
+          <div className="animate-fade-in">
+            <span className="inline-block bg-retro-text text-retro-surface text-xs font-mono uppercase tracking-widest px-2 py-1 mb-6">
+              Personal Journal v1.0
+            </span>
+          </div>
+          
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading uppercase tracking-tighter text-retro-text mb-6 animate-fade-in delay-100 leading-none">
+            Inner Margins
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          
+          <p className="text-lg lg:text-xl text-retro-text/80 font-mono max-w-3xl mx-auto leading-relaxed animate-fade-in delay-200">
+            A minimalist space for thoughts. <br/>
+            Insert coin to continue.
           </p>
+
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-300">
+            <Link href="/write" className="btn-primary no-underline w-full sm:w-auto">
+              Start Writing
+            </Link>
+            <Link href="/about" className="btn-secondary no-underline w-full sm:w-auto">
+              About System
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </section>
+
+      {/* Featured Posts Section */}
+      {featuredPosts.length > 0 && (
+        <section className="py-16 lg:py-24 border-b-4 border-retro-border bg-retro-bg">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <span className="bg-retro-primary text-retro-surface px-2 py-1 text-xs font-mono uppercase tracking-widest">
+                  Featured
+                </span>
+                <h2 className="text-3xl font-heading uppercase text-retro-text mt-4">
+                  Highlighted Stories
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {featuredPosts.slice(0, 2).map((post, index) => (
+                <PostCard key={post.id} post={post} index={index} variant="featured" />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* All Posts Section */}
+      <section className="py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="flex items-center justify-between mb-12 border-b-4 border-retro-border pb-4">
+            <div>
+              <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest">
+                Directory: /journal
+              </span>
+              <h2 className="text-3xl font-heading uppercase text-retro-text mt-2">
+                All Entries
+              </h2>
+            </div>
+            <span className="text-retro-text font-mono text-sm bg-retro-surface px-2 py-1">
+              COUNT: {posts.length}
+            </span>
+          </div>
+
+          {posts.length === 0 ? (
+            <div className="text-center py-24 border-4 border-dashed border-retro-border/30 bg-retro-surface">
+              <div className="text-6xl mb-6 grayscale">💾</div>
+              <h3 className="text-2xl font-heading uppercase text-retro-text/40 mb-4">
+                No Data Found
+              </h3>
+              <p className="text-retro-text/60 font-mono mb-8 max-w-md mx-auto">
+                Initialize database by creating your first entry.
+              </p>
+              <Link href="/write" className="btn-primary no-underline">
+                 Initialize
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {(regularPosts.length > 0 ? regularPosts : posts).map((post, index) => (
+                <PostCard key={post.id} post={post} index={index} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 border-t-4 border-retro-border bg-retro-primary text-retro-surface">
+        <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
+          <svg 
+            className="w-24 h-24 mx-auto mb-6 block animate-bounce text-retro-surface" 
+            viewBox="0 0 24 24" 
+            fill="currentColor" 
+            xmlns="http://www.w3.org/2000/svg"
+            shapeRendering="crispEdges"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <path 
+              fillRule="evenodd" 
+              clipRule="evenodd" 
+              d="M11 2h2v10h4v2h-2v2h-2v2h-2v-2H9v-2H7v-2h4V2z" 
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </svg>
+          <h2 className="text-3xl lg:text-4xl font-heading uppercase mb-6">
+            Ready to share your story?
+          </h2>
+          <p className="font-mono text-lg mb-8 max-w-xl mx-auto opacity-90">
+            Every thought matters. Save your progress.
+          </p>
+          <Link href="/write" className="btn-secondary no-underline text-retro-text bg-retro-surface hover:bg-retro-text hover:text-retro-surface border-retro-surface">
+            Begin Writing
+          </Link>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
