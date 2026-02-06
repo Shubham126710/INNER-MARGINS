@@ -19,7 +19,7 @@ export default async function Home() {
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
       <section className="relative py-12 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 text-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <div className="animate-fade-in">
             <span className="inline-block bg-retro-text text-retro-surface text-xs font-mono uppercase tracking-widest px-2 py-1 mb-6">
               Personal Journal v1.0
@@ -30,7 +30,7 @@ export default async function Home() {
             Inner Margins
           </h1>
           
-          <p className="text-lg lg:text-xl text-retro-text/80 font-mono max-w-3xl mx-auto leading-relaxed animate-fade-in delay-200">
+          <p className="text-base md:text-lg lg:text-xl text-retro-text/80 font-mono max-w-3xl mx-auto leading-relaxed animate-fade-in delay-200">
             A minimalist space for thoughts. <br/>
             Insert coin to continue.
           </p>
@@ -48,11 +48,12 @@ export default async function Home() {
 
       {/* Activity Overview */}
       <section className="py-12 border-b-4 border-retro-border bg-retro-bg">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
            {/* Brief Stats */}
            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               <StatCard label="Streak" value={stats.currentStreak} suffix={stats.currentStreak === 1 ? 'day' : 'days'} highlight={stats.currentStreak > 0} />
               <StatCard label="Total" value={stats.totalEntries} />
+
               <StatCard label="This Year" value={stats.thisYear} />
               <StatCard label="This Month" value={stats.thisMonth} />
            </div>
@@ -62,7 +63,7 @@ export default async function Home() {
       {/* Featured Posts Section */}
       {featuredPosts.length > 0 && (
         <section className="py-16 lg:py-24 border-b-4 border-retro-border bg-retro-bg">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
             <div className="flex items-center justify-between mb-12">
               <div>
                 <span className="bg-retro-primary text-retro-surface px-2 py-1 text-xs font-mono uppercase tracking-widest">
@@ -85,7 +86,7 @@ export default async function Home() {
 
       {/* All Posts Section */}
       <section className="py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between mb-12 border-b-4 border-retro-border pb-4">
             <div>
               <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest">
@@ -125,9 +126,9 @@ export default async function Home() {
 
       {/* CTA Section */}
       <section className="py-24 border-t-4 border-retro-border bg-retro-primary text-retro-surface">
-        <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <svg 
-            className="w-24 h-24 mx-auto mb-6 block animate-bounce text-retro-surface" 
+            className="w-24 h-24 mx-auto mb-6 block animate-bounce text-retro-surface"  
             viewBox="0 0 24 24" 
             fill="currentColor" 
             xmlns="http://www.w3.org/2000/svg"

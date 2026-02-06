@@ -113,7 +113,7 @@ function Editor() {
     <div className="min-h-screen py-12 bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b-4 border-retro-border">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b-4 border-retro-border">
           <div>
             <Link 
               href="/" 
@@ -121,12 +121,12 @@ function Editor() {
             >
               &lt; Back to journal
             </Link>
-            <h1 className="text-3xl font-heading uppercase text-retro-text">
+            <h1 className="text-2xl sm:text-3xl font-heading uppercase text-retro-text">
               {editId ? 'Edit Entry' : 'Write New Entry'}
             </h1>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             {editId && (
               <button
                 onClick={resetForm}

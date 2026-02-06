@@ -15,11 +15,11 @@ export function StatCard({ label, value, suffix, highlight }: { label: string, v
                 </svg>
             </div>
             <p className="font-code uppercase text-sm text-retro-text/60 mb-2">{label}</p>
-            <div className="flex items-baseline gap-2">
-                <span className={`text-5xl font-display tracking-tight ${highlight ? 'text-retro-primary' : 'text-retro-text'}`}>
+            <div className="flex items-baseline gap-2 flex-wrap">
+                <span className={`text-3xl md:text-5xl font-display tracking-tight ${highlight ? 'text-retro-primary' : 'text-retro-text'}`}>
                     {value}
                 </span>
-                {suffix && <span className="font-code text-sm text-retro-text/60 lowercase">{suffix}</span>}
+                {suffix && <span className="font-code text-xs md:text-sm text-retro-text/60 lowercase">{suffix}</span>}
             </div>
         </div>
     )

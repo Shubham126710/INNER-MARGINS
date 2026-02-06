@@ -40,11 +40,11 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
-        <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
+      <section className="relative py-12 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
           {/* Back link */}
           <Link 
-            href="/" 
+            href="/"  
             className="inline-flex items-center text-sm font-mono text-retro-text/60 hover:text-retro-text hover:underline uppercase mb-12 decoration-2 underline-offset-4"
           >
             &lt; Return to Main

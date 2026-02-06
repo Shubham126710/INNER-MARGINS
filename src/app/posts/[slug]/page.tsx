@@ -78,7 +78,7 @@ export default function PostPage({ params }: PostPageProps) {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-12">
         {/* Back link & Actions */}
         <div className={`flex items-center justify-between pt-8 pb-8`}>
           <Link 

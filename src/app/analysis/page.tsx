@@ -12,21 +12,21 @@ export default async function AnalysisPage() {
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 text-center">
+      <section className="relative py-12 md:py-24 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
+        <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-12 text-center">
           <div className="inline-block px-3 py-1 mb-6 border-2 border-retro-text bg-retro-secondary/10 uppercase tracking-widest text-xs font-code">
             Insights
           </div>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display uppercase tracking-tighter text-retro-text mb-6">
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-display uppercase tracking-tighter text-retro-text mb-6">
             Analysis
           </h1>
-          <p className="text-lg md:text-xl font-code text-retro-text/80 max-w-2xl mx-auto">
+          <p className="text-base md:text-xl font-code text-retro-text/80 max-w-2xl mx-auto">
             A birdseye view of my writing consistency and volume.
           </p>
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-8 md:py-16">
         
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
