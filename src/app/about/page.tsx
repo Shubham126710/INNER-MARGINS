@@ -132,8 +132,9 @@ export default function AboutPage() {
                   {isSaving ? 'Saving...' : 'Confirm'}
                 </button>
                 <button
-                  onClick={() => {
-                    setAbout(getAboutContent());
+                  onClick={async () => {
+                    const data = await getAboutContent();
+                    setAbout(data);
                     setIsEditing(false);
                   }}
                   className="px-6 py-3 border-2 border-retro-primary text-retro-primary font-display uppercase hover:bg-retro-border/10"
