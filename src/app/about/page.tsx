@@ -213,7 +213,7 @@ export default function AboutPage() {
 
                   {/* Content */}
                   <div 
-                    className="prose-editor font-heading text-retro-text text-lg leading-relaxed tracking-wide"
+                    className="prose-editor font-heading text-retro-text text-sm md:text-base leading-relaxed tracking-wide"
                     dangerouslySetInnerHTML={{ __html: about.content }}
                   />
 
