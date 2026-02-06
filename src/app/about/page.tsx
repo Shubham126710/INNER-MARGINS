@@ -21,10 +21,15 @@ export default function AboutPage() {
 
   useEffect(() => {
     async function load() {
+      const startTime = Date.now();
       try {
         const data = await getAboutContent();
         setAbout(data);
       } finally {
+        const elapsedTime = Date.now() - startTime;
+        if (elapsedTime < 800) {
+          await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
+        }
         setIsLoading(false);
       }
     }
@@ -38,6 +43,8 @@ export default function AboutPage() {
       setIsSaving(false);
       setIsEditing(false);
     }, 500);
+  };
+
   if (isLoading) {
     return (
       <div 
@@ -48,8 +55,6 @@ export default function AboutPage() {
       </div>
     );
   }
-
-  };
 
   const isEmpty = !about.content && !about.profileImage;
 
