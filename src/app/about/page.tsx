@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TagInput, RichTextEditor, ImageUpload } from '@/components';
+import { TagInput, RichTextEditor, ImageUpload, LoadingScreen } from '@/components';
 import { getAboutContent, saveAboutContent } from '@/actions/about.actions';
 import { AboutContent } from '@/lib/types';
 
 export default function AboutPage() {
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [about, setAbout] = useState<AboutContent>({
@@ -20,8 +21,12 @@ export default function AboutPage() {
 
   useEffect(() => {
     async function load() {
-      const data = await getAboutContent();
-      setAbout(data);
+      try {
+        const data = await getAboutContent();
+        setAbout(data);
+      } finally {
+        setIsLoading(false);
+      }
     }
     load();
   }, []);
@@ -33,6 +38,17 @@ export default function AboutPage() {
       setIsSaving(false);
       setIsEditing(false);
     }, 500);
+  if (isLoading) {
+    return (
+      <div 
+        className="fixed inset-0 min-h-[100dvh] w-screen flex items-center justify-center bg-retro-primary" 
+        style={{ zIndex: 9999 }}
+      >
+        <LoadingScreen />
+      </div>
+    );
+  }
+
   };
 
   const isEmpty = !about.content && !about.profileImage;
