@@ -67,23 +67,25 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t-4 border-retro-border border-dashed bg-retro-surface">
+          <div className="absolute top-full left-0 w-full md:hidden border-b-4 border-retro-border bg-retro-surface shadow-retro z-50">
+            <div className="flex flex-col p-4 space-y-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block py-3 px-2 text-sm font-mono uppercase transition-colors no-underline border-l-4 ${
+                className={`block py-3 px-4 text-sm font-mono uppercase transition-colors no-underline border-2 ${
                   link.highlight
-                    ? 'border-retro-primary bg-retro-bg text-retro-text'
+                    ? 'border-retro-primary bg-retro-bg text-retro-text shadow-retro-sm'
                     : pathname === link.href
                     ? 'border-retro-border bg-retro-bg text-retro-text'
-                    : 'border-transparent text-retro-text/60 hover:text-retro-text hover:border-retro-border'
+                    : 'border-transparent hover:border-retro-border hover:bg-retro-bg/50 text-retro-text'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+            </div>
           </div>
         )}
       </nav>

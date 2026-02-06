@@ -210,8 +210,8 @@ function Editor() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="ENTER YOUR TITLE..."
-              className="w-full text-2xl lg:text-3xl font-heading bg-retro-surface border-4 border-retro-border p-4 outline-none text-retro-text placeholder-retro-border/40 focus:shadow-retro transition-shadow"
+              placeholder="ENTER TITLE..."
+              className="w-full text-xl sm:text-2xl lg:text-3xl font-heading bg-retro-surface border-4 border-retro-border p-3 sm:p-4 outline-none text-retro-text placeholder-retro-text/40 focus:shadow-retro transition-shadow"
             />
           </div>
 
