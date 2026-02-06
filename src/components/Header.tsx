@@ -74,9 +74,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 className={`block py-3 px-4 text-sm font-mono uppercase transition-colors no-underline border-2 ${
-                  link.highlight
-                    ? 'border-retro-primary bg-retro-bg text-retro-text shadow-retro-sm'
-                    : pathname === link.href
+                  pathname === link.href
                     ? 'border-retro-border bg-retro-bg text-retro-text'
                     : 'border-transparent hover:border-retro-border hover:bg-retro-bg/50 text-retro-text'
                 }`}
