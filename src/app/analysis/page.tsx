@@ -6,7 +6,10 @@ export const metadata = {
   description: 'Writing statistics and insights.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function AnalysisPage() {
+  await new Promise(resolve => setTimeout(resolve, 1000)); // Artificial delay for effect
   const stats = await getAnalysisStats();
 
   return (

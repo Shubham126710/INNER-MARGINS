@@ -47,3 +47,4 @@ src/generated
 *.db
 *.sqlite
 *.sqlite-journal
+.env*.local

@@ -5,6 +5,8 @@ import { getAnalysisStats } from '@/actions/analysis.actions';
 import { BlogPost } from '@/lib/types';
 import { Suspense } from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Add a small artificial delay to show off the loading screen
   await new Promise(resolve => setTimeout(resolve, 1500));
