@@ -32,6 +32,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/analysis" className="text-retro-text/80 hover:text-retro-primary no-underline hover:underline">
+                  Analysis
+                </Link>
+              </li>
+              <li>
                 <Link href="/write" className="text-retro-text/80 hover:text-retro-primary no-underline hover:underline">
                   Write
                 </Link>

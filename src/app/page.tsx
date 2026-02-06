@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { PostCard, LoadingScreen } from '@/components';
+import { PostCard, LoadingScreen, StatCard } from '@/components';
 import { getPublishedPosts, getFeaturedPosts } from '@/actions/post.actions';
+import { getAnalysisStats } from '@/actions/analysis.actions';
 import { BlogPost } from '@/lib/types';
 import { Suspense } from 'react';
 
@@ -10,6 +11,7 @@ export default async function Home() {
 
   const posts = await getPublishedPosts();
   const featuredPosts = await getFeaturedPosts();
+  const stats = await getAnalysisStats();
 
   const regularPosts = posts.filter(p => !p.isFeatured);
 
@@ -41,6 +43,19 @@ export default async function Home() {
               About System
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Activity Overview */}
+      <section className="py-12 border-b-4 border-retro-border bg-retro-bg">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+           {/* Brief Stats */}
+           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+              <StatCard label="Streak" value={stats.currentStreak} suffix={stats.currentStreak === 1 ? 'day' : 'days'} highlight={stats.currentStreak > 0} />
+              <StatCard label="Total" value={stats.totalEntries} />
+              <StatCard label="This Year" value={stats.thisYear} />
+              <StatCard label="This Month" value={stats.thisMonth} />
+           </div>
         </div>
       </section>
 

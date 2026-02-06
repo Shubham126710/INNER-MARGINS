@@ -28,7 +28,7 @@ export default function PostPage({ params }: PostPageProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-retro-bg font-mono fixed inset-0 z-50">
+      <div className="min-h-screen flex items-center justify-center bg-retro-primary font-mono fixed inset-0 z-50">
         <LoadingScreen />
       </div>
     );

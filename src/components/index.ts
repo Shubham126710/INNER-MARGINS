@@ -6,3 +6,5 @@ export { default as TagInput } from './TagInput';
 export { default as ImageUpload } from './ImageUpload';
 export { default as TableOfContents } from './TableOfContents';
 export { default as LoadingScreen } from './LoadingScreen';
+export * from './StatCard';
+export * from './ContributionGraph';
