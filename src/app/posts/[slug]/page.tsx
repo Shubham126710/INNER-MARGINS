@@ -7,7 +7,13 @@ import Image from 'next/image';
 import { TableOfContents, LoadingScreen } from '@/components';
 import { getPostBySlug, deletePost } from '@/actions/post.actions';
 import { BlogPost } from '@/lib/types';
-// ...
+
+interface PostPageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
 export default function PostPage({ params }: PostPageProps) {
   const { slug } = use(params);
   const router = useRouter();
