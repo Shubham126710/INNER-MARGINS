@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TableOfContents, LoadingScreen } from '@/components';
+import { TableOfContents, LoadingScreen, PinLock } from '@/components';
 import { getPostBySlug, deletePost } from '@/actions/post.actions';
 import { BlogPost } from '@/lib/types';
 
@@ -20,6 +20,7 @@ export default function PostPage({ params }: PostPageProps) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showActions, setShowActions] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -43,7 +44,15 @@ export default function PostPage({ params }: PostPageProps) {
   if (!post) {
     notFound();
   }
+if (post.isLocked && !isUnlocked) {
+    return (
+      <div className="min-h-screen bg-retro-bg flex flex-col font-body selection:bg-retro-primary selection:text-white">
+        <PinLock onUnlock={() => setIsUnlocked(true)} />
+      </div>
+    );
+  }
 
+  
   const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',

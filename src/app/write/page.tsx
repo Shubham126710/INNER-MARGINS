@@ -19,6 +19,7 @@ function Editor() {
   const [tags, setTags] = useState<string[]>([]);
   const [isFeatured, setIsFeatured] = useState(false);
   const [isPublished, setIsPublished] = useState(true);
+  const [isLocked, setIsLocked] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showManage, setShowManage] = useState(false);
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
@@ -35,6 +36,7 @@ function Editor() {
           setTags(post.tags);
           setIsFeatured(post.isFeatured);
           setIsPublished(post.isPublished);
+          setIsLocked(post.isLocked || false);
         }
       }
       const posts = await getPosts();
@@ -64,6 +66,7 @@ function Editor() {
         coverImage,
         tags,
         isFeatured,
+        isLocked,
         isPublished: publish,
       });
 
@@ -104,6 +107,7 @@ function Editor() {
     setContent('');
     setCoverImage('');
     setTags([]);
+    setIsLocked(false);
     setIsFeatured(false);
     setIsPublished(true);
     router.push('/write');
@@ -251,17 +255,29 @@ function Editor() {
               onChange={setContent}
               placeholder="START WRITING..."
             />
-          </div>
-
-          {/* Options */}
+        {/* Options */}
           <div className="flex flex-wrap items-center gap-6 py-4 border-t-4 border-retro-border border-dashed">
             <label className="flex items-center gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
-                className="w-6 h-6 border-2 border-retro-text rounded-none focus:ring-0 checked:bg-retro-text checked:text-retro-surface appearance-none"
+                className="w-6 h-6 border-2 border-retro-text bg-retro-surface rounded-none focus:ring-0 checked:bg-retro-text checked:text-retro-surface appearance-none cursor-pointer"
               />
+              <span className="text-retro-text font-heading uppercase text-sm">
+                Feature this post
+              </span>
+            </label>
+
+             <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={isLocked}
+                onChange={(e) => setIsLocked(e.target.checked)}
+                className="w-6 h-6 border-2 border-retro-text bg-retro-surface rounded-none focus:ring-0 checked:bg-retro-text checked:text-retro-surface appearance-none cursor-pointer"
+              />
+              <span className="text-retro-text font-heading uppercase text-sm">
+                Lock with PIN
               <span className="text-retro-text font-heading uppercase text-sm">
                 Feature this post
               </span>

@@ -9,6 +9,7 @@ export interface BlogPost {
   tags: string[];
   isFeatured: boolean;
   isPublished: boolean;
+  isLocked: boolean;
   createdAt: string;
   updatedAt: string;
   readTime: string;

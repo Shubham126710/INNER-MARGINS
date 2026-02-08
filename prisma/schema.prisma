@@ -20,6 +20,7 @@ model Post {
   coverImage  String?
   isFeatured  Boolean  @default(false)
   isPublished Boolean  @default(false)
+  isLocked    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   readTime    String

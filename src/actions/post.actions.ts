@@ -18,6 +18,7 @@ function mapToBlogPost(post: any): BlogPost {
     tags: post.tags ? post.tags.map((t: any) => t.name) : [],
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
+    isLocked: post.isLocked ?? false,
   };
 }
 
@@ -92,6 +93,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
                 coverImage: post.coverImage,
                 isFeatured: post.isFeatured,
                 isPublished: post.isPublished,
+                isLocked: post.isLocked,
                 readTime,
                 tags: {
                     set: [], 
@@ -109,6 +111,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
                 excerpt: post.excerpt || post.content.substring(0, 150) + '...',
                 coverImage: post.coverImage,
                 isFeatured: post.isFeatured || false,
+                isLocked: post.isLocked || false,
                 isPublished: post.isPublished || false,
                 readTime,
                 tags: {
