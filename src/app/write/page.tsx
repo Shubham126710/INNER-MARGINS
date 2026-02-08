@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { RichTextEditor, TagInput, ImageUpload } from '@/components';
+import { PinLock, RichTextEditor, TagInput, ImageUpload } from '@/components';
 import { savePost, getPostById, deletePost, getPosts } from '@/actions/post.actions';
 import { BlogPost } from '@/lib/types';
 
@@ -12,6 +12,7 @@ function Editor() {
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
 
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
@@ -112,7 +113,15 @@ function Editor() {
     setIsPublished(true);
     router.push('/write');
   };
+if (!isUnlocked) {
+    return (
+      <div className="min-h-screen bg-retro-bg flex flex-col font-body selection:bg-retro-primary selection:text-white">
+        <PinLock onUnlock={() => setIsUnlocked(true)} />
+      </div>
+    );
+  }
 
+  
   return (
     <div className="min-h-screen py-12 bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
@@ -255,6 +264,8 @@ function Editor() {
               onChange={setContent}
               placeholder="START WRITING..."
             />
+          </div>
+
         {/* Options */}
           <div className="flex flex-wrap items-center gap-6 py-4 border-t-4 border-retro-border border-dashed">
             <label className="flex items-center gap-3 cursor-pointer select-none">
@@ -278,8 +289,6 @@ function Editor() {
               />
               <span className="text-retro-text font-heading uppercase text-sm">
                 Lock with PIN
-              <span className="text-retro-text font-heading uppercase text-sm">
-                Feature this post
               </span>
             </label>
           </div>

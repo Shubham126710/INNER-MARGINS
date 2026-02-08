@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TagInput, RichTextEditor, ImageUpload, LoadingScreen } from '@/components';
+import { TagInput, RichTextEditor, ImageUpload, LoadingScreen, PinLock } from '@/components';
 import { getAboutContent, saveAboutContent } from '@/actions/about.actions';
 import { AboutContent } from '@/lib/types';
 
 export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [about, setAbout] = useState<AboutContent>({
     title: 'About Me',
@@ -45,6 +46,15 @@ export default function AboutPage() {
     }, 500);
   };
 
+  const handleAuth = () => {
+    setShowAuth(true);
+  };
+
+  const handleUnlock = () => {
+    setShowAuth(false);
+    setIsEditing(true);
+  };
+
   if (isLoading) {
     return (
       <div 
@@ -57,7 +67,23 @@ export default function AboutPage() {
   }
 
   const isEmpty = !about.content && !about.profileImage;
+if (showAuth) {
+    return (
+      <div className="min-h-screen bg-retro-bg flex flex-col font-body selection:bg-retro-primary selection:text-white">
+        <div className="p-4"> 
+          <button 
+             onClick={() => setShowAuth(false)}
+             className="text-retro-text/60 hover:text-retro-text mb-4 uppercase font-mono text-sm"
+          >
+             &lt; Cancel
+          </button>
+        </div>
+        <PinLock onUnlock={handleUnlock} />
+      </div>
+    );
+  }
 
+  
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
@@ -79,7 +105,7 @@ export default function AboutPage() {
               </span>
             </div>
             <button
-              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+              onClick={() => isEditing ? handleSave() : handleAuth()}
               className={isEditing ? 'btn-primary' : 'btn-secondary'}
               disabled={isSaving}
             >
@@ -180,7 +206,7 @@ export default function AboutPage() {
                     No profile data found in memory.
                   </p>
                   <button
-                    onClick={() => setIsEditing(true)}
+                    onClick={() => handleAuth()}
                     className="btn-primary"
                   >
                     Initialize Profile
