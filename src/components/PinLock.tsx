@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface PinLockProps {
   onUnlock: () => void;
@@ -11,6 +12,10 @@ export default function PinLock({ onUnlock }: PinLockProps) {
   const [error, setError] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin === '314159') {
@@ -19,10 +24,18 @@ export default function PinLock({ onUnlock }: PinLockProps) {
       setError(true);
       setAttempts(prev => prev + 1);
       setPin('');
-      setTimeout(() => setError(false), 1000);
-    }
-  };
-
+      setTimeout(() flex-1 w-full flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md bg-retro-surface border-4 border-retro-border p-8 shadow-retro text-center">
+        <div className="mb-6 flex justify-center">
+          <div className="relative w-16 h-16">
+            <Image 
+              src="/lock.png" 
+              alt="Security Lock" 
+              fill
+              className="object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </div
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-retro-surface border-4 border-retro-border p-8 shadow-retro text-center">
