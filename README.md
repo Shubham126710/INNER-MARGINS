@@ -47,29 +47,29 @@ The application features a robust writing interface, data visualization for writ
 ## 📸 Functionality & Usage
 
 ### The Landing Page
-A welcoming terminal-style interface that provides a quick status report of your writing activity.
 
 ![Home Page](public/screenshots/Inner-margins-hero.png)
+<p align="center"><em>A welcoming terminal-style interface that provides a quick status report of your writing activity.</em></p>
 
 ### Writing Interface
-A dedicated space for composing new entries. Features include cover image uploads, title management, and a rich text editor.
 
 ![Writing Interface](public/screenshots/Inner-margins-write.png)
+<p align="center"><em>A dedicated space for composing new entries. Features include cover image uploads, title management, and a rich text editor.</em></p>
 
 ### Journal Archive
-Browse through your history. Filter by tags or search for specific memories.
 
 ![Journals](public/screenshots/Inner-margins-journals.png)
+<p align="center"><em>Browse through your history. Filter by tags or search for specific memories.</em></p>
 
 ### Analysis Dashboard
-Gain insights into your writing patterns with detailed statistics and visualizations.
 
 ![Analysis Dashboard](public/screenshots/Inner-margins-analysis.png)
+<p align="center"><em>Gain insights into your writing patterns with detailed statistics and visualizations.</em></p>
 
 ### About Page
-A personal introduction section styled to match the system's retro theme.
 
 ![About Page](public/screenshots/Inner-margins-about.png)
+<p align="center"><em>A personal introduction section styled to match the system's retro theme.</em></p>
 
 ---
 
