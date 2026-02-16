@@ -37,21 +37,11 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
   const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
 
   const dailyActivity: { [date: string]: number } = {};
-  const dayCounts: { [key: number]: number } = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
   
   posts.forEach(post => {
       const dateStr = toDateString(post.createdAt);
       dailyActivity[dateStr] = (dailyActivity[dateStr] || 0) + 1;
-      
-      const dayOfWeek = post.createdAt.getDay();
-      dayCounts[dayOfWeek]++;
   });
-
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const weeklyPattern = days.map((day, index) => ({
-      day,
-      count: dayCounts[index]
-  }));
 
 
   // 1. Calculate Current Streak
