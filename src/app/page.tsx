@@ -52,6 +52,20 @@ export default async function Home({
       {/* Activity Overview */}
       <section className="py-12 border-b-4 border-retro-border bg-retro-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+           <div className="flex items-end justify-between mb-8">
+              <div>
+                <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest">
+                  Status Report
+                </span>
+                <h2 className="text-3xl font-heading uppercase text-retro-text mt-2">
+                  At a Glance
+                </h2>
+              </div>
+              <Link href="/analysis" className="hidden sm:block text-sm font-mono uppercase text-retro-text hover:text-retro-primary hover:underline decoration-2 underline-offset-4">
+                 Full Analysis -&gt;
+              </Link>
+           </div>
+           
            {/* Brief Stats */}
            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               <StatCard label="Streak" value={stats.currentStreak} suffix={stats.currentStreak === 1 ? 'day' : 'days'} highlight={stats.currentStreak > 0} />
@@ -59,6 +73,12 @@ export default async function Home({
 
               <StatCard label="This Year" value={stats.thisYear} />
               <StatCard label="This Month" value={stats.thisMonth} />
+           </div>
+
+           <div className="mt-8 sm:hidden text-center">
+              <Link href="/analysis" className="text-sm font-mono uppercase text-retro-text hover:text-retro-primary hover:underline decoration-2 underline-offset-4">
+                 View Full Analysis -&gt;
+              </Link>
            </div>
         </div>
       </section>

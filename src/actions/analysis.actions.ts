@@ -11,6 +11,7 @@ export type AnalysisStats = {
   longestStreak: number;
   entriesByYear: { year: number; count: number }[];
   dailyActivity: { [date: string]: number };
+  weeklyPattern: { day: string; count: number }[];
 };
 
 export async function getAnalysisStats(): Promise<AnalysisStats> {
@@ -36,10 +37,22 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
   const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
 
   const dailyActivity: { [date: string]: number } = {};
+  const dayCounts: { [key: number]: number } = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  
   posts.forEach(post => {
       const dateStr = toDateString(post.createdAt);
       dailyActivity[dateStr] = (dailyActivity[dateStr] || 0) + 1;
+      
+      const dayOfWeek = post.createdAt.getDay();
+      dayCounts[dayOfWeek]++;
   });
+
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const weeklyPattern = days.map((day, index) => ({
+      day,
+      count: dayCounts[index]
+  }));
+
 
   // 1. Calculate Current Streak
   let currentStreak = 0;
@@ -142,6 +155,20 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
       .map(([year, count]) => ({ year, count }))
       .sort((a, b) => b.year - a.year);
 
+  // Calculate day of week distribution (already partially done at the start)
+  const dayCounts: { [key: number]: number } = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+  
+  posts.forEach(post => {
+      const dayOfWeek = post.createdAt.getDay();
+      dayCounts[dayOfWeek]++;
+  });
+
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const weeklyPattern = days.map((day, index) => ({
+      day,
+      count: dayCounts[index]
+  }));
+
   return {
     currentStreak,
     totalEntries: posts.length,
@@ -150,6 +177,7 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
     thisYear,
     longestStreak,
     entriesByYear,
-    dailyActivity
+    dailyActivity,
+    weeklyPattern,
   };
 }
