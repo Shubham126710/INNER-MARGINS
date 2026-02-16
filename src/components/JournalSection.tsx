@@ -31,14 +31,14 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
   });
 
   return (
-    <section className="py-16 lg:py-24" id="journals">
+    <section className="py-8 lg:py-12" id="journals">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-4 border-retro-border pb-6 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b-4 border-retro-border pb-6 gap-6">
           <div className="flex-1">
             <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest block mb-2">
               Directory: /journals
             </span>
-            <h2 className="text-3xl md:text-5xl font-heading uppercase text-retro-text">
+            <h2 className="text-5xl md:text-7xl lg:text-8xl font-heading uppercase text-retro-text tracking-tight leading-none">
               Journals
             </h2>
 

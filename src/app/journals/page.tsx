@@ -20,7 +20,7 @@ export default async function JournalsPage({
     : posts;
 
   return (
-    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white pt-12">
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white pt-4 md:pt-8">
       <JournalSection posts={filteredPosts} allTags={allTags} activeTag={tag} />
       
        {/* CTA Section */}

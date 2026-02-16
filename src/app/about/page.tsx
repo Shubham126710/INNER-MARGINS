@@ -87,12 +87,12 @@ if (showAuth) {
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
-      <section className="relative py-12 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
+      <section className="relative py-8 md:py-16 lg:py-24 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
           {/* Back link */}
           <Link 
             href="/"  
-            className="inline-flex items-center text-sm font-mono text-retro-text/60 hover:text-retro-text hover:underline uppercase mb-12 decoration-2 underline-offset-4"
+            className="inline-flex items-center text-sm font-mono text-retro-text/60 hover:text-retro-text hover:underline uppercase mb-6 decoration-2 underline-offset-4"
           >
             &lt; Return to Main
           </Link>
@@ -228,7 +228,7 @@ if (showAuth) {
                       </div>
                     )}
                     <div>
-                      <h1 className="text-4xl md:text-5xl font-heading uppercase text-retro-text mb-4 leading-none">
+                      <h1 className="text-5xl md:text-7xl font-heading uppercase text-retro-text mb-4 leading-none tracking-tight">
                         {about.title}
                       </h1>
                       <p className="text-xl text-retro-text/80 font-mono border-l-4 border-retro-primary pl-4">

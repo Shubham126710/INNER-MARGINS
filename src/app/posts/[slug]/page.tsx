@@ -93,9 +93,9 @@ if (post.isLocked && !isUnlocked) {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-12">
         {/* Back link & Actions */}
-        <div className={`flex items-center justify-between pt-8 pb-8`}>
+        <div className={`flex items-center justify-between pt-4 pb-4 md:pt-8 md:pb-8`}>
           <Link 
             href="/" 
             className="inline-flex items-center text-sm text-retro-text/60 hover:text-retro-text hover:underline font-mono uppercase no-underline group"
@@ -161,10 +161,10 @@ if (post.isLocked && !isUnlocked) {
         </header>
 
         {/* Content with optional TOC */}
-        <div className="lg:grid lg:grid-cols-[1fr_250px] lg:gap-12">
+        <div className="lg:grid lg:grid-cols-[1fr_250px] lg:gap-16">
           {/* Main Content */}
           <div 
-            className="prose-editor mb-16 font-body text-lg leading-relaxed text-retro-text"
+            className="prose-editor mb-16 font-body text-lg leading-relaxed text-retro-text text-justify"
             dangerouslySetInnerHTML={{ __html: processedContent }}
           />
           
