@@ -45,7 +45,7 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
             {/* Tag Filters */}
             <div className="flex flex-wrap gap-2 mt-6">
               <Link
-                href="/"
+                href="/journals"
                 className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
                   !activeTag
                     ? 'bg-retro-text text-retro-surface border-retro-text'
@@ -57,7 +57,7 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
               {allTags.map((t) => (
                 <Link
                   key={t}
-                  href={`/?tag=${t}`}
+                  href={`/journals?tag=${t}`}
                   className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
                     activeTag === t
                       ? 'bg-retro-text text-retro-surface border-retro-text'
