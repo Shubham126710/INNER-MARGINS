@@ -18,13 +18,6 @@ export default async function Home({
   const featuredPosts = await getFeaturedPosts();
   const stats = await getAnalysisStats();
 
-  const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort();
-
-  const regularPosts = posts.filter(p => !p.isFeatured);
-  const filteredPosts = tag 
-    ? regularPosts.filter(p => p.tags.includes(tag))
-    : regularPosts;
-
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
       {/* Hero Section */}
@@ -94,68 +87,34 @@ export default async function Home({
         </section>
       )}
 
-      {/* All Posts Section */}
+      {/* Recent Posts Section */}
       <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex items-center justify-between mb-12 border-b-4 border-retro-border pb-4">
+          <div className="flex items-end justify-between mb-8 border-b-4 border-retro-border pb-4">
             <div>
               <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest">
-                Directory: /journal
+                System Logs
               </span>
               <h2 className="text-3xl font-heading uppercase text-retro-text mt-2">
-                All Entries
+                Recent Activity
               </h2>
-
-              {/* Tag Filters */}
-              <div className="flex flex-wrap gap-2 mt-6">
-                <Link
-                  href="/"
-                  className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
-                    !tag 
-                      ? 'bg-retro-text text-retro-surface border-retro-text' 
-                      : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
-                  }`}
-                >
-                  All
-                </Link>
-                {allTags.map(t => (
-                  <Link
-                    key={t}
-                    href={`/?tag=${t}`}
-                    className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
-                      tag === t
-                        ? 'bg-retro-text text-retro-surface border-retro-text'
-                        : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
-                    }`}
-                  >
-                    #{t}
-                  </Link>
-                ))}
-              </div>
             </div>
-            <span className="text-retro-text font-mono text-sm bg-retro-surface px-2 py-1 self-start md:self-auto">
-              COUNT: {filteredPosts.length}
-            </span>
+            <Link href="/journals" className="text-sm font-mono uppercase text-retro-text hover:text-retro-primary hover:underline decoration-2 underline-offset-4">
+              View Full Archive -&gt;
+            </Link>
           </div>
 
-          {filteredPosts.length === 0 ? (
-            <div className="text-center py-24 border-4 border-dashed border-retro-border/30 bg-retro-surface">
-              <div className="text-6xl mb-6 grayscale">💾</div>
-              <h3 className="text-2xl font-heading uppercase text-retro-text/40 mb-4">
-                No Data Found
-              </h3>
-              <p className="text-retro-text/60 font-mono mb-8 max-w-md mx-auto">
-                Initialize database by creating your first entry.
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.slice(0, 3).map((post, index) => (
+              <PostCard key={post.id} post={post} index={index} />
+            ))}
+          </div>
+
+          {posts.length === 0 && (
+             <div className="text-center py-12 border-4 border-dashed border-retro-border/30 bg-retro-surface">
+              <p className="text-retro-text/60 font-mono">
+                System empty. waiting for input...
               </p>
-              <Link href="/write" className="btn-primary no-underline">
-                 Initialize
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, index) => (
-                <PostCard key={post.id} post={post} index={index} />
-              ))}
             </div>
           )}
         </div>
