@@ -9,3 +9,5 @@ export { default as LoadingScreen } from './LoadingScreen';
 export { default as PinLock } from './PinLock';
 export * from './StatCard';
 export * from './ContributionGraph';
+export { default as JournalSection } from './JournalSection';
+

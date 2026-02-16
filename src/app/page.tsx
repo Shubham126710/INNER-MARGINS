@@ -1,9 +1,7 @@
 import Link from 'next/link';
-import { PostCard, LoadingScreen, StatCard } from '@/components';
+import { PostCard, StatCard, JournalSection } from '@/components';
 import { getPublishedPosts, getFeaturedPosts } from '@/actions/post.actions';
 import { getAnalysisStats } from '@/actions/analysis.actions';
-import { BlogPost } from '@/lib/types';
-import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -96,72 +94,9 @@ export default async function Home({
         </section>
       )}
 
-      {/* All Posts Section */}
-      <section className="py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex items-center justify-between mb-12 border-b-4 border-retro-border pb-4">
-            <div>
-              <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest">
-                Directory: /journal
-              </span>
-              <h2 className="text-3xl font-heading uppercase text-retro-text mt-2">
-                All Entries
-              </h2>
+      {/* All Posts Section - Now Journal Section */}
+      <JournalSection posts={filteredPosts} allTags={allTags} activeTag={tag} />
 
-               {/* Tag Filters */}
-              <div className="flex flex-wrap gap-2 mt-6">
-                <Link
-                  href="/"
-                  className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
-                    !tag 
-                      ? 'bg-retro-text text-retro-surface border-retro-text' 
-                      : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
-                  }`}
-                >
-                  All
-                </Link>
-                {allTags.map(t => (
-                  <Link
-                    key={t}
-                    href={`/?tag=${t}`}
-                    className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
-                      tag === t
-                        ? 'bg-retro-text text-retro-surface border-retro-text'
-                        : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
-                    }`}
-                  >
-                    #{t}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <span className="text-retro-text font-mono text-sm bg-retro-surface px-2 py-1 self-start md:self-auto">
-              COUNT: {filteredPosts.length}
-            </span>
-          </div>
-
-          {filteredPosts.length === 0 ? (
-            <div className="text-center py-24 border-4 border-dashed border-retro-border/30 bg-retro-surface">
-              <div className="text-6xl mb-6 grayscale">💾</div>
-              <h3 className="text-2xl font-heading uppercase text-retro-text/40 mb-4">
-                No Data Found
-              </h3>
-              <p className="text-retro-text/60 font-mono mb-8 max-w-md mx-auto">
-                Initialize database by creating your first entry.
-              </p>
-              <Link href="/write" className="btn-primary no-underline">
-                 Initialize
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, index) => (
-                <PostCard key={post.id} post={post} index={index} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24 border-t-4 border-retro-border bg-retro-primary text-retro-surface">
