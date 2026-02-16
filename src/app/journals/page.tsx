@@ -26,6 +26,19 @@ export default async function JournalsPage({
        {/* CTA Section */}
        <section className="py-24 border-t-4 border-retro-border bg-retro-primary text-retro-surface mt-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
+          <svg 
+            className="w-24 h-24 mx-auto mb-6 block animate-bounce text-retro-surface"  
+            viewBox="0 0 24 24" 
+            fill="currentColor" 
+            xmlns="http://www.w3.org/2000/svg"
+            shapeRendering="crispEdges"
+          >
+            <path 
+              fillRule="evenodd" 
+              clipRule="evenodd" 
+              d="M11 2h2v10h4v2h-2v2h-2v2h-2v-2H9v-2H7v-2h4V2z" 
+            />
+          </svg>
           <h2 className="text-3xl lg:text-4xl font-heading uppercase mb-6">
             Ready to share your story?
           </h2>

@@ -38,7 +38,7 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
             <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest block mb-2">
               Directory: /journals
             </span>
-            <h2 className="text-5xl md:text-7xl lg:text-8xl font-heading uppercase text-retro-text tracking-tight leading-none">
+            <h2 className="text-5xl md:text-7xl font-heading uppercase text-retro-text tracking-tight leading-none">
               Journals
             </h2>
 
