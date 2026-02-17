@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 function calculateReadTime(content: string): string {
   const wordsPerMinute = 200;
   const wordCount = content.split(/\s+/).filter(Boolean).length;
-  const minutes = Math.ceil(wordCount / wordsPerMinute);
+  const minutes = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
   return `${minutes} min read`;
 }
 
@@ -15,6 +15,7 @@ function calculateReadTime(content: string): string {
 function mapToBlogPost(post: any): BlogPost {
   return {
     ...post,
+    readTime: calculateReadTime(post.content),
     tags: post.tags ? post.tags.map((t: any) => t.name) : [],
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
@@ -80,7 +81,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
     let savedPost;
     
     // Calculate read time
-    const readTime = post.readTime || '5 min read';
+    const readTime = calculateReadTime(post.content);
 
     if (post.id) {
         savedPost = await db.post.update({
