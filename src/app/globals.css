@@ -38,6 +38,12 @@
   .tag {
     @apply inline-flex items-center px-3 py-1 bg-retro-surface border-2 border-retro-border text-xs font-display uppercase tracking-wide shadow-retro-sm hover:-translate-y-0.5 hover:shadow-retro transition-all;
   }
+
+  .pixelated-blur {
+    filter: url(#pixelate);
+    opacity: 0.8;
+    user-select: none;
+  }
 }
 
 /* Scrollbar */

@@ -25,7 +25,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
                 src={post.coverImage}
                 alt={post.title}
                 fill
-                className="object-cover"
+                className={`object-cover ${post.isLocked ? 'pixelated-blur' : ''}`}
               />
             ) : (
               <div className="absolute inset-0 bg-retro-bg" />
@@ -45,11 +45,11 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
               </div>
             )}
             
-            <h2 className="text-2xl lg:text-3xl font-heading uppercase leading-tight mb-4 text-retro-text group-hover:text-retro-primary transition-colors">
+            <h2 className={`text-2xl lg:text-3xl font-heading uppercase leading-tight mb-4 text-retro-text group-hover:text-retro-primary transition-colors ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.title}
             </h2>
             
-            <p className="text-base font-mono mb-6 line-clamp-2 text-retro-text/90">
+            <p className={`text-base font-mono mb-6 line-clamp-2 text-retro-text/90 ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.excerpt}
             </p>
             
@@ -77,15 +77,15 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
                 src={post.coverImage}
                 alt={post.title}
                 fill
-                className="object-cover"
+                className={`object-cover ${post.isLocked ? 'pixelated-blur' : ''}`}
               />
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-heading text-lg text-retro-text group-hover:text-retro-primary truncate uppercase">
+            <h3 className={`font-heading text-lg text-retro-text group-hover:text-retro-primary truncate uppercase ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.title}
             </h3>
-            <p className="text-sm font-mono mt-2 line-clamp-2 text-retro-text/80">
+            <p className={`text-sm font-mono mt-2 line-clamp-2 text-retro-text/80 ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.excerpt}
             </p>
             <div className="flex items-center gap-2 mt-3 text-xs font-mono uppercase text-retro-text/60">
@@ -113,7 +113,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
                 src={post.coverImage}
                 alt={post.title}
                 fill
-                className="object-cover"
+                className={`object-cover ${post.isLocked ? 'pixelated-blur' : ''}`}
               />
             </div>
           )}
@@ -133,19 +133,19 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </div>
 
             {/* Title */}
-            <h2 className="text-xl font-heading uppercase text-retro-text mb-3 group-hover:text-retro-primary">
+            <h2 className={`text-xl font-heading uppercase text-retro-text mb-3 group-hover:text-retro-primary ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.title}
             </h2>
 
             {/* Excerpt */}
-            <p className="text-retro-text/80 font-mono text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+            <p className={`text-retro-text/80 font-mono text-sm leading-relaxed mb-6 line-clamp-3 flex-1 ${post.isLocked ? 'pixelated-blur' : ''}`}>
               {post.excerpt}
             </p>
 
             {/* Read more */}
             <div className="mt-auto pt-4 border-t-2 border-dashed border-retro-border/50 group-hover:border-retro-border transition-colors">
               <span className="inline-flex items-center text-xs font-heading uppercase text-retro-text hover:bg-retro-text hover:text-retro-surface px-2 py-1 -ml-2 transition-colors">
-                [ Read Post ]
+                {post.isLocked ? '[ Locked ]' : '[ Read Post ]'}
               </span>
             </div>
           </div>
