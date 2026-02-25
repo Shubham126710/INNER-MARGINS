@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/lib/types';
+import DeletePostButton from './DeletePostButton';
 
 interface PostCardProps {
   post: BlogPost;
@@ -60,6 +61,9 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </div>
           </div>
         </Link>
+        <div className="absolute bottom-6 lg:bottom-8 right-6 lg:right-8 z-10">
+          <DeletePostButton id={post.id} />
+        </div>
       </article>
     );
   }
@@ -67,7 +71,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
   if (variant === 'compact') {
     return (
       <article 
-        className="group animate-fade-in border-b-2 border-retro-border last:border-0 hover:bg-retro-bg transition-colors"
+        className="group animate-fade-in border-b-2 border-retro-border last:border-0 hover:bg-retro-bg transition-colors relative"
         style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'forwards' }}
       >
         <Link href={`/posts/${post.slug}`} className="flex gap-4 p-4 no-underline items-start">
@@ -95,13 +99,16 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </div>
           </div>
         </Link>
+        <div className="absolute bottom-4 right-4 z-10">
+          <DeletePostButton id={post.id} />
+        </div>
       </article>
     );
   }
 
   return (
     <article 
-      className="group animate-fade-in"
+      className="group animate-fade-in relative"
       style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
     >
       <Link href={`/posts/${post.slug}`} className="block no-underline">
@@ -151,6 +158,9 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
           </div>
         </div>
       </Link>
+      <div className="absolute bottom-6 right-6 z-10">
+        <DeletePostButton id={post.id} />
+      </div>
     </article>
   );
 }

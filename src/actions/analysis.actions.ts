@@ -30,8 +30,12 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   
-  // Helper to normalize date to YYYY-MM-DD string
-  const toDateString = (date: Date) => date.toISOString().split('T')[0];
+  // Helper to normalize date to YYYY-MM-DD string in local time
+  const toDateString = (date: Date) => {
+    const offset = date.getTimezoneOffset() * 60000;
+    const localDate = new Date(date.getTime() - offset);
+    return localDate.toISOString().split('T')[0];
+  };
   
   const postDates = new Set(posts.map(p => toDateString(p.createdAt)));
   const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
@@ -98,7 +102,7 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
           const currentDate = new Date(dateStr);
           if (prevDate) {
               const diffTime = Math.abs(currentDate.getTime() - prevDate.getTime());
-              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+              const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
               
               if (diffDays === 1) {
                   tempStreak++;
