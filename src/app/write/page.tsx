@@ -309,6 +309,15 @@ if (!isUnlocked) {
             >
               Save as Draft
             </button>
+            {editId && (
+              <button
+                onClick={() => handleDelete(editId)}
+                disabled={isSaving}
+                className="btn-secondary border-retro-primary text-retro-primary hover:bg-retro-primary hover:text-retro-surface disabled:opacity-50"
+              >
+                Delete Entry
+              </button>
+            )}
             <Link href="/" className="text-retro-text/60 hover:text-retro-text hover:underline no-underline ml-auto font-mono text-sm uppercase">
               Cancel
             </Link>

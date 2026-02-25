@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/lib/types';
-import DeletePostButton from './DeletePostButton';
 
 interface PostCardProps {
   post: BlogPost;
@@ -61,9 +60,6 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </div>
           </div>
         </Link>
-        <div className="absolute bottom-6 lg:bottom-8 right-6 lg:right-8 z-10">
-          <DeletePostButton id={post.id} />
-        </div>
       </article>
     );
   }
@@ -99,9 +95,6 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </div>
           </div>
         </Link>
-        <div className="absolute bottom-4 right-4 z-10">
-          <DeletePostButton id={post.id} />
-        </div>
       </article>
     );
   }
@@ -158,9 +151,6 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
           </div>
         </div>
       </Link>
-      <div className="absolute bottom-6 right-6 z-10">
-        <DeletePostButton id={post.id} />
-      </div>
     </article>
   );
 }
