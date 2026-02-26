@@ -18,7 +18,7 @@ export default function PinLock({ onUnlock }: PinLockProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === '314159') {
+    if (pin === '161803') {
       onUnlock();
     } else {
       setError(true);
@@ -68,7 +68,7 @@ export default function PinLock({ onUnlock }: PinLockProps) {
           </div>
 
           <div className="text-xs font-mono text-retro-text/60">
-            HINT: PTSD
+            HINT: Au
           </div>
 
           <button
