@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { TableOfContents, LoadingScreen, PinLock } from '@/components';
+import { TableOfContents, LoadingScreen, PinLock, CommentSection } from '@/components';
 import { getPostBySlug, deletePost } from '@/actions/post.actions';
 import { BlogPost } from '@/lib/types';
 
@@ -176,8 +176,11 @@ if (post.isLocked && !isUnlocked) {
           </aside>
         </div>
 
+        {/* Comment Section */}
+        <CommentSection postId={post.id} />
+
         {/* Footer */}
-        <div className="py-12 border-t-4 border-retro-border border-dashed">
+        <div className="py-12 border-t-4 border-retro-border border-dashed mt-16">
           <div className="flex items-center justify-between">
             <Link 
               href="/" 

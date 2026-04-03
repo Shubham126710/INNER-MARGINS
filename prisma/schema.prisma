@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
@@ -24,8 +24,19 @@ model Post {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   readTime    String
-  
-  tags        Tag[]
+
+  tags     Tag[]
+  comments Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  author    String
+  content   String
+  createdAt DateTime @default(now())
+
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String
 }
 
 model Tag {
@@ -40,9 +51,9 @@ model About {
   subtitle     String
   content      String
   profileImage String?
-  
+
   // Hobbies instead of Social Links
-  hobbies      String?  // Stored as JSON string or comma-separated
-  
-  updatedAt    DateTime @updatedAt
+  hobbies String? // Stored as JSON string or comma-separated
+
+  updatedAt DateTime @updatedAt
 }
