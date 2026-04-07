@@ -27,15 +27,15 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
     },
   });
 
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  
-  // Helper to normalize date to YYYY-MM-DD string in local time
+  // Helper to normalize date to YYYY-MM-DD string in Asia/Kolkata
   const toDateString = (date: Date) => {
-    const offset = date.getTimezoneOffset() * 60000;
-    const localDate = new Date(date.getTime() - offset);
-    return localDate.toISOString().split('T')[0];
+    return new Date(date).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   };
+  
+  const now = new Date();
+  const todayStr = toDateString(now);
+  // Use noon UTC to avoid daylight saving or boundary issues when subtracting days
+  const today = new Date(`${todayStr}T12:00:00Z`);
   
   const postDates = new Set(posts.map(p => toDateString(p.createdAt)));
   const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
@@ -57,7 +57,6 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
   // Duolingo style: if I haven't done it today, streak is still valid until end of day.
   // GitHub style: Current streak is consecutive days ending today or yesterday.
   
-  const todayStr = toDateString(today);
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = toDateString(yesterday);

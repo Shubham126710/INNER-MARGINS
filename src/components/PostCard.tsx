@@ -10,6 +10,7 @@ interface PostCardProps {
 
 export default function PostCard({ post, index = 0, variant = 'default' }: PostCardProps) {
   const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+    timeZone: 'Asia/Kolkata',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
