@@ -1,5 +1,8 @@
 export function ContributionGraph({ data }: { data: { [date: string]: number } }) {
-    const today = new Date();
+    const now = new Date();
+    const todayStr = new Date(now).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const today = new Date(`${todayStr}T12:00:00Z`);
+
     // Start date = Today - 365 days
     const startDate = new Date(today);
     startDate.setDate(today.getDate() - 364);
@@ -17,8 +20,7 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
         const week = [];
         for (let d = 0; d < 7; d++) {
             const dateStr = iterDate.toISOString().split('T')[0];
-            // Check if iterDate is in the future relative to "today" (stripping time if needed)
-            const isFuture = iterDate > new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+            const isFuture = iterDate > today;
             
             week.push({
                 date: dateStr,
