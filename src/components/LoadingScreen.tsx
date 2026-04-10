@@ -14,7 +14,7 @@ export default function LoadingScreen() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center font-mono p-4">
-      <style dangerouslySetInnerHTML={{ __html: \`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fillBar {
           0% { width: 0%; }
           100% { width: 100%; }
@@ -60,7 +60,7 @@ export default function LoadingScreen() {
           content: "0% COMPLETE";
           animation: loadingPercentage 1.5s ease-out forwards;
         }
-      \`}} />
+      `}} />
 
       <div className="w-full max-w-sm space-y-8 text-center flex flex-col items-center">
         
