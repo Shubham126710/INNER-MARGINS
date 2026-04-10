@@ -34,28 +34,28 @@ export default function LoadingScreen() {
     // Pick a random quote on mount
     setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
 
-    // Fill up over 1500ms
     const totalDuration = 1500;
     const intervalTime = 30;
-    const steps = totalDuration / intervalTime;
-    const increment = 100 / steps;
-
-    let currentProgress = 0;
+    const increment = 100 / (totalDuration / intervalTime);
 
     const timer = setInterval(() => {
-      currentProgress += increment;
-      if (currentProgress >= 100) {
-        currentProgress = 100;
-        clearInterval(timer);
-      }
-      setProgress(currentProgress);
-      
-      const currentStep = Math.min(
-        Math.floor((currentProgress / 100) * LOADING_STEPS.length),
-        LOADING_STEPS.length - 1
-      );
-      setStepIndex(currentStep);
-
+      setProgress((prev) => {
+        const nextProgress = prev + increment;
+        
+        if (nextProgress >= 100) {
+          clearInterval(timer);
+          setStepIndex(LOADING_STEPS.length - 1);
+          return 100;
+        }
+        
+        const currentStep = Math.min(
+          Math.floor((nextProgress / 100) * LOADING_STEPS.length),
+          LOADING_STEPS.length - 1
+        );
+        setStepIndex(currentStep);
+        
+        return nextProgress;
+      });
     }, intervalTime);
 
     return () => clearInterval(timer);
