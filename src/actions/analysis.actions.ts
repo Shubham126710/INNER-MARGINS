@@ -12,6 +12,7 @@ export type AnalysisStats = {
   entriesByYear: { year: number; count: number }[];
   dailyActivity: { [date: string]: number };
   weeklyPattern: { day: string; count: number }[];
+  monthlyPattern: { month: string; count: number }[];
 };
 
 export async function getAnalysisStats(): Promise<AnalysisStats> {
@@ -162,6 +163,18 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
       count: dayCounts[index]
   }));
 
+  const monthCounts: { [key: number]: number } = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0 };
+  posts.forEach(post => {
+      const month = post.createdAt.getMonth();
+      monthCounts[month]++;
+  });
+  
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthlyPattern = months.map((month, index) => ({
+      month,
+      count: monthCounts[index]
+  }));
+
   return {
     currentStreak,
     totalEntries: posts.length,
@@ -172,5 +185,6 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
     entriesByYear,
     dailyActivity,
     weeklyPattern,
+    monthlyPattern,
   };
 }

@@ -1,5 +1,5 @@
 import { getAnalysisStats } from '@/actions/analysis.actions';
-import { StatCard, ContributionGraph } from '@/components';
+import { StatCard, ContributionGraph, PatternChart } from '@/components';
 
 export const metadata = {
   title: 'Analysis | Inner Margins',
@@ -96,30 +96,11 @@ export default async function AnalysisPage() {
                 </div>
             </div>
 
-            {/* Yearly Breakdown */}
-            <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro">
-                <h2 className="text-2xl font-display uppercase mb-8 border-b-2 border-retro-border pb-4">
-                    Annual Archive
-                </h2>
-                <div className="space-y-4">
-                   {stats.entriesByYear.length > 0 ? (
-                       stats.entriesByYear.map((item) => (
-                           <div key={item.year} className="flex items-center gap-4">
-                               <span className="font-code w-16 text-retro-text">{item.year}</span>
-                               <div className="flex-1 h-3 bg-retro-bg relative rounded-sm overflow-hidden">
-                                   <div 
-                                      className="absolute top-0 left-0 h-full bg-retro-primary"
-                                      style={{ width: `${Math.min((item.count / Math.max(...stats.entriesByYear.map(e => e.count))) * 100, 100)}%` }}
-                                   />
-                               </div>
-                               <span className="font-code w-8 text-right text-retro-text/70">{item.count}</span>
-                           </div>
-                       ))
-                   ) : (
-                       <p className="font-code text-retro-text/50">No entries yet.</p>
-                   )}
-                </div>
-            </div>
+            {/* Distribution */}
+            <PatternChart 
+                weeklyPattern={stats.weeklyPattern} 
+                monthlyPattern={stats.monthlyPattern} 
+            />
         </div>
 
       </main>

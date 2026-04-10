@@ -11,5 +11,6 @@ export * from './StatCard';
 export * from './ContributionGraph';
 export { default as JournalSection } from './JournalSection';
 export { default as CommentSection } from './CommentSection';
+export { default as PatternChart } from './PatternChart';
 export { default as WeeklyActivityChart } from './charts/WeeklyActivityChart';
 
