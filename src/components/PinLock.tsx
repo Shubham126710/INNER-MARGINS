@@ -18,7 +18,9 @@ export default function PinLock({ onUnlock }: PinLockProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === '161803') {
+    // Obfuscated PIN check to hide it from plain sight in the repository
+    const encoded = typeof window !== 'undefined' ? window.btoa(pin) : '';
+    if (encoded === 'MzE0MTU5') {
       onUnlock();
     } else {
       setError(true);
@@ -68,7 +70,7 @@ export default function PinLock({ onUnlock }: PinLockProps) {
           </div>
 
           <div className="text-xs font-mono text-retro-text/60">
-            HINT: Au
+            HINT: PTSD
           </div>
 
           <button
