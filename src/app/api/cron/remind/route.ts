@@ -39,24 +39,11 @@ export async function GET(req: Request) {
       { title: 'Knock knock.', body: "It's your thoughts. They want out. Open the app." },
       { title: 'Excuse me?', body: "Did you really think I'd let you skip today? Get writing." }
     ];
-
-    const currentHour = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false });
-    const currentMin = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', minute: '2-digit' });
     
-    // We run the cron exactly once an hour or every 10 min. 
-    // We only send if the user's reminderTime hour matches the current hour in IST
+    // We run the cron exactly once a day via Vercel Hobby limits
     
     const sendPromises = subscriptions.map((sub: { id: string; endpoint: string; p256dh: string; auth: string; reminderTime?: string }) => {
       
-      const subTime = sub.reminderTime || '20:00';
-      const [subHour] = subTime.split(':');
-      
-      // Basic check: only send during the requested hour in IST.
-      // (If you want exact minutes, Vercel cron must run every minute, which eats Hobby limits. So checking hour is best).
-      if (subHour !== currentHour) {
-        return Promise.resolve(); // Skip until their requested hour
-      }
-
       const randMsg = messages[Math.floor(Math.random() * messages.length)];
       const payload = JSON.stringify({
         title: randMsg.title,
