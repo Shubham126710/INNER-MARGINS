@@ -1,5 +1,5 @@
 import { getAnalysisStats } from '@/actions/analysis.actions';
-import { StatCard, ContributionGraph, PatternChart } from '@/components';
+import { StatCard, ContributionGraph, PatternChart, ReminderSetup } from '@/components';
 
 export const metadata = {
   title: 'Analysis | Inner Margins',
@@ -102,6 +102,9 @@ export default async function AnalysisPage() {
                 monthlyPattern={stats.monthlyPattern} 
             />
         </div>
+
+        {/* Streak Settings */}
+        <ReminderSetup />
 
       </main>
     </div>
