@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
-import { Header, Footer, NotificationProvider } from "@/components";
+import { Header, Footer } from "@/components";
 
 const pressStart2P = Press_Start_2P({
   weight: "400",
@@ -45,7 +45,6 @@ export default function RootLayout({
           </defs>
         </svg>
         <Header />
-        <NotificationProvider />
         <main className="flex-1">
           {children}
         </main>
