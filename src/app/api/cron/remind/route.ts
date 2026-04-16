@@ -3,14 +3,14 @@ import { db } from '@/lib/db';
 import webpush from 'web-push';
 import { checkHasPostedToday } from '@/actions/notification.actions';
 
-webpush.setVapidDetails(
-  'mailto:your-email@example.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 export async function GET(req: Request) {
   try {
+    webpush.setVapidDetails(
+      'mailto:your-email@example.com',
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
+      process.env.VAPID_PRIVATE_KEY || ''
+    );
+
     // Only allow vercel cron secret if configured
     if (
       process.env.VERCEL_CRON_SECRET &&
