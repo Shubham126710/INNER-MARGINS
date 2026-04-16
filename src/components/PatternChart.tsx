@@ -23,12 +23,12 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
     const maxCount = Math.max(...data.map(d => d.count), 1); // Avoid division by zero
 
     return (
-        <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro flex flex-col h-full">
-            <div className="flex justify-between items-center mb-8 border-b-2 border-retro-border pb-4">
-                <h2 className="text-2xl font-display uppercase m-0">
+        <div className="border-4 border-retro-border bg-retro-surface p-4 sm:p-8 shadow-retro flex flex-col h-full overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-8 border-b-2 border-retro-border pb-4">
+                <h2 className="text-xl sm:text-2xl font-display uppercase m-0">
                     Distribution
                 </h2>
-                <div className="bg-retro-bg border-2 border-retro-border">
+                <div className="bg-retro-bg border-2 border-retro-border self-start sm:self-auto shrink-0">
                     <select
                         value={view}
                         onChange={(e) => setView(e.target.value as 'day' | 'month')}
