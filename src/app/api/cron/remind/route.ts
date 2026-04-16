@@ -40,10 +40,21 @@ export async function GET(req: Request) {
       { title: 'Excuse me?', body: "Did you really think I'd let you skip today? Get writing." }
     ];
     
-    // We run the cron exactly once a day via Vercel Hobby limits
+    // Note: If you want to use custom times, you MUST use an external hourly cron service like cron-job.org
+    // because Vercel Free only allows 1 cron execution per day.
     
+    const currentHour = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false });
+
     const sendPromises = subscriptions.map((sub: { id: string; endpoint: string; p256dh: string; auth: string; reminderTime?: string }) => {
       
+      const subTime = sub.reminderTime || '20:00';
+      const [subHour] = subTime.split(':');
+      
+      // If using an hourly external cron, this ensures it only sends during their requested hour
+      if (subHour !== currentHour && req.headers.get('x-force-send') !== 'true') {
+        return Promise.resolve(); // Skip until their requested hour
+      }
+
       const randMsg = messages[Math.floor(Math.random() * messages.length)];
       const payload = JSON.stringify({
         title: randMsg.title,
