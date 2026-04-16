@@ -16,6 +16,7 @@ const urlB64ToUint8Array = (base64String: string) => {
 export default function ReminderSetup() {
   const [enabled, setEnabled] = useState(false);
   const [status, setStatus] = useState<string>('');
+  const [reminderTime, setReminderTime] = useState<string>('20:00');
 
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
@@ -55,7 +56,7 @@ export default function ReminderSetup() {
         await fetch('/api/notifications/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ subscription }),
+          body: JSON.stringify({ subscription, reminderTime }),
         });
 
         setEnabled(true);
@@ -94,23 +95,39 @@ export default function ReminderSetup() {
         Background Reminders
       </h2>
       <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-        <p className="flex-1 text-sm font-code text-retro-text/80">
-          Get notified globally even when the app is closed if you haven&apos;t written your journal for the day!
-        </p>
-        <div className="flex gap-4">
+        <div className="flex-1 space-y-2">
+          <p className="text-sm font-code text-retro-text/80 mb-2">
+            Get notified globally even when the app is closed if you haven&apos;t written your journal!
+          </p>
+          <div className="flex items-center gap-4">
+             <label className="text-sm font-code uppercase text-retro-text/80">Time:</label>
+             <input 
+               type="time" 
+               value={reminderTime}
+               onChange={(e) => setReminderTime(e.target.value)}
+               className="p-2 font-code bg-retro-bg border-4 border-retro-border text-retro-text focus:border-retro-primary focus:outline-none"
+             />
+          </div>
+        </div>
+        <div className="flex gap-4 self-end md:self-auto mt-4 md:mt-0">
           {!enabled ? (
             <button onClick={handleSave} className="btn-primary">
               Enable Reminders
             </button>
           ) : (
-             <button onClick={handleDisable} className="btn-secondary">
-               Disable Push
-             </button>
+            <div className="flex gap-2">
+               <button onClick={handleSave} className="btn-primary">
+                 Update Time
+               </button>
+               <button onClick={handleDisable} className="btn-secondary">
+                 Disable Push
+               </button>
+            </div>
           )}
         </div>
       </div>
       {status && (
-        <div className="font-code text-sm text-retro-primary bg-retro-primary/10 p-3 border-l-4 border-retro-primary animate-fade-in">
+        <div className="font-code text-sm text-retro-primary bg-retro-primary/10 p-3 border-l-4 border-retro-primary animate-fade-in mt-4">
           {status}
         </div>
       )}

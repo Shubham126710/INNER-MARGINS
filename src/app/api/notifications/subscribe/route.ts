@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
-    const { subscription } = await req.json();
+    const { subscription, reminderTime } = await req.json();
 
     if (!subscription || !subscription.endpoint) {
       return NextResponse.json({ error: 'Invalid subscription object' }, { status: 400 });
@@ -15,11 +15,13 @@ export async function POST(req: Request) {
       update: {
         p256dh: subscription.keys.p256dh,
         auth: subscription.keys.auth,
+        reminderTime: reminderTime || "20:00"
       },
       create: {
         endpoint: subscription.endpoint,
         p256dh: subscription.keys.p256dh,
         auth: subscription.keys.auth,
+        reminderTime: reminderTime || "20:00"
       },
     });
 

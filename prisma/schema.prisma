@@ -59,9 +59,10 @@ model About {
 }
 
 model PushSubscription {
-  id        String   @id @default(uuid())
-  endpoint  String   @unique
-  p256dh    String
-  auth      String
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  endpoint     String   @unique
+  p256dh       String
+  auth         String
+  reminderTime String   @default("20:00") // Customizable local time
+  createdAt    DateTime @default(now())
 }
