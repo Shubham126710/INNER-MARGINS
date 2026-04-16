@@ -11,10 +11,11 @@ export async function GET(req: Request) {
       process.env.VAPID_PRIVATE_KEY || ''
     );
 
-    // Only allow vercel cron secret if configured
+    // Only allow cron secret if configured
+    const cronSecret = process.env.CRON_SECRET || process.env.VERCEL_CRON_SECRET;
     if (
-      process.env.VERCEL_CRON_SECRET &&
-      req.headers.get('Authorization') !== `Bearer ${process.env.VERCEL_CRON_SECRET}`
+      cronSecret &&
+      req.headers.get('Authorization') !== `Bearer ${cronSecret}`
     ) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
