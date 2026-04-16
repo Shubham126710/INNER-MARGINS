@@ -25,7 +25,7 @@ export default async function Home({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
           <div className="animate-fade-in">
             <span className="inline-block bg-retro-text text-retro-surface text-xs font-mono uppercase tracking-widest px-2 py-1 mb-6">
-              Personal Journal v1.0
+              Personal Journal v1.5
             </span>
           </div>
           
