@@ -1,4 +1,4 @@
-# Inner Margins
+# Inner Margins v1.5
 
 <div align="center">
   <img src="src/app/icon.png" alt="Inner Margins Logo" width="128" />
@@ -37,9 +37,11 @@ The application features a robust writing interface, data visualization for writ
 - **Distraction-Free Writing**: A clean, focused editor interface for new entries.
 - **Journal Archive**: Filterable and searchable list of past entries.
 - **Data Analysis**: Visual analytics for writing habits, including:
-  - Current & Longest Streaks
-  - "Year in Pixels" Contribution Graph
-  - Daily & Weekly Activity breakdowns
+  - Current & Longest Streaks (Timezone-aware for Asia/Kolkata)
+  - Weekly & Monthly Pattern Activity Charts
+- **Rich Comments System**: Dedicated discussion and feedback capability beneath posts.
+- **Hidden Pin Lock**: Obfuscated security gateway to keep private journals safe from prying eyes.
+- **PWA Push Notifications**: Sarcastic background reminders tied to your custom schedule via external cron services (cron-job.org).
 - **Tagging System**: Organize thoughts with a custom tagging implementation.
 - **Rich Text Support**: Markdown-style formatting for expressive writing.
 - **Responsive Design**: Fully optimized for desktop and mobile reading experiences.
@@ -125,9 +127,12 @@ Follow these steps to set up the project locally.
    ```
 
 3. **Configure Environment Variables**
-   Create a `.env` file in the root directory and add your database connection string:
+   Create a `.env` file in the root directory:
    ```env
    DATABASE_URL="postgresql://user:password@localhost:5432/innermargins?schema=public"
+   NEXT_PUBLIC_VAPID_PUBLIC_KEY="your-vapid-public-key"
+   VAPID_PRIVATE_KEY="your-vapid-private-key"
+   CRON_SECRET="your-custom-cron-secret"
    ```
 
 4. **Initialize Database**
