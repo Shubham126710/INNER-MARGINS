@@ -1,6 +1,30 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const endpoint = searchParams.get('endpoint');
+
+    if (!endpoint) {
+      return NextResponse.json({ error: 'Endpoint required' }, { status: 400 });
+    }
+
+    const subscription = await db.pushSubscription.findFirst({
+      where: { endpoint },
+    });
+
+    if (subscription) {
+      return NextResponse.json({ reminderTime: subscription.reminderTime });
+    }
+
+    return NextResponse.json({ reminderTime: null });
+  } catch (error) {
+    console.error('Error fetching subscription:', error);
+    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const { subscription, reminderTime } = await req.json();

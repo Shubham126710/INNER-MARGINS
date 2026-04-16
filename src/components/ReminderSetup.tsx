@@ -23,7 +23,17 @@ export default function ReminderSetup() {
       navigator.serviceWorker.getRegistration().then((reg) => {
         if (reg) {
           reg.pushManager.getSubscription().then((sub) => {
-            if (sub) setEnabled(true);
+            if (sub) {
+              setEnabled(true);
+              fetch(`/api/notifications/subscribe?endpoint=${encodeURIComponent(sub.endpoint)}`)
+                .then(res => res.json())
+                .then(data => {
+                  if (data && data.reminderTime) {
+                    setReminderTime(data.reminderTime);
+                  }
+                })
+                .catch(console.error);
+            }
           });
         }
       });
