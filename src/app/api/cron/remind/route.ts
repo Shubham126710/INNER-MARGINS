@@ -3,6 +3,8 @@ import { db } from '@/lib/db';
 import webpush from 'web-push';
 import { checkHasPostedToday } from '@/actions/notification.actions';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     webpush.setVapidDetails(
@@ -44,18 +46,21 @@ export async function GET(req: Request) {
     // Note: If you want to use custom times, you MUST use an external hourly cron service like cron-job.org
     // because Vercel Free only allows 1 cron execution per day.
     
-    const currentHour = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false });
+    const currentHourStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', hourCycle: 'h23' });
+    const currentHour = parseInt(currentHourStr, 10);
 
+    let sentCount = 0;
     const sendPromises = subscriptions.map((sub: { id: string; endpoint: string; p256dh: string; auth: string; reminderTime?: string }) => {
       
       const subTime = sub.reminderTime || '20:00';
-      const [subHour] = subTime.split(':');
+      const subHour = parseInt(subTime.split(':')[0], 10);
       
       // If using an hourly external cron, this ensures it only sends during their requested hour
       if (subHour !== currentHour && req.headers.get('x-force-send') !== 'true') {
         return Promise.resolve(); // Skip until their requested hour
       }
 
+      sentCount++;
       const randMsg = messages[Math.floor(Math.random() * messages.length)];
       const payload = JSON.stringify({
         title: randMsg.title,
@@ -83,7 +88,7 @@ export async function GET(req: Request) {
 
     await Promise.all(sendPromises);
 
-    return NextResponse.json({ success: true, sent: subscriptions.length });
+    return NextResponse.json({ success: true, evaluated: subscriptions.length, sent: sentCount, currentHour });
   } catch (error: unknown) {
     console.error('Error sending push notifications:', error);
     return NextResponse.json({ error: 'Failed to send notifications' }, { status: 500 });
