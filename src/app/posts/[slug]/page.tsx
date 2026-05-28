@@ -210,11 +210,7 @@ export default function PostPage({ params }: PostPageProps) {
           
           {/* Sidebar with TOC */}
           <aside className="hidden lg:block relative">
-            <div className="sticky top-24 pl-4 border-l border-dashed border-retro-border/20">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="h-[1px] w-4 bg-retro-primary/50"></div>
-                <h3 className="text-[10px] uppercase tracking-widest font-mono text-retro-text/70">Directory Index</h3>
-              </div>
+            <div className="sticky top-24 pl-6 border-l border-dashed border-retro-border/20 mt-2">
               <TableOfContents content={post.content} />
             </div>
           </aside>
