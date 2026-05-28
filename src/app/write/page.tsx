@@ -1,341 +1,213 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { PinLock, RichTextEditor, TagInput, ImageUpload } from '@/components';
-import { savePost, getPostById, deletePost, getPosts } from '@/actions/post.actions';
-import { BlogPost } from '@/lib/types';
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { savePost } from '@/actions/post.actions';
+import { TagInput, ImageUpload, PinLock } from '@/components';
+import { LoadingScreen } from '@/components';
 
-function Editor() {
+// Dynamically import TipTap Editor to avoid SSR errors
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
+  ssr: false,
+  loading: () => <div className="h-[400px] border border-retro-border/30 bg-retro-surface/50 p-4 animate-pulse flex items-center justify-center font-mono text-[10px] uppercase tracking-widest text-retro-text/50">Warming up editor grid...</div>
+});
+
+function WriteForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const editId = searchParams.get('edit');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    coverImage: '',
+    category: '',
+    tags: [] as string[],
+    isLocked: false,
+    visibility: 'public' as 'public' | 'private' | 'unlisted',
+  });
 
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [title, setTitle] = useState('');
-  const [excerpt, setExcerpt] = useState('');
-  const [content, setContent] = useState('');
-  const [coverImage, setCoverImage] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
-  const [isFeatured, setIsFeatured] = useState(false);
-  const [isPublished, setIsPublished] = useState(true);
-  const [isLocked, setIsLocked] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [showManage, setShowManage] = useState(false);
-  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-
-  useEffect(() => {
-    async function loadData() {
-      if (editId) {
-        const post = await getPostById(editId);
-        if (post) {
-          setTitle(post.title);
-          setExcerpt(post.excerpt);
-          setContent(post.content);
-          setCoverImage(post.coverImage || '');
-          setTags(post.tags);
-          setIsFeatured(post.isFeatured);
-          setIsPublished(post.isPublished);
-          setIsLocked(post.isLocked || false);
-        }
-      }
-      const posts = await getPosts();
-      setAllPosts(posts);
-    }
-    loadData();
-  }, [editId]);
-
-  const handleSave = async (publish: boolean = true) => {
-    if (!title.trim()) {
-      alert('Please enter a title');
-      return;
-    }
-    if (!content.trim()) {
-      alert('Please write some content');
-      return;
-    }
-
-    setIsSaving(true);
-    
-    try {
-      const post = await savePost({
-        id: editId || undefined,
-        title: title.trim(),
-        excerpt: excerpt.trim() || content.replace(/<[^>]*>/g, '').substring(0, 150) + '...',
-        content,
-        coverImage,
-        tags,
-        isFeatured,
-        isLocked,
-        isPublished: publish,
-      });
-
-      router.push(`/posts/${post.slug}`);
-    } catch {
-      alert('Failed to save post. Please try again.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this post?')) {
-      await deletePost(id);
-      const updatedPosts = await getPosts();
-      setAllPosts(updatedPosts);
-      
-      if (editId === id) {
-        setTitle('');
-        setExcerpt('');
-        setContent('');
-        setCoverImage('');
-        setTags([]);
-        setIsFeatured(false);
-        router.push('/write');
-      }
-    }
-  };
-
-  const handleEdit = (post: BlogPost) => {
-    router.push(`/write?edit=${post.id}`);
-    setShowManage(false);
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setExcerpt('');
-    setContent('');
-    setCoverImage('');
-    setTags([]);
-    setIsLocked(false);
-    setIsFeatured(false);
-    setIsPublished(true);
-    router.push('/write');
-  };
-if (!isUnlocked) {
-    return (
-      <div className="min-h-screen bg-retro-bg flex flex-col font-body selection:bg-retro-primary selection:text-white">
-        <PinLock onUnlock={() => setIsUnlocked(true)} />
-      </div>
-    );
+  if (!isAuthenticated) {
+     return <PinLock onUnlock={() => setIsAuthenticated(true)} />;
   }
 
-  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    try {
+      if (!formData.title || !formData.content) {
+        alert('Title and content are required.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      await savePost(formData);
+      router.push('/journals');
+      router.refresh();
+    } catch (error) {
+      console.error('Failed to encode transmission:', error);
+      alert('Failed to transmit journal. Please try again.');
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen py-12 bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
-      <div className="max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b-4 border-retro-border">
-          <div>
-            <Link 
-              href="/" 
-              className="text-retro-text/60 hover:text-retro-text font-mono text-sm no-underline inline-flex items-center gap-2 mb-4 hover:underline uppercase"
-            >
-              &lt; Back to journal
-            </Link>
-            <h1 className="text-2xl sm:text-3xl font-heading uppercase text-retro-text">
-              {editId ? 'Edit Entry' : 'Write New Entry'}
-            </h1>
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-12 py-8 md:py-12 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
+        
+        <header className="mb-10 text-center relative border-b border-retro-border/20 pb-8 hover:bg-retro-surface/20 transition-colors">
+          <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+               <rect x="2" y="2" width="4" height="4" />
+               <rect x="18" y="2" width="4" height="4" />
+               <rect x="2" y="18" width="4" height="4" />
+               <rect x="18" y="18" width="4" height="4" />
+            </svg>
           </div>
+
+          <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-text/10 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-4 shadow-retro-sm">
+            <div className="w-2 h-2 bg-retro-primary animate-pulse"></div>
+            <span>New Transmission</span>
+          </div>
+
+          <h1 className="text-3xl lg:text-4xl font-heading uppercase text-retro-text mb-4">
+            Upload To Archive
+          </h1>
+          <p className="font-mono text-xs uppercase tracking-widest text-retro-text/60">
+            Write. Record. Execute.
+          </p>
+        </header>
+
+        <form onSubmit={handleSubmit} className="space-y-8 bg-retro-surface/30 p-6 lg:p-10 border border-retro-border/30 shadow-retro-sm relative">
           
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            {editId && (
-              <button
-                onClick={resetForm}
-                className="btn-secondary text-xs"
-              >
-                New Entry
-              </button>
-            )}
-            <button
-              onClick={() => setShowManage(!showManage)}
-              className="btn-secondary text-xs"
-            >
-              {showManage ? '[ Close ]' : '[ Manage Posts ]'}
-            </button>
-          </div>
-        </div>
+          <div className="space-y-6">
+            <div className="group">
+              <label htmlFor="title" className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
+                Transmission Subject *
+              </label>
+              <input
+                type="text"
+                id="title"
+                required
+                className="w-full px-4 py-3 bg-retro-bg/50 border border-retro-border/30 focus:border-retro-primary focus:bg-retro-surface focus:outline-none transition-all font-heading text-lg lg:text-xl text-retro-text placeholder:text-retro-text/20"
+                placeholder="GIVE IT A NAME"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
 
-        {/* Post Management Panel */}
-        {showManage && (
-          <div className="card p-6 mb-8 bg-retro-surface">
-            <h3 className="text-lg font-heading uppercase text-retro-text mb-4">Manage Posts</h3>
-            {allPosts.length === 0 ? (
-              <p className="text-retro-text/60 font-mono">No posts yet. Start writing!</p>
-            ) : (
-              <div className="space-y-2">
-                {allPosts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="flex items-center justify-between p-4 bg-retro-bg border-2 border-retro-border"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-retro-text font-heading uppercase truncate">{post.title}</h4>
-                      <div className="flex items-center gap-3 mt-1 font-mono text-xs">
-                        <span className="text-retro-text/60">
-                          {new Date(post.createdAt).toLocaleDateString()}
-                        </span>
-                        {post.isFeatured && (
-                          <span className="bg-retro-primary text-retro-surface px-1">FEATURED</span>
-                        )}
-                        {!post.isPublished && (
-                          <span className="bg-retro-border/20 text-retro-text px-1">DRAFT</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      <button
-                        onClick={() => handleEdit(post)}
-                        className="px-2 py-1 text-xs border border-retro-text text-retro-text hover:bg-retro-text hover:text-retro-surface uppercase font-bold"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="px-2 py-1 text-xs border border-retro-primary text-retro-primary hover:bg-retro-primary hover:text-retro-surface uppercase font-bold"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="group">
+                <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
+                  Visual Context (Optional)
+                </label>
+                <div className="flex-1 w-full bg-retro-bg/50">
+                   <ImageUpload
+                      image={formData.coverImage}
+                      onChange={(url) => setFormData({ ...formData, coverImage: url })}
+                    />
+                </div>
               </div>
-            )}
-          </div>
-        )}
 
-        {/* Editor Form */}
-        <div className="space-y-6">
-          {/* Cover Image */}
-          <ImageUpload
-            image={coverImage}
-            onChange={setCoverImage}
-            label="Cover Image (optional)"
-          />
+               <div className="group h-full flex flex-col">
+                <label htmlFor="excerpt" className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
+                  Fragment Summary (Optional)
+                </label>
+                <textarea
+                  id="excerpt"
+                  rows={4}
+                  className="w-full h-full px-4 py-3 bg-retro-bg/50 border border-retro-border/30 focus:border-retro-primary focus:bg-retro-surface focus:outline-none transition-all font-mono text-sm text-retro-text placeholder:text-retro-text/20 resize-none"
+                  placeholder="BRIEF OVERVIEW OF THIS RECORD..."
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                />
+              </div>
+            </div>
 
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-heading uppercase text-retro-text mb-2">
-              Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="ENTER TITLE..."
-              className="w-full text-xl sm:text-2xl lg:text-3xl font-heading bg-retro-surface border-4 border-retro-border p-3 sm:p-4 outline-none text-retro-text placeholder-retro-text/40 focus:shadow-retro transition-shadow"
-            />
-          </div>
+            <div className="group">
+               <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
+                Metadata Tags
+              </label>
+              <div className="bg-retro-bg/50 border border-retro-border/30 focus-within:border-retro-primary focus-within:bg-retro-surface transition-all p-1">
+                 <TagInput
+                    tags={formData.tags}
+                    onChange={(tags) => setFormData({ ...formData, tags })}
+                  />
+              </div>
+            </div>
 
-          {/* Excerpt */}
-          <div>
-            <label className="block text-sm font-heading uppercase text-retro-text mb-2">
-              Excerpt (Auto-Generated if Empty)
-            </label>
-            <textarea
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="A brief summary..."
-              rows={2}
-              className="retro-input resize-none font-mono text-sm"
-            />
-          </div>
-
-          {/* Tags */}
-          <div>
-            <label className="block text-sm font-heading uppercase text-retro-text mb-2">
-              Tags
-            </label>
-            <TagInput
-              tags={tags}
-              onChange={setTags}
-              placeholder="ADD TAGS..."
-            />
-          </div>
-
-          {/* Content Editor */}
-          <div>
-            <label className="block text-sm font-heading uppercase text-retro-text mb-2">
-              Content
-            </label>
-            <RichTextEditor
-              content={content}
-              onChange={setContent}
-              placeholder="START WRITING..."
-            />
-          </div>
-
-        {/* Options */}
-          <div className="flex flex-wrap items-center gap-6 py-4 border-t-4 border-retro-border border-dashed">
-            <label className="flex items-center gap-3 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-                className="w-6 h-6 border-2 border-retro-text bg-retro-surface rounded-none focus:ring-0 checked:bg-retro-text checked:text-retro-surface appearance-none cursor-pointer"
-              />
-              <span className="text-retro-text font-heading uppercase text-sm">
-                Feature this post
-              </span>
-            </label>
-
-             <label className="flex items-center gap-3 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isLocked}
-                onChange={(e) => setIsLocked(e.target.checked)}
-                className="w-6 h-6 border-2 border-retro-text bg-retro-surface rounded-none focus:ring-0 checked:bg-retro-text checked:text-retro-surface appearance-none cursor-pointer"
-              />
-              <span className="text-retro-text font-heading uppercase text-sm">
-                Lock with PIN
-              </span>
-            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border border-retro-border/20 bg-retro-text/5">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isLocked"
+                    title="Lock Journal"
+                    className="w-4 h-4 accent-retro-primary cursor-pointer border-retro-border/50 bg-retro-bg"
+                    checked={formData.isLocked}
+                    onChange={(e) => setFormData({ ...formData, isLocked: e.target.checked })}
+                  />
+                  <label htmlFor="isLocked" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
+                    Lock with Protocol
+                  </label>
+                </div>
+                
+                <div>
+                   <label htmlFor="visibility" className="sr-only">Visibility Details</label>
+                   <select
+                      id="visibility"
+                      title="Visibility"
+                      className="w-full p-2 bg-retro-bg border border-retro-border/30 text-xs font-mono uppercase tracking-widest text-retro-text outline-none focus:border-retro-primary cursor-pointer"
+                      value={formData.visibility}
+                      onChange={(e) => setFormData({ ...formData, visibility: e.target.value as any })}
+                    >
+                      <option value="public">Visibility: PUBLIC [DEFAULT]</option>
+                      <option value="unlisted">Visibility: UNLISTED [HIDDEN]</option>
+                      <option value="private">Visibility: PRIVATE [SECURE]</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div className="group mt-8">
+              <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
+                Main Corpus *
+              </label>
+              <div className="border border-retro-border/30 focus-within:border-retro-primary bg-retro-surface/50 transition-all font-mono">
+                <RichTextEditor
+                  content={formData.content}
+                  onChange={(content) => setFormData({ ...formData, content })}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-4 pt-6 border-t-4 border-retro-border">
+          <div className="pt-8 mt-8 border-t border-retro-border/20 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-retro-text/40">
+              [ All operations logged ]
+            </span>
             <button
-              onClick={() => handleSave(true)}
-              disabled={isSaving}
-              className="btn-primary disabled:opacity-50"
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full sm:w-auto px-8 py-4 bg-retro-text text-retro-surface font-heading uppercase text-sm tracking-widest hover:bg-retro-primary transition-colors shadow-retro hover:shadow-retro-hover active:translate-y-0 active:shadow-retro-sm disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {isSaving ? 'Saving...' : editId ? 'Update & Publish' : 'Publish Entry'}
+              {isSubmitting ? 'Transmitting...' : 'Upload Journal To Archive'}
             </button>
-            <button
-              onClick={() => handleSave(false)}
-              disabled={isSaving}
-              className="btn-secondary disabled:opacity-50"
-            >
-              Save as Draft
-            </button>
-            {editId && (
-              <button
-                onClick={() => handleDelete(editId)}
-                disabled={isSaving}
-                className="btn-secondary border-retro-primary text-retro-primary hover:bg-retro-primary hover:text-retro-surface disabled:opacity-50"
-              >
-                Delete Entry
-              </button>
-            )}
-            <Link href="/" className="text-retro-text/60 hover:text-retro-text hover:underline no-underline ml-auto font-mono text-sm uppercase">
-              Cancel
-            </Link>
           </div>
-        </div>
+        </form>
+
       </div>
     </div>
   );
 }
 
 export default function WritePage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-retro-bg">
-        <div className="font-heading text-xl uppercase animate-pulse text-retro-text">Loading Editor...</div>
-      </div>
-    }>
-      <Editor />
-    </Suspense>
-  );
+   return (
+      <Suspense fallback={<LoadingScreen />}>
+         <WriteForm />
+      </Suspense>
+   );
 }
