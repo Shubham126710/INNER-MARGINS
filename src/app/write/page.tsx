@@ -27,7 +27,6 @@ function WriteForm() {
     category: '',
     tags: [] as string[],
     isLocked: false,
-    visibility: 'public' as 'public' | 'private' | 'unlisted',
   });
 
   if (!isAuthenticated) {
@@ -46,7 +45,7 @@ function WriteForm() {
         return;
       }
 
-      await savePost(formData);
+      await savePost({ ...formData, isPublished: true });
       router.push('/journals');
       router.refresh();
     } catch (error) {
@@ -154,21 +153,6 @@ function WriteForm() {
                   <label htmlFor="isLocked" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
                     Lock with Protocol
                   </label>
-                </div>
-                
-                <div>
-                   <label htmlFor="visibility" className="sr-only">Visibility Details</label>
-                   <select
-                      id="visibility"
-                      title="Visibility"
-                      className="w-full p-2 bg-retro-bg border border-retro-border/30 text-xs font-mono uppercase tracking-widest text-retro-text outline-none focus:border-retro-primary cursor-pointer"
-                      value={formData.visibility}
-                      onChange={(e) => setFormData({ ...formData, visibility: e.target.value as any })}
-                    >
-                      <option value="public">Visibility: PUBLIC [DEFAULT]</option>
-                      <option value="unlisted">Visibility: UNLISTED [HIDDEN]</option>
-                      <option value="private">Visibility: PRIVATE [SECURE]</option>
-                    </select>
                 </div>
             </div>
             
