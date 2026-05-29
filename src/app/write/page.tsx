@@ -1,10 +1,10 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { savePost } from '@/actions/post.actions';
+import { savePost, getPostById } from '@/actions/post.actions';
 import { TagInput, ImageUpload, PinLock } from '@/components';
 import { LoadingScreen } from '@/components';
 
@@ -16,10 +16,13 @@ const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
 
 function WriteForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('edit');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
+    id: '',
     title: '',
     excerpt: '',
     content: '',
@@ -28,6 +31,25 @@ function WriteForm() {
     tags: [] as string[],
     isLocked: false,
   });
+
+  useEffect(() => {
+    if (editId) {
+      getPostById(editId).then((post) => {
+        if (post) {
+          setFormData({
+            id: post.id,
+            title: post.title,
+            excerpt: post.excerpt || '',
+            content: post.content,
+            coverImage: post.coverImage || '',
+            category: '',
+            tags: post.tags || [],
+            isLocked: post.isLocked || false,
+          });
+        }
+      });
+    }
+  }, [editId]);
 
   if (!isAuthenticated) {
      return <PinLock onUnlock={() => setIsAuthenticated(true)} />;
