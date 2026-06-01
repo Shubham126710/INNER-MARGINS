@@ -24,6 +24,7 @@ function WriteForm() {
   const [formData, setFormData] = useState({
     id: '',
     title: '',
+    slug: '',
     excerpt: '',
     content: '',
     coverImage: '',
@@ -40,6 +41,7 @@ function WriteForm() {
           setFormData({
             id: post.id,
             title: post.title,
+            slug: post.slug,
             excerpt: post.excerpt || '',
             content: post.content,
             coverImage: post.coverImage || '',
