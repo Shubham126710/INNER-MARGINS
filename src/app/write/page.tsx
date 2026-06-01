@@ -30,6 +30,7 @@ function WriteForm() {
     category: '',
     tags: [] as string[],
     isLocked: false,
+    isFeatured: false,
   });
 
   useEffect(() => {
@@ -45,6 +46,7 @@ function WriteForm() {
             category: '',
             tags: post.tags || [],
             isLocked: post.isLocked || false,
+            isFeatured: post.isFeatured || false,
           });
         }
       });
@@ -70,9 +72,9 @@ function WriteForm() {
       await savePost({ ...formData, isPublished: true });
       router.push('/journals');
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to encode transmission:', error);
-      alert('Failed to transmit journal. Please try again.');
+      alert(`Failed to transmit journal: ${error.message || 'Unknown error'}`);
       setIsSubmitting(false);
     }
   };
@@ -174,6 +176,20 @@ function WriteForm() {
                   />
                   <label htmlFor="isLocked" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
                     Lock with Protocol
+                  </label>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isFeatured"
+                    title="Feature Entry"
+                    className="w-4 h-4 accent-retro-primary cursor-pointer border-retro-border/50 bg-retro-bg"
+                    checked={formData.isFeatured}
+                    onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                  />
+                  <label htmlFor="isFeatured" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
+                    Feature Entry
                   </label>
                 </div>
             </div>
