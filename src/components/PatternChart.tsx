@@ -49,15 +49,15 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
 
         let cumulativePercent = 0;
         
-        // Some retro colors varying in opacity for the pie slices
+        // Some distinct retro colors for the pie slices
         const colors = [
-            'var(--retro-text)',
-            'rgba(247,218,214, 0.75)',
-            'rgba(247,218,214, 0.5)',
-            'rgba(201,65,60, 0.3)',
-            'rgba(201,65,60, 0.5)',
-            'rgba(201,65,60, 0.75)',
-            'var(--retro-primary)'
+            '#C9413C', // retro-primary
+            '#8B2E2A', // darker red
+            '#E2554F', // retro-border
+            '#F4CFCB', // retro-bg
+            '#A63A36', // mid dark red
+            '#D98A86', // lighter red
+            '#5A1C1A'  // very dark red
         ];
 
         const getCoordinatesForPercent = (percent: number) => {
@@ -86,38 +86,15 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
                                 `M 1,0 A 1,1 0 1,1 0.999,-0.045 L 0,0` :
                                 `M ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
 
-                            // Calculate text position in the middle of the slice
-                            const midPercent = startPercent + percent / 2;
-                            const [textX, textY] = getCoordinatesForPercent(midPercent);
-                            // Position it slightly outside the center (radius 0.75)
-                            // Since the svg is rotated -90deg, x and y are oriented differently for text if we don't rotate back,
-                            // but actually we'll just apply transform to the text
-                            
                             return (
                                 <g key={slice.label} className="group transition-all">
                                     <path 
                                         d={pathData} 
                                         fill={colors[i % colors.length]}
-                                        className="stroke-[0.01] stroke-retro-surface group-hover:opacity-80"
+                                        className="stroke-[0.02] stroke-retro-surface group-hover:opacity-80"
                                     >
                                         <title>{`${slice.label}: ${slice.count}`}</title>
                                     </path>
-                                    
-                                    {/* Text Label on Slice */}
-                                    {percent > 0.05 && (
-                                        <text
-                                            x={textX * 0.75}
-                                            y={textY * 0.75}
-                                            fill="var(--retro-surface)"
-                                            className="font-mono text-[0.14px] font-bold origin-center mix-blend-difference"
-                                            textAnchor="middle"
-                                            dominantBaseline="central"
-                                            transform={`rotate(90, ${textX * 0.75}, ${textY * 0.75})`}
-                                            style={{ pointerEvents: 'none' }}
-                                        >
-                                            {slice.label.substring(0,3)}
-                                        </text>
-                                    )}
                                 </g>
                             );
                         })}

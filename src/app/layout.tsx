@@ -38,7 +38,7 @@ export default function RootLayout({
         {/* Scanlines overlay */}
         <div className="pointer-events-none fixed inset-0 z-40 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]"></div>
         
-        <svg width="0" height="0" style={{ position: 'absolute', visibility: 'hidden' }}>
+        <svg className="absolute w-0 h-0 pointer-events-none" style={{ position: 'absolute', pointerEvents: 'none' }}>
           <defs>
             <filter id="pixelate" x="-10%" y="-10%" width="120%" height="120%">
               <feFlood x="2" y="2" height="2" width="2" />
