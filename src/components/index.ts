@@ -16,3 +16,4 @@ export { default as ReminderSetup } from './ReminderSetup';
 export { default as WeeklyActivityChart } from './charts/WeeklyActivityChart';
 
 export * from './Greeting';
+export { default as Shuffle } from './Shuffle';
