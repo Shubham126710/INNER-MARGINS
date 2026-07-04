@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Shuffle } from '@/components';
 
 export default function LoadingScreen() {
   const [timeStr, setTimeStr] = useState("05/28/26 14:02:11");
@@ -123,17 +122,8 @@ export default function LoadingScreen() {
           <p className="pt-2 text-retro-surface/40 whitespace-nowrap" suppressHydrationWarning>&gt; {randomMsg}</p>
         </div>
 
-        <div className="font-heading text-2xl sm:text-3xl text-retro-surface uppercase tracking-widest relative flex items-center">
-          <Shuffle
-            text="SYSTEM_BOOT"
-            shuffleDirection="up"
-            duration={0.35}
-            animationMode="random"
-            shuffleTimes={2}
-            scrambleCharset="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
-            colorTo="var(--retro-surface)"
-          />
-          <span className="animate-cursor ml-1">█</span>
+        <div className="font-heading text-2xl sm:text-3xl text-retro-surface uppercase tracking-widest relative">
+          SYSTEM_BOOT<span className="animate-cursor ml-1">█</span>
         </div>
         
         {/* Segmented Retro Progress Bar */}
