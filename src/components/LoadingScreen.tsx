@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export default function LoadingScreen() {
-  const [timeStr, setTimeStr] = useState("05/28/26 14:02:11");
+  const [timeStr, setTimeStr] = useState("");
   const [randomMsg, setRandomMsg] = useState("CHECKING EMOTIONAL SECTORS...");
   const [cpuText, setCpuText] = useState("UNKNOWN EMOTIONAL PROCESSOR");
   const [memText, setMemText] = useState("DEGRADED BUT FUNCTIONING");
@@ -116,7 +116,7 @@ export default function LoadingScreen() {
         {/* Boot text */}
         <div className="font-mono text-xs text-retro-surface/60 mb-8 space-y-1">
           <p>IM_OS v2.5.0</p>
-          <p suppressHydrationWarning>BIOS DATE: {timeStr} VER 2.5</p>
+          <p suppressHydrationWarning>BIOS DATE: {timeStr || "SYNCING CLOCK..."} VER 2.5</p>
           <p suppressHydrationWarning>CPU: {cpuText}</p>
           <p suppressHydrationWarning>MEMORY: {memText}</p>
           <p className="pt-2 text-retro-surface/40 whitespace-nowrap" suppressHydrationWarning>&gt; {randomMsg}</p>
