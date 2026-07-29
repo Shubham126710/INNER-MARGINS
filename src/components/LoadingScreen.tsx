@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export default function LoadingScreen() {
-  const [timeStr, setTimeStr] = useState("");
+  const [timeStr, setTimeStr] = useState(() => new Date().toLocaleString('en-US', { hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
   const [randomMsg, setRandomMsg] = useState("CHECKING EMOTIONAL SECTORS...");
   const [cpuText, setCpuText] = useState("UNKNOWN EMOTIONAL PROCESSOR");
   const [memText, setMemText] = useState("DEGRADED BUT FUNCTIONING");
@@ -14,10 +14,10 @@ export default function LoadingScreen() {
       const now = new Date();
       setTimeStr(now.toLocaleString('en-US', { hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     };
-    
+
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    
+
     const SYS_MESSAGES = [
       "CHECKING EMOTIONAL SECTORS...",
       "DEFRAGMENTING GHOSTS...",
@@ -55,7 +55,8 @@ export default function LoadingScreen() {
       {/* Ambient Flicker */}
       <div className="pointer-events-none absolute inset-0 z-20 bg-retro-bg/5 animate-flicker mix-blend-color-dodge"></div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @keyframes fillSegments {
           0% { width: 0%; }
           10% { width: 15%; }
@@ -112,11 +113,11 @@ export default function LoadingScreen() {
       `}} />
 
       <div className="w-full max-w-lg space-y-6 text-left flex flex-col glitch-container relative z-30">
-        
+
         {/* Boot text */}
         <div className="font-mono text-xs text-retro-surface/60 mb-8 space-y-1">
           <p>IM_OS v2.5.0</p>
-          <p suppressHydrationWarning>BIOS DATE: {timeStr || "SYNCING CLOCK..."} VER 2.5</p>
+          <p suppressHydrationWarning>BIOS DATE: {timeStr} VER 2.5</p>
           <p suppressHydrationWarning>CPU: {cpuText}</p>
           <p suppressHydrationWarning>MEMORY: {memText}</p>
           <p className="pt-2 text-retro-surface/40 whitespace-nowrap" suppressHydrationWarning>&gt; {randomMsg}</p>
@@ -125,12 +126,12 @@ export default function LoadingScreen() {
         <div className="font-heading text-2xl sm:text-3xl text-retro-surface uppercase tracking-widest relative">
           SYSTEM_BOOT<span className="animate-cursor ml-1">█</span>
         </div>
-        
+
         {/* Segmented Retro Progress Bar */}
         <div className="w-full h-8 border-2 border-retro-surface/40 p-1 bg-retro-text shadow-[0_0_15px_rgba(247,218,214,0.1)]">
           <div className="h-full segmented-fill animate-segments w-0" />
         </div>
-        
+
         {/* Loading status texts */}
         <div className="font-mono text-[10px] sm:text-xs text-retro-surface/80 uppercase tracking-widest">
           <span className="opacity-50 mr-2">[LOG]</span><span className="loading-step"></span>
