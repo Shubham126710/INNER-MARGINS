@@ -40,11 +40,11 @@ export default function RootLayout({
         
         <svg className="absolute w-0 h-0 pointer-events-none" style={{ position: 'absolute', pointerEvents: 'none' }}>
           <defs>
-            <filter id="pixelate" x="-10%" y="-10%" width="120%" height="120%">
-              <feFlood x="2" y="2" height="2" width="2" />
-              <feComposite width="4" height="4" />
-              <feTile result="a" />
-              <feComposite in="SourceGraphic" in2="a" operator="in" />
+            <filter id="pixelate" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" x="-10%" y="-10%" width="120%" height="120%">
+              <feFlood x="0" y="0" width="2" height="2" floodColor="white" result="dot" />
+              <feOffset in="dot" dx="2" dy="2" width="4" height="4" result="tile" />
+              <feTile in="tile" result="tiled" />
+              <feComposite in="SourceGraphic" in2="tiled" operator="in" />
               <feMorphology operator="dilate" radius="2" />
             </filter>
           </defs>
