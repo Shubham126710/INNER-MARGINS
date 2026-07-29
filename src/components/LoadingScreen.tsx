@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export default function LoadingScreen() {
-  const [timeStr, setTimeStr] = useState(() => new Date().toLocaleString('en-US', { hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  const [timeStr, setTimeStr] = useState(() => new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
   const [randomMsg, setRandomMsg] = useState("CHECKING EMOTIONAL SECTORS...");
   const [cpuText, setCpuText] = useState("UNKNOWN EMOTIONAL PROCESSOR");
   const [memText, setMemText] = useState("DEGRADED BUT FUNCTIONING");
@@ -12,7 +12,7 @@ export default function LoadingScreen() {
     // Current date and time
     const updateTime = () => {
       const now = new Date();
-      setTimeStr(now.toLocaleString('en-US', { hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      setTimeStr(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     };
 
     updateTime();
