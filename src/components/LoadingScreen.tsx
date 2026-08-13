@@ -69,24 +69,23 @@ export default function LoadingScreen() {
         </div>
 
         <div className="w-full border-t border-b border-paper/30 py-6 mb-12 flex flex-col items-center gap-2 font-sans text-[10px] uppercase tracking-widest text-paper">
-          <p>{dateStr}</p>
+          <p suppressHydrationWarning>{dateStr}</p>
           <p>VOL. III · EDITION 08</p>
           <p className="text-surface">CHANDIGARH / INDIA</p>
         </div>
 
         <div className="w-full max-w-sm flex flex-col items-center">
-          <p className="font-sans text-[10px] uppercase tracking-widest text-paper mb-4">
+          <p className="font-sans text-[10px] uppercase tracking-widest text-paper mb-4" suppressHydrationWarning>
             {status}
           </p>
           
           <div className="w-full h-[2px] bg-paper/20 mb-4 relative overflow-hidden">
             <div 
-              className="absolute top-0 left-0 h-full bg-surface transition-all duration-75 ease-linear"
-              style={{ width: `${progress}%` }}
+              className="absolute top-0 left-0 h-full bg-surface animate-[loadingBar_2s_linear_forwards]"
             ></div>
           </div>
           
-          <p className="font-sans text-[10px] uppercase tracking-widest text-surface">
+          <p className="font-sans text-[10px] uppercase tracking-widest text-surface" suppressHydrationWarning>
             {progress}%
           </p>
         </div>
