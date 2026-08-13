@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { BlogPost } from '@/lib/types';
 import PostCard from './PostCard';
+import { Marginalia } from './Editorial';
 
 interface JournalSectionProps {
   posts: BlogPost[];
@@ -34,27 +35,24 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         
         {/* Header */}
-        <div className="mb-16 border-b border-ink/10 pb-12 text-center md:text-left">
-          <h1 className="text-5xl md:text-7xl font-display tracking-tight text-ink mb-4">
-            Archive
+        <div className="mb-16 border-b border-ink/20 pb-12">
+          <h1 className="text-6xl md:text-8xl font-display tracking-tight text-ink leading-none mb-6">
+            Index
           </h1>
-          <p className="text-lg font-sans text-muted max-w-xl">
+          <p className="text-xl font-sans text-muted max-w-xl">
             {posts.length} pieces of evidence that I was here.
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-32">
           
           {/* Sidebar / Filters */}
-          <aside className="lg:w-48 shrink-0">
-            <div className="sticky top-28">
-              <h2 className="text-xs font-sans font-medium uppercase tracking-widest text-ink mb-6 border-b border-ink/10 pb-2">
-                Filter by Tag
-              </h2>
-              <div className="flex flex-col gap-3">
+          <div className="lg:w-48 shrink-0">
+            <div className="sticky top-28 space-y-12">
+              <Marginalia title="Filter By">
                 <Link
                   href="/journals"
-                  className={`text-xs font-sans tracking-wide transition-colors ${
+                  className={`text-xs uppercase tracking-widest transition-colors ${
                     !activeTag ? 'text-ink font-medium' : 'text-muted hover:text-ink'
                   }`}
                 >
@@ -64,36 +62,33 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
                   <Link
                     key={t}
                     href={`/journals?tag=${t}`}
-                    className={`text-xs font-sans tracking-wide transition-colors ${
+                    className={`text-xs uppercase tracking-widest transition-colors ${
                       activeTag === t ? 'text-ink font-medium' : 'text-muted hover:text-ink'
                     }`}
                   >
                     {t}
                   </Link>
                 ))}
-              </div>
+              </Marginalia>
 
-              <div className="mt-12">
-                <h2 className="text-xs font-sans font-medium uppercase tracking-widest text-ink mb-6 border-b border-ink/10 pb-2">
-                  Sort
-                </h2>
+              <Marginalia title="Sort Options">
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value as SortOption)}
-                  className="bg-transparent font-sans text-xs text-muted hover:text-ink outline-none cursor-pointer w-full transition-colors"
+                  className="bg-transparent font-sans text-xs uppercase tracking-widest text-muted hover:text-ink outline-none cursor-pointer w-full transition-colors border-b border-ink/10 pb-1"
                 >
                   <option value="newest">Latest First</option>
                   <option value="oldest">Earliest First</option>
                   <option value="alphabetical">Alpha [A-Z]</option>
                 </select>
-              </div>
+              </Marginalia>
             </div>
-          </aside>
+          </div>
 
           {/* Main Content */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 border-t-2 border-ink pt-2">
             {sortedPosts.length === 0 ? (
-              <div className="py-24 text-center border border-ink/10 bg-ink/5">
+              <div className="py-24 text-center border-b border-ink/20">
                 <p className="text-muted font-sans text-lg">
                   No entries found for this tag.
                 </p>
@@ -101,7 +96,7 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
             ) : (
               <div className="flex flex-col">
                 {sortedPosts.map((post, index) => (
-                  <PostCard key={post.id} post={post} index={index} variant="compact" />
+                  <PostCard key={post.id} post={post} index={index} variant="archive-index" />
                 ))}
               </div>
             )}

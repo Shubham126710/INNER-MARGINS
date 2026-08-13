@@ -1,5 +1,6 @@
 import { getAnalysisStats } from '@/actions/analysis.actions';
 import { StatCard, ContributionGraph, PatternChart, ReminderSetup } from '@/components';
+import { Marginalia, FrontMatter } from '@/components/Editorial';
 
 export const metadata = {
   title: 'Analysis | Inner Margins',
@@ -14,13 +15,15 @@ export default async function AnalysisPage() {
 
   return (
     <div className="min-h-screen bg-paper font-sans text-ink">
+      
       {/* Hero Section */}
-      <section className="pt-24 pb-16 border-b border-ink/10">
+      <section className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center md:text-left">
-          <h1 className="text-5xl md:text-7xl font-display tracking-tight leading-none mb-6">
+          <FrontMatter items={['RETROSPECTIVE', '2026']} className="mb-8" />
+          <h1 className="text-6xl md:text-8xl font-display tracking-tight leading-none mb-8 border-b border-ink/20 pb-8">
             The Year So Far
           </h1>
-          <p className="text-lg font-sans text-muted max-w-2xl">
+          <p className="text-xl font-sans text-ink/80 max-w-2xl">
             An overview of writing frequency, recurring themes, and emotional patterns across the archive.
           </p>
         </div>
@@ -28,85 +31,71 @@ export default async function AnalysisPage() {
 
       <main className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
         
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 mb-24">
-          <StatCard 
-            label="Current Streak" 
-            value={stats.currentStreak} 
-            suffix={stats.currentStreak === 1 ? 'Entry' : 'Entries'}
-            highlight={stats.currentStreak > 0}
-          />
-          <StatCard 
-            label="Longest Streak" 
-            value={stats.longestStreak} 
-            suffix={stats.longestStreak === 1 ? 'Entry' : 'Entries'}
-          />
-          <StatCard 
-            label="Total Entries" 
-            value={stats.totalEntries} 
-            suffix=""
-          />
-           <StatCard 
-            label="Entries This Year" 
-            value={stats.thisYear} 
-            suffix=""
-          />
+        {/* Key Metrics - Editorial Style */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-32 border-t-2 border-ink pt-8">
+          <div>
+            <h3 className="text-[10px] font-sans uppercase tracking-widest text-muted mb-4 border-b border-ink/10 pb-2">Current Streak</h3>
+            <p className="text-5xl lg:text-7xl font-display tracking-tight text-ink">{stats.currentStreak}</p>
+          </div>
+          <div>
+            <h3 className="text-[10px] font-sans uppercase tracking-widest text-muted mb-4 border-b border-ink/10 pb-2">Longest Streak</h3>
+            <p className="text-5xl lg:text-7xl font-display tracking-tight text-ink">{stats.longestStreak}</p>
+          </div>
+          <div>
+            <h3 className="text-[10px] font-sans uppercase tracking-widest text-muted mb-4 border-b border-ink/10 pb-2">Entries This Year</h3>
+            <p className="text-5xl lg:text-7xl font-display tracking-tight text-ink">{stats.thisYear}</p>
+          </div>
+          <div>
+            <h3 className="text-[10px] font-sans uppercase tracking-widest text-muted mb-4 border-b border-ink/10 pb-2">Total Entries</h3>
+            <p className="text-5xl lg:text-7xl font-display tracking-tight text-ink">{stats.totalEntries}</p>
+          </div>
         </div>
 
         {/* Contribution Graph */}
-        <div className="mb-24">
-            <div className="flex items-end justify-between border-b border-ink/10 pb-4 mb-8">
-                <h2 className="text-2xl font-display tracking-tight text-ink">
+        <div className="mb-32">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b-2 border-ink pb-4 mb-8 gap-4">
+                <h2 className="text-4xl font-display tracking-tight text-ink">
                     Writing Frequency
                 </h2>
-                <span className="text-xs font-mono uppercase tracking-widest text-muted hidden sm:inline-block">
+                <span className="text-[10px] font-sans uppercase tracking-widest text-muted">
                     Past 365 Days
                 </span>
             </div>
-            <div className="bg-ink/5 p-8">
+            <div className="py-8">
                 <ContributionGraph data={stats.dailyActivity} />
             </div>
         </div>
 
         {/* Breakdown Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32 mb-32">
             
             {/* Recent Activity */}
-            <div>
-                <h2 className="text-2xl font-display tracking-tight text-ink border-b border-ink/10 pb-4 mb-8">
+            <div className="lg:col-span-5">
+                <h2 className="text-4xl font-display tracking-tight text-ink border-b-2 border-ink pb-4 mb-12">
                     Recent Activity
                 </h2>
-                <div className="space-y-6">
-                    <div className="flex justify-between items-center group">
-                        <span className="font-mono text-xs text-muted uppercase tracking-widest">This Week</span>
-                        <div className="flex items-center gap-4 flex-1 mx-4">
-                            <div className="h-[1px] flex-1 bg-ink/10 border-dashed border-t"></div>
-                        </div>
-                        <span className="font-display text-2xl text-ink">{stats.thisWeek}</span>
+                <div className="flex flex-col">
+                    <div className="flex justify-between items-center py-6 border-b border-ink/10">
+                        <span className="font-sans text-xs uppercase tracking-widest text-muted">This Week</span>
+                        <span className="font-display text-4xl text-ink">{stats.thisWeek}</span>
                     </div>
-                    <div className="flex justify-between items-center group">
-                        <span className="font-mono text-xs text-muted uppercase tracking-widest">This Month</span>
-                        <div className="flex items-center gap-4 flex-1 mx-4">
-                            <div className="h-[1px] flex-1 bg-ink/10 border-dashed border-t"></div>
-                        </div>
-                        <span className="font-display text-2xl text-ink">{stats.thisMonth}</span>
+                    <div className="flex justify-between items-center py-6 border-b border-ink/10">
+                        <span className="font-sans text-xs uppercase tracking-widest text-muted">This Month</span>
+                        <span className="font-display text-4xl text-ink">{stats.thisMonth}</span>
                     </div>
-                    <div className="flex justify-between items-center group">
-                        <span className="font-mono text-xs text-muted uppercase tracking-widest">This Year</span>
-                        <div className="flex items-center gap-4 flex-1 mx-4">
-                             <div className="h-[1px] flex-1 bg-ink/10 border-dashed border-t"></div>
-                        </div>
-                        <span className="font-display text-2xl text-ink">{stats.thisYear}</span>
+                    <div className="flex justify-between items-center py-6 border-b border-ink/10">
+                        <span className="font-sans text-xs uppercase tracking-widest text-muted">This Year</span>
+                        <span className="font-display text-4xl text-ink">{stats.thisYear}</span>
                     </div>
                 </div>
             </div>
 
             {/* Distribution */}
-            <div>
-              <h2 className="text-2xl font-display tracking-tight text-ink border-b border-ink/10 pb-4 mb-8">
+            <div className="lg:col-span-7">
+              <h2 className="text-4xl font-display tracking-tight text-ink border-b-2 border-ink pb-4 mb-12">
                   Patterns
               </h2>
-              <div className="bg-ink/5 p-8">
+              <div className="py-8">
                   <PatternChart 
                       weeklyPattern={stats.weeklyPattern} 
                       monthlyPattern={stats.monthlyPattern} 
@@ -116,7 +105,7 @@ export default async function AnalysisPage() {
         </div>
 
         {/* Streak Settings */}
-        <div className="border-t border-ink/10 pt-16">
+        <div className="border-t-2 border-ink pt-16">
           <ReminderSetup />
         </div>
       </main>

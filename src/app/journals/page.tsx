@@ -28,12 +28,12 @@ export default async function JournalsPage({
       <JournalSection posts={filteredPosts} allTags={allTags} activeTag={tag} />
       
       {/* Editorial CTA */}
-      <section className="py-24 border-t border-ink/10 bg-ink/5 mt-12">
+      <section className="py-24 border-t border-ink/20 bg-transparent mt-12">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="font-display text-3xl md:text-4xl text-ink leading-tight mb-8">
-            "We write to taste life twice, in the moment and in retrospect."
+          <p className="font-display text-3xl md:text-5xl text-ink leading-[1.1] mb-12">
+            “We write to taste life twice, in the moment and in retrospect.”
           </p>
-          <Link href="/write" className="btn-secondary">
+          <Link href="/write" className="font-sans text-xs uppercase tracking-widest border border-ink px-8 py-4 hover:bg-ink hover:text-paper transition-colors inline-block">
             Write an Entry
           </Link>
         </div>

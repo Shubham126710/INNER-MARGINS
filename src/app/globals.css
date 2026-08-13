@@ -55,6 +55,16 @@
   .clean-textarea {
     @apply w-full border border-ink/20 bg-transparent p-4 font-sans text-base text-ink placeholder:text-muted focus:border-ink focus:outline-none transition-colors min-h-[200px] resize-y;
   }
+
+  .drop-cap::first-letter {
+    @apply float-left text-5xl md:text-6xl font-display leading-[0.8] pr-2 pt-2 text-ink;
+  }
+}
+
+@layer utilities {
+  .writing-vertical-rl {
+    writing-mode: vertical-rl;
+  }
 }
 
 ::-webkit-scrollbar {

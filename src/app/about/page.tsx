@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { TagInput, RichTextEditor, ImageUpload, LoadingScreen, PinLock } from '@/components';
+import { Marginalia, FrontMatter } from '@/components/Editorial';
 import { getAboutContent, saveAboutContent } from '@/actions/about.actions';
 import { AboutContent } from '@/lib/types';
 
@@ -85,12 +86,13 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-paper font-sans text-ink">
-      <main className="max-w-4xl mx-auto px-6 lg:px-12 py-24">
+      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-24">
         
-        <div className="flex items-center justify-end mb-12">
+        <div className="flex items-center justify-between mb-16 border-b border-ink/20 pb-4">
+            <FrontMatter items={['ABOUT THE ARCHIVE', 'PROFILES']} />
             <button
               onClick={() => isEditing ? handleSave() : handleAuth()}
-              className="text-xs font-sans font-medium uppercase tracking-widest text-muted hover:text-ink transition-colors"
+              className="text-[10px] font-sans uppercase tracking-widest text-muted hover:text-ink transition-colors"
               disabled={isSaving}
             >
               {isSaving ? 'Saving...' : isEditing ? 'Save Changes' : 'Edit Profile'}
@@ -101,11 +103,11 @@ export default function AboutPage() {
             
             {isEditing ? (
             /* Edit Mode */
-            <div className="space-y-12 bg-white border border-ink/10 p-8 lg:p-12 shadow-sm">
+            <div className="space-y-12 bg-white border border-ink/10 p-8 lg:p-12 shadow-sm max-w-4xl mx-auto">
               <h2 className="text-2xl font-display text-ink mb-8 border-b border-ink/10 pb-4">Edit Profile</h2>
 
               <div className="group">
-                <label className="block text-xs font-sans uppercase tracking-widest text-muted mb-2">Portrait</label>
+                <label className="block text-[10px] font-sans uppercase tracking-widest text-muted mb-2">Portrait</label>
                 <div className="max-w-[240px] border border-ink/20 bg-ink/5 p-1">
                   <ImageUpload
                     image={about.profileImage || ''}
@@ -115,7 +117,7 @@ export default function AboutPage() {
               </div>
 
               <div className="group">
-                <label className="block text-xs font-sans uppercase tracking-widest text-muted mb-2">Heading</label>
+                <label className="block text-[10px] font-sans uppercase tracking-widest text-muted mb-2">Heading</label>
                 <input
                   type="text"
                   value={about.title}
@@ -126,7 +128,7 @@ export default function AboutPage() {
               </div>
 
               <div className="group">
-                <label className="block text-xs font-sans uppercase tracking-widest text-muted mb-2">Subheading</label>
+                <label className="block text-[10px] font-sans uppercase tracking-widest text-muted mb-2">Subheading</label>
                 <input
                   type="text"
                   value={about.subtitle}
@@ -137,7 +139,7 @@ export default function AboutPage() {
               </div>
 
               <div className="group">
-                <label className="block text-xs font-sans uppercase tracking-widest text-muted mb-2">Content</label>
+                <label className="block text-[10px] font-sans uppercase tracking-widest text-muted mb-2">Content</label>
                 <div className="border border-ink/20 focus-within:border-ink/50 transition-colors">
                   <RichTextEditor
                     content={about.content}
@@ -148,7 +150,7 @@ export default function AboutPage() {
               </div>
 
               <div className="group">
-                <label className="block text-xs font-sans uppercase tracking-widest text-muted mb-2">Interests & Tags</label>
+                <label className="block text-[10px] font-sans uppercase tracking-widest text-muted mb-2">Interests & Tags</label>
                 <div className="bg-transparent border border-ink/20 focus-within:border-ink/50 transition-colors p-2">
                   <TagInput
                     tags={about.hobbies}
@@ -161,7 +163,7 @@ export default function AboutPage() {
                 /* View Mode */
                 <div className="relative">
                 {isEmpty ? (
-                    <div className="text-center py-24 border border-ink/10 bg-ink/5">
+                    <div className="text-center py-24 border border-ink/10 bg-ink/5 max-w-4xl mx-auto">
                         <p className="text-muted font-sans text-lg mb-8 max-w-md mx-auto">
                             No profile information has been provided yet.
                         </p>
@@ -173,57 +175,52 @@ export default function AboutPage() {
                         </button>
                     </div>
                 ) : (
-                    <div>
-                        {/* Profile Header */}
-                        <div className="flex flex-col md:flex-row gap-12 items-start mb-16">
-                            {about.profileImage && (
-                            <div className="relative w-48 h-64 md:w-64 md:h-80 flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-700">
-                                <Image
-                                src={about.profileImage}
-                                alt="Profile"
-                                fill
-                                className="object-cover"
-                                />
-                            </div>
-                            )}
-                            
-                            <div className="flex-1 pt-4">
-                                <h1 className="text-5xl lg:text-7xl font-display tracking-tight text-ink mb-6 leading-none">
-                                    {about.title}
-                                </h1>
-                                {about.subtitle && (
-                                    <p className="text-xl font-sans text-muted italic">
-                                        {about.subtitle}
-                                    </p>
-                                )}
-                            </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32">
+                        {/* Marginalia Sidebar */}
+                        <div className="lg:col-span-3">
+                           <div className="sticky top-28 space-y-12">
+                              {about.profileImage && (
+                                <div className="relative aspect-[3/4] w-full bg-ink/5 grayscale hover:grayscale-0 transition-all duration-700">
+                                    <Image
+                                      src={about.profileImage}
+                                      alt="Profile"
+                                      fill
+                                      className="object-cover mix-blend-multiply"
+                                    />
+                                </div>
+                              )}
+                              
+                              <Marginalia title="Index">
+                                 {about.hobbies.length > 0 ? (
+                                    <ul className="space-y-2">
+                                      {about.hobbies.map((hobby) => (
+                                        <li key={hobby} className="text-sm font-sans text-ink">
+                                           {hobby}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                 ) : (
+                                   <p className="text-sm text-muted">No index data available.</p>
+                                 )}
+                              </Marginalia>
+                           </div>
                         </div>
 
-                        {/* Content */}
-                        <div className="lg:pl-76">
+                        {/* Main Content */}
+                        <div className="lg:col-span-9 max-w-3xl">
+                            <h1 className="text-5xl lg:text-8xl font-display tracking-tight text-ink mb-6 leading-[0.9]">
+                                {about.title}
+                            </h1>
+                            {about.subtitle && (
+                                <p className="text-xl lg:text-2xl font-sans text-ink/80 mb-16 max-w-2xl">
+                                    {about.subtitle}
+                                </p>
+                            )}
+
                             <div 
                                 className="prose-editor"
                                 dangerouslySetInnerHTML={{ __html: about.content }}
                             />
-
-                            {/* Hobbies / Specs */}
-                            {about.hobbies.length > 0 && (
-                                <div className="pt-12 mt-12 border-t border-ink/10">
-                                    <h3 className="text-xs font-sans font-medium uppercase tracking-widest text-muted mb-6">
-                                        Interests
-                                    </h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {about.hobbies.map((hobby) => (
-                                        <span 
-                                            key={hobby}
-                                            className="px-3 py-1.5 text-xs font-sans tracking-wide text-ink bg-ink/5 border border-ink/10"
-                                        >
-                                            {hobby}
-                                        </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 )}
