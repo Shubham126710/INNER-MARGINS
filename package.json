@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "electron:dev": "NODE_ENV=development electron .",
+    "electron:build": "tsc -p electron/tsconfig.json && npm run build && node scripts/build-electron.js",
+    "make": "npm run electron:build && electron-forge make"
   },
   "dependencies": {
     "@prisma/client": "6.19.2",
@@ -18,13 +21,18 @@
     "web-push": "^3.6.7"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-dmg": "^7.11.2",
+    "@electron-forge/maker-zip": "^7.11.2",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/wait-on": "^5.3.4",
     "@types/web-push": "^3.6.4",
     "clsx": "^2.1.1",
+    "electron": "^43.4.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "framer-motion": "^12.40.0",
@@ -32,5 +40,6 @@
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "main": ".electron-build/main.js"
 }
