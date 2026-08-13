@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Newsreader, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Header, Footer } from "@/components";
+import { PublicationHeader, Footer } from "@/components";
 
 const newsreader = Newsreader({
   weight: ["400", "500", "600"],
@@ -41,7 +41,7 @@ export default function RootLayout({
       <body
         className={`${newsreader.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col font-sans bg-paper text-ink selection:bg-ink selection:text-paper relative`}
       >
-        <Header />
+        <PublicationHeader />
         <main className="flex-1">
           {children}
         </main>

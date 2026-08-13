@@ -10,14 +10,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: '#F4F1EA',
-        ink: '#111111',
-        muted: '#77736C',
+        paper: '#E6DFF1',
+        surface: '#F1ECF8',
+        'content-surface': '#FAF8FC',
+        ink: '#4E426B',
+        muted: '#756A8F',
         accent: {
-          burgundy: '#6B1F1F',
-          orange: '#C95B30',
-          blue: '#1D3557',
-          green: '#8A9A5B'
+          DEFAULT: '#7A6C9D',
+          plum: '#4E426B',
+          secondary: '#8B86A8',
+          blue: '#1D3557'
         }
       },
       fontFamily: {
@@ -30,20 +32,20 @@ export default {
       typography: {
         DEFAULT: {
           css: {
-            '--tw-prose-body': '#111111',
-            '--tw-prose-headings': '#111111',
-            '--tw-prose-lead': '#111111',
-            '--tw-prose-links': '#6B1F1F',
-            '--tw-prose-bold': '#111111',
-            '--tw-prose-counters': '#77736C',
-            '--tw-prose-bullets': '#77736C',
-            '--tw-prose-hr': '#77736C',
-            '--tw-prose-quotes': '#111111',
-            '--tw-prose-quote-borders': '#6B1F1F',
-            '--tw-prose-captions': '#77736C',
-            '--tw-prose-code': '#111111',
-            '--tw-prose-pre-code': '#F4F1EA',
-            '--tw-prose-pre-bg': '#111111',
+            '--tw-prose-body': '#4E426B',
+            '--tw-prose-headings': '#4E426B',
+            '--tw-prose-lead': '#4E426B',
+            '--tw-prose-links': '#7A6C9D',
+            '--tw-prose-bold': '#4E426B',
+            '--tw-prose-counters': '#756A8F',
+            '--tw-prose-bullets': '#756A8F',
+            '--tw-prose-hr': '#756A8F',
+            '--tw-prose-quotes': '#4E426B',
+            '--tw-prose-quote-borders': '#7A6C9D',
+            '--tw-prose-captions': '#756A8F',
+            '--tw-prose-code': '#4E426B',
+            '--tw-prose-pre-code': '#E6DFF1',
+            '--tw-prose-pre-bg': '#4E426B',
             fontFamily: 'var(--font-body)',
             maxWidth: '65ch',
             color: 'var(--tw-prose-body)',

@@ -91,38 +91,59 @@ export default function PostPage({ params }: PostPageProps) {
 
   const processedContent = processContent(post.content);
 
-  return (
-    <article className="min-h-screen bg-paper font-sans text-ink pb-24 relative overflow-hidden">
-      
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-12">
-        <div className="flex items-center justify-between mb-16">
+    const stripHtml = (html: string) => {
+      if (!html) return '';
+      return html.replace(/<[^>]*>?/gm, '');
+    };
+
+    const cleanExcerpt = stripHtml(post.excerpt || '');
+
+    return (
+      <article className="min-h-screen bg-paper font-sans text-ink pb-32 relative overflow-hidden">
+        
+        {/* Article Header */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-12">
           <Link 
             href="/journals" 
-            className="text-[10px] font-sans font-medium uppercase tracking-widest text-muted hover:text-ink transition-colors flex items-center gap-2"
+            className="text-[10px] font-sans uppercase tracking-[0.2em] text-muted hover:text-ink transition-colors flex items-center gap-2 mb-16 inline-flex"
           >
             <span>←</span> BACK TO ARCHIVE
           </Link>
-          <FrontMatter items={[formattedDate, ...post.tags.slice(0, 1)]} />
+          
+          <header className="mb-12 grid grid-cols-1 lg:grid-cols-12 gap-x-16 gap-y-6 lg:gap-y-0 items-start">
+             {/* Title */}
+             <div className="lg:col-span-9 lg:col-start-1 lg:row-start-1 flex flex-col">
+                <h1 className="font-display tracking-tight text-ink leading-[0.9] lg:mb-6 uppercase break-words" style={{ fontSize: 'clamp(3rem, 10vw, 8rem)' }}>
+                  {post.title}
+                </h1>
+             </div>
+             
+             {/* Metadata */}
+             <div className="lg:col-span-3 lg:col-start-10 lg:row-start-1 lg:row-span-2 flex flex-col border-t border-b py-4 lg:py-0 lg:border-t-0 lg:border-b-0 lg:border-l lg:pl-6 border-ink/10 relative h-full">
+               <div className="hidden lg:block absolute -left-[1px] top-0 w-[2px] h-12 bg-accent opacity-70"></div>
+               <div className="flex flex-row lg:flex-col gap-4 lg:gap-2 font-sans text-[10px] uppercase tracking-[0.2em] text-muted flex-wrap">
+                 <span className="text-ink">{formattedDate}</span>
+                 {post.tags.length > 0 && <span>{post.tags[0]}</span>}
+                 <span>{post.readTime}</span>
+                 <div className="w-[40px] h-[1px] bg-ink/10 my-4 hidden lg:block"></div>
+                 <span className="text-accent/70 hidden lg:block">ENTRY {post.id.slice(-4).toUpperCase()}</span>
+               </div>
+             </div>
+
+             {/* Excerpt */}
+             <div className="lg:col-span-9 lg:col-start-1 lg:row-start-2 flex flex-col mt-4 lg:mt-0">
+                {cleanExcerpt && (
+                  <p className="font-sans text-ink/80 leading-relaxed max-w-3xl" style={{ fontSize: 'clamp(1.1rem, 2vw, 2rem)' }}>
+                    {cleanExcerpt}
+                  </p>
+                )}
+                <div className="w-full h-[1px] bg-ink/10 mt-8 lg:mt-12 hidden lg:block"></div>
+             </div>
+          </header>
         </div>
-        
-        <header className="mb-12 max-w-4xl">
-          <h1 className="text-5xl md:text-7xl lg:text-[6rem] font-display tracking-tight text-ink leading-[1] mb-8">
-            {post.title}
-          </h1>
-
-          <div className="w-full h-[1px] bg-ink/20 my-12"></div>
-
-          {post.excerpt && (
-            <p className="text-xl md:text-2xl font-sans text-ink/80 leading-relaxed max-w-3xl">
-              {post.excerpt}
-            </p>
-          )}
-        </header>
-      </div>
 
       {post.coverImage && (
-        <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 mb-16">
+        <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 mb-24">
           <div className="relative aspect-[21/9] bg-ink/5 overflow-hidden">
             <Image
               src={post.coverImage}
@@ -135,68 +156,75 @@ export default function PostPage({ params }: PostPageProps) {
         </div>
       )}
 
+      {/* Grid Layout for Content & Marginalia */}
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-20">
-        <div className="lg:grid lg:grid-cols-12 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
           
           {/* Sidebar Marginalia */}
-          <div className="lg:col-span-3 hidden lg:block">
-            <div className="sticky top-28 space-y-12">
-              <Marginalia title="About this entry">
-                <p>PUBLISHED<br/><span className="text-ink">{formattedDate}</span></p>
-                <p>READ TIME<br/><span className="text-ink">{post.readTime}</span></p>
-                <div className="pt-4 border-t border-ink/10 relative">
-                   <button
-                    onClick={() => setShowActions(!showActions)}
-                    className="text-xs uppercase tracking-widest text-muted hover:text-ink transition-colors"
-                  >
-                    Options
-                  </button>
-                  {showActions && (
-                    <div className="absolute left-0 mt-2 w-48 bg-paper border border-ink/10 shadow-sm z-30 flex flex-col p-1">
-                      <Link href={`/write?edit=${post.id}`} className="px-4 py-2 text-xs text-ink hover:bg-ink/5 transition-colors">
-                        Edit Entry
-                      </Link>
-                      <button onClick={handleDelete} className="px-4 py-2 text-xs text-red-600 hover:bg-ink/5 text-left transition-colors">
-                        Delete Entry
-                      </button>
-                    </div>
-                  )}
+          <div className="lg:col-span-3 order-last lg:order-first">
+            <div className="sticky top-28 space-y-12 border-t-2 border-ink lg:border-t-0 pt-8 lg:pt-0">
+              <Marginalia title="ABOUT THIS ENTRY">
+                <div className="space-y-6">
+                  <div>
+                    <span className="block text-[10px] text-muted mb-1 font-sans uppercase tracking-[0.2em]">CONTEXT</span>
+                    <span className="text-sm font-sans text-ink">A private record from the Inner Margins archive.</span>
+                  </div>
+                  
+                  <div className="pt-8 border-t border-ink/20">
+                    <button
+                      onClick={() => setShowActions(!showActions)}
+                      className="text-[10px] uppercase tracking-widest text-muted hover:text-ink transition-colors"
+                    >
+                      OPTIONS ▾
+                    </button>
+                    {showActions && (
+                      <div className="mt-4 flex flex-col gap-2">
+                        <Link href={`/write?edit=${post.id}`} className="text-xs font-sans text-ink hover:text-accent transition-colors">
+                          Edit Entry
+                        </Link>
+                        <button onClick={handleDelete} className="text-xs font-sans text-red-700 hover:text-red-900 text-left transition-colors">
+                          Delete Entry
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Marginalia>
             </div>
           </div>
           
           {/* Main Content */}
-          <div className="lg:col-span-9 max-w-3xl">
+          <div className="lg:col-span-9 max-w-[750px] w-full">
              <div 
-                className="prose-editor mb-24"
+                className="prose-editor mb-32"
                 dangerouslySetInnerHTML={{ __html: processedContent }}
              />
              
              {/* Article Footer */}
-             <footer className="border-t border-ink/20 pt-12">
-                <div className="font-display text-4xl mb-8">End of entry.</div>
+             <footer className="border-t-2 border-ink pt-16">
+                <div className="font-display text-5xl mb-12 uppercase tracking-tight text-ink">END OF ENTRY</div>
                 
                 {relatedPosts.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                    {relatedPosts.map(rp => (
-                      <Link key={rp.id} href={`/posts/${rp.slug}`} className="group block border-t border-ink/10 pt-4">
-                        <div className="text-[10px] font-sans uppercase tracking-widest text-muted mb-2">
-                          {new Date(rp.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </div>
-                        <h4 className="font-display text-2xl group-hover:text-ink/70 transition-colors">{rp.title}</h4>
-                      </Link>
-                    ))}
+                  <div className="mb-24">
+                    <div className="text-[10px] font-sans uppercase tracking-widest text-muted mb-8 border-b border-ink/20 pb-2">
+                      RELATED ENTRIES
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                      {relatedPosts.map(rp => (
+                        <Link key={rp.id} href={`/posts/${rp.slug}`} className="group block">
+                          <div className="text-[10px] font-sans uppercase tracking-widest text-muted mb-3">
+                            {new Date(rp.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </div>
+                          <h4 className="font-display text-3xl group-hover:text-accent transition-colors leading-[1.1]">{rp.title}</h4>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
-                
-                <Link href="/journals" className="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-widest text-ink hover:text-muted transition-colors">
-                  <span>←</span> Back to Archive
-                </Link>
              </footer>
 
              {/* Comment Section */}
-             <div className="mt-8">
+             <div className="mt-16 border-t border-ink/20 pt-16">
                  <CommentSection postId={post.id} />
              </div>
           </div>

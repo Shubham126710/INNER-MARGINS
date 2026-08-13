@@ -17,6 +17,13 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
     year: 'numeric'
   });
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>?/gm, '');
+  };
+
+  const cleanExcerpt = stripHtml(post.excerpt || '');
+
   if (variant === 'cover-feature' || variant === 'featured') {
     return (
       <article className="group relative border-y border-ink/20 py-12 mb-12 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
@@ -31,7 +38,7 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
               </h2>
               
               <p className={`text-lg lg:text-xl font-sans leading-relaxed text-muted line-clamp-4 mb-8 max-w-xl ${post.isLocked ? 'blur-sm' : ''}`}>
-                {post.excerpt}
+                {cleanExcerpt}
               </p>
               
               <div className="text-xs font-sans font-medium uppercase tracking-widest text-ink group-hover:text-ink/70 transition-colors flex items-center gap-2">
@@ -66,7 +73,7 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
             {post.title}
           </h2>
           <p className={`text-base font-sans text-muted line-clamp-3 mb-6 ${post.isLocked ? 'blur-sm' : ''}`}>
-            {post.excerpt}
+            {cleanExcerpt}
           </p>
         </Link>
       </article>
@@ -81,7 +88,7 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
             {post.title}
           </h3>
           <p className={`text-sm font-sans text-muted line-clamp-2 mb-4 flex-1 ${post.isLocked ? 'blur-sm' : ''}`}>
-            {post.excerpt}
+            {cleanExcerpt}
           </p>
           <FrontMatter items={[formattedDate]} className="mt-auto pt-4 border-t border-ink/10" />
         </Link>
@@ -92,23 +99,35 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
   if (variant === 'archive-index' || variant === 'compact') {
     return (
       <article 
-        className="group animate-fade-in py-6 border-b border-ink/20 last:border-0 relative"
+        className="group animate-fade-in py-6 border-b border-ink/20 last:border-0 relative transition-colors duration-300 hover:bg-surface/50"
         style={{ animationDelay: `${index * 30}ms`, animationFillMode: 'forwards' }}
       >
-        <Link href={`/posts/${post.slug}`} className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-8 no-underline">
-          <div className="flex items-center gap-4 text-xs font-sans font-medium uppercase tracking-widest text-muted shrink-0 md:w-32">
+        <div className="absolute left-0 top-0 bottom-0 w-0 bg-accent opacity-0 group-hover:opacity-100 group-hover:w-[3px] transition-all duration-300"></div>
+        <Link href={`/posts/${post.slug}`} className="flex flex-col md:flex-row md:items-start gap-4 md:gap-8 no-underline px-4 lg:px-6">
+          <div className="flex items-center gap-4 text-[10px] font-sans uppercase tracking-widest text-muted shrink-0 md:w-32 pt-2 group-hover:text-ink transition-colors">
             <time>{formattedDate}</time>
           </div>
           
-          <div className="flex-1 min-w-0">
-            <h3 className={`font-display text-2xl tracking-tight text-ink group-hover:text-ink/70 transition-colors ${post.isLocked ? 'blur-sm' : ''}`}>
-              {post.title}
-            </h3>
-            {post.excerpt && (
-              <p className={`text-sm font-sans text-muted mt-2 line-clamp-2 md:line-clamp-1 max-w-3xl ${post.isLocked ? 'blur-sm' : ''}`}>
-                {post.excerpt}
-              </p>
-            )}
+          <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-4 lg:col-span-3">
+               <h3 className={`font-display text-2xl tracking-tight text-ink group-hover:text-accent transition-colors ${post.isLocked ? 'blur-sm' : ''}`}>
+                 {post.title}
+               </h3>
+            </div>
+            <div className="md:col-span-8 lg:col-span-7">
+               {cleanExcerpt && (
+                 <p className={`text-sm font-sans text-muted line-clamp-2 max-w-2xl ${post.isLocked ? 'blur-sm' : ''}`}>
+                   {cleanExcerpt}
+                 </p>
+               )}
+            </div>
+            <div className="hidden lg:block lg:col-span-2 text-right">
+               {post.tags.slice(0, 2).map(tag => (
+                  <span key={tag} className="text-[10px] font-mono uppercase tracking-widest text-muted block mb-1">
+                     {tag}
+                  </span>
+               ))}
+            </div>
           </div>
         </Link>
       </article>
@@ -134,7 +153,7 @@ export default function PostCard({ post, index = 0, variant = 'editorial-medium'
           {post.title}
         </h2>
         <p className={`text-base font-sans text-muted line-clamp-3 ${post.isLocked ? 'blur-sm' : ''}`}>
-          {post.excerpt}
+          {cleanExcerpt}
         </p>
       </Link>
     </article>

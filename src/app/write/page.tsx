@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { savePost, getPostById } from '@/actions/post.actions';
 import { TagInput, ImageUpload, PinLock } from '@/components';
 import { LoadingScreen } from '@/components';
+import { FrontMatter } from '@/components/Editorial';
 
 // Dynamically import TipTap Editor to avoid SSR errors
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
@@ -82,42 +83,54 @@ function WriteForm() {
   };
 
   return (
-    <div className="min-h-screen bg-paper font-sans text-ink">
-      <div className="max-w-4xl mx-auto px-6 lg:px-12 py-16 lg:py-24 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
+    <div className="min-h-screen bg-surface font-sans text-ink">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 py-16 lg:py-24 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
         
-        <header className="mb-16 border-b border-ink/10 pb-8">
-          <h1 className="text-4xl lg:text-5xl font-display tracking-tight text-ink mb-4">
-            Editor's Desk
-          </h1>
-          <p className="font-sans text-sm text-muted">
-            {editId ? 'Editing existing entry.' : 'Drafting a new entry.'}
-          </p>
+        <header className="mb-16 border-b border-ink/20 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <div className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted mb-4 flex gap-4 items-center">
+               <span>INTERNAL</span>
+               <span className="text-accent/50">•</span>
+               <span>CMS</span>
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-display tracking-tight text-ink uppercase leading-none">
+              Editor's Desk
+            </h1>
+          </div>
+          <div className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted text-left md:text-right">
+            <p>{editId ? 'EDITING EXISTING ENTRY' : 'DRAFTING NEW ENTRY'}</p>
+            <p className="mt-1">SAVE TO ARCHIVE WHEN READY</p>
+          </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-12">
+        <form onSubmit={handleSubmit} className="space-y-16">
           
-          <div className="space-y-8">
-            <div className="group">
-              <label htmlFor="title" className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
-                Title *
+          {/* Top Metadata Row */}
+          <div className="space-y-12">
+            
+            {/* Title */}
+            <div className="group border-b border-ink/20 pb-4 focus-within:border-ink transition-colors">
+              <label htmlFor="title" className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4">
+                Headline (Required)
               </label>
               <input
                 type="text"
                 id="title"
                 required
-                className="w-full px-4 py-3 bg-transparent border border-ink/20 focus:border-ink/50 focus:outline-none transition-colors font-display text-2xl lg:text-3xl text-ink placeholder:text-muted/50"
+                className="w-full bg-transparent outline-none font-display text-4xl lg:text-6xl text-ink placeholder:text-muted/30"
                 placeholder="The unwritten thought..."
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <div className="group">
-                <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+               {/* Cover Image */}
+               <div className="lg:col-span-5 group">
+                <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">
                   Cover Image (Optional)
                 </label>
-                <div className="flex-1 w-full border border-ink/20 bg-ink/5 p-1">
+                <div className="aspect-[4/3] w-full border border-ink/20 bg-ink/5 p-1">
                    <ImageUpload
                       image={formData.coverImage}
                       onChange={(url) => setFormData({ ...formData, coverImage: url })}
@@ -125,43 +138,60 @@ function WriteForm() {
                 </div>
               </div>
 
-               <div className="group h-full flex flex-col">
-                <label htmlFor="excerpt" className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
-                  Excerpt (Optional)
-                </label>
-                <textarea
-                  id="excerpt"
-                  rows={4}
-                  className="w-full h-full px-4 py-3 bg-transparent border border-ink/20 focus:border-ink/50 focus:outline-none transition-colors font-sans text-base text-ink placeholder:text-muted/50 resize-none"
-                  placeholder="A brief summary..."
-                  value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+               {/* Excerpt and Tags */}
+               <div className="lg:col-span-7 flex flex-col gap-12">
+                  <div className="group flex-1">
+                    <label htmlFor="excerpt" className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">
+                      Dek / Subtitle (Optional)
+                    </label>
+                    <textarea
+                      id="excerpt"
+                      rows={4}
+                      className="w-full h-32 bg-transparent outline-none font-sans text-xl text-ink placeholder:text-muted/30 resize-none pt-2"
+                      placeholder="A brief summary or subtitle..."
+                      value={formData.excerpt}
+                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="group">
+                    <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">
+                      Index Tags
+                    </label>
+                    <div className="bg-transparent pt-2">
+                       <TagInput
+                          tags={formData.tags}
+                          onChange={(tags) => setFormData({ ...formData, tags })}
+                        />
+                    </div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Editor Body */}
+            <div className="group border-t-2 border-ink pt-12">
+              <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-8">
+                Article Body (Required)
+              </label>
+              <div className="bg-paper min-h-[600px]">
+                <RichTextEditor
+                  content={formData.content}
+                  onChange={(content) => setFormData({ ...formData, content })}
                 />
               </div>
             </div>
-
-            <div className="group">
-               <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
-                Tags
-              </label>
-              <div className="bg-transparent border border-ink/20 focus-within:border-ink/50 transition-colors p-2">
-                 <TagInput
-                    tags={formData.tags}
-                    onChange={(tags) => setFormData({ ...formData, tags })}
-                  />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-6 p-6 border border-ink/10 bg-ink/5">
+            
+            {/* Options */}
+            <div className="flex flex-col sm:flex-row gap-8 py-8 border-y border-ink/20">
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     id="isLocked"
-                    className="w-4 h-4 accent-ink cursor-pointer"
+                    className="w-4 h-4 accent-ink cursor-pointer border-ink/20"
                     checked={formData.isLocked}
                     onChange={(e) => setFormData({ ...formData, isLocked: e.target.checked })}
                   />
-                  <label htmlFor="isLocked" className="text-sm font-sans text-ink cursor-pointer select-none">
+                  <label htmlFor="isLocked" className="text-xs font-sans uppercase tracking-widest text-ink cursor-pointer select-none">
                     Lock Entry (Requires Pin)
                   </label>
                 </div>
@@ -170,36 +200,24 @@ function WriteForm() {
                   <input
                     type="checkbox"
                     id="isFeatured"
-                    className="w-4 h-4 accent-ink cursor-pointer"
+                    className="w-4 h-4 accent-ink cursor-pointer border-ink/20"
                     checked={formData.isFeatured}
                     onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
                   />
-                  <label htmlFor="isFeatured" className="text-sm font-sans text-ink cursor-pointer select-none">
+                  <label htmlFor="isFeatured" className="text-xs font-sans uppercase tracking-widest text-ink cursor-pointer select-none">
                     Feature Entry
                   </label>
                 </div>
             </div>
-            
-            <div className="group mt-12 border-t border-ink/10 pt-12">
-              <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-4">
-                Body *
-              </label>
-              <div className="border border-ink/20 focus-within:border-ink/50 transition-colors bg-white">
-                <RichTextEditor
-                  content={formData.content}
-                  onChange={(content) => setFormData({ ...formData, content })}
-                />
-              </div>
-            </div>
           </div>
 
-          <div className="pt-8 border-t border-ink/10 flex justify-end">
+          <div className="flex justify-end">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-12 py-4 bg-ink text-paper font-sans text-xs uppercase tracking-widest hover:bg-ink/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Saving...' : 'Save Entry'}
+              {isSubmitting ? 'SAVING...' : 'PUBLISH ENTRY'}
             </button>
           </div>
         </form>
