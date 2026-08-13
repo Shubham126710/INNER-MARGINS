@@ -35,10 +35,10 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
     // Color scale
     const getColor = (count: number, isFuture: boolean) => {
         if (isFuture) return 'invisible';
-        if (count === 0) return 'bg-retro-text/10 hover:bg-retro-text/20'; // Empty
-        if (count === 1) return 'bg-retro-primary/40 hover:bg-retro-primary/50';
-        if (count === 2) return 'bg-retro-primary/70 hover:bg-retro-primary/80';
-        return 'bg-retro-primary hover:bg-retro-primary/90'; // 3+
+        if (count === 0) return 'bg-ink/5 hover:bg-ink/10'; // Empty
+        if (count === 1) return 'bg-ink/40 hover:bg-ink/50';
+        if (count === 2) return 'bg-ink/70 hover:bg-ink/80';
+        return 'bg-ink hover:bg-ink/90'; // 3+
     };
 
     const months = [
@@ -49,7 +49,7 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
         <div className="w-full overflow-x-auto pb-2">
             <div className="min-w-fit">
                 {/* Month Labels */}
-                <div className="flex gap-[2px] text-xs font-code text-retro-text/60 mb-2 h-4">
+                <div className="flex gap-[3px] text-xs font-sans text-muted mb-2 h-4">
                     {weeks.map((week, i) => {
                         const date = new Date(week[0].date);
                         const prevWeekDate = i > 0 ? new Date(weeks[i-1][0].date) : null;
@@ -63,9 +63,9 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
                     })}
                 </div>
                 
-                <div className="flex gap-[2px]">
+                <div className="flex gap-[3px]">
                     {weeks.map((week, i) => (
-                        <div key={i} className="flex flex-col gap-[2px]">
+                        <div key={i} className="flex flex-col gap-[3px]">
                             {week.map((day, j) => (
                                 <div 
                                     key={day.date}
@@ -74,7 +74,7 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
                                 >
                                      {/* Simple Tooltip */}
                                      {!day.isFuture && (
-                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-retro-text text-retro-surface text-[10px] font-code whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 hidden sm:block">
+                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-ink text-white text-[10px] font-sans whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10 hidden sm:block shadow-sm">
                                          {day.date}: {day.count} {day.count === 1 ? 'entry' : 'entries'}
                                      </div>
                                      )}
@@ -85,12 +85,12 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
                 </div>
                 
                 {/* Legend */}
-                <div className="mt-4 flex items-center justify-end gap-2 text-xs font-code text-retro-text/60">
+                <div className="mt-6 flex items-center justify-end gap-2 text-xs font-sans text-muted">
                     <span>Less</span>
-                    <div className="w-3 h-3 rounded-[1px] bg-retro-text/10"></div>
-                    <div className="w-3 h-3 rounded-[1px] bg-retro-primary/40"></div>
-                    <div className="w-3 h-3 rounded-[1px] bg-retro-primary/70"></div>
-                    <div className="w-3 h-3 rounded-[1px] bg-retro-primary"></div>
+                    <div className="w-3 h-3 rounded-[1px] bg-ink/5"></div>
+                    <div className="w-3 h-3 rounded-[1px] bg-ink/40"></div>
+                    <div className="w-3 h-3 rounded-[1px] bg-ink/70"></div>
+                    <div className="w-3 h-3 rounded-[1px] bg-ink"></div>
                     <span>More</span>
                 </div>
             </div>

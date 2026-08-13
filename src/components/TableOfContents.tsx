@@ -56,16 +56,16 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 
   return (
     <nav className="toc">
-      <h4 className="text-xs font-heading font-medium text-retro-text uppercase tracking-wider mb-4 border-b-2 border-retro-border pb-2">
+      <h4 className="text-xs font-sans font-medium text-ink uppercase tracking-widest mb-6 border-b border-ink/10 pb-2">
         Index
       </h4>
-      <ul className="space-y-1">
+      <ul className="space-y-3">
         {items.map((item) => (
           <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className={`toc-link font-mono text-xs uppercase ${item.level === 3 ? 'pl-4' : ''} ${
-                activeId === item.id ? 'active' : ''
+              className={`block text-xs font-sans transition-colors ${item.level === 3 ? 'pl-4' : ''} ${
+                activeId === item.id ? 'text-ink font-medium' : 'text-muted hover:text-ink'
               }`}
               onClick={(e) => {
                 e.preventDefault();

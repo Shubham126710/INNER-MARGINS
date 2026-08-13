@@ -47,7 +47,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          const img = `<img src="${event.target?.result}" alt="Uploaded image" class="max-w-full rounded-lg my-4" />`;
+          const img = `<img src="${event.target?.result}" alt="Uploaded image" class="max-w-full rounded-none my-8" />`;
           document.execCommand('insertHTML', false, img);
           handleInput();
         };
@@ -112,17 +112,17 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
   };
 
   return (
-    <div className="border-4 border-retro-border bg-retro-surface">
+    <div className="border border-ink/20 bg-transparent">
       {/* Toolbar */}
       {showToolbar && (
-        <div className="flex flex-wrap items-center gap-2 p-2 bg-retro-bg border-b-4 border-retro-border">
+        <div className="flex flex-wrap items-center gap-1 p-2 bg-ink/5 border-b border-ink/20">
           {toolbarButtons.map((button, index) => (
             <button
               key={index}
               type="button"
               onClick={() => handleToolbarClick(button)}
               title={button.title}
-              className="w-8 h-8 flex items-center justify-center border-2 border-transparent hover:border-retro-border hover:bg-retro-text hover:text-retro-surface transition-none text-sm font-mono text-retro-text font-bold"
+              className="w-8 h-8 flex items-center justify-center rounded hover:bg-ink hover:text-white transition-colors text-sm font-sans font-medium text-ink"
             >
               {button.icon}
             </button>
@@ -131,9 +131,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <button
             type="button"
             onClick={() => setShowToolbar(false)}
-            className="text-xs font-mono text-retro-text/60 hover:text-retro-text uppercase"
+            className="text-xs font-sans tracking-widest text-muted hover:text-ink uppercase px-2"
           >
-            [Hide]
+            Hide
           </button>
         </div>
       )}
@@ -142,9 +142,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         <button
           type="button"
           onClick={() => setShowToolbar(true)}
-          className="w-full p-2 text-xs font-mono text-retro-text/60 hover:text-retro-text bg-retro-bg border-b-4 border-retro-border uppercase"
+          className="w-full p-2 text-xs font-sans tracking-widest text-muted hover:text-ink bg-ink/5 border-b border-ink/20 uppercase"
         >
-          [Show toolbar]
+          Show toolbar
         </button>
       )}
 
@@ -154,7 +154,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         contentEditable
         onInput={handleInput}
         onBlur={handleInput} // Ensure final state is captured
-        className="prose-editor min-h-[400px] p-6 bg-retro-surface text-retro-text font-body focus:outline-none"
+        className="prose-editor min-h-[400px] p-6 lg:p-8 bg-transparent text-ink focus:outline-none"
         data-placeholder={placeholder}
         suppressContentEditableWarning
       />

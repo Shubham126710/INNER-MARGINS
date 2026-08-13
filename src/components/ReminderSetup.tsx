@@ -70,7 +70,7 @@ export default function ReminderSetup() {
         });
 
         setEnabled(true);
-        setStatus('Background push reminders enabled! You are all set.');
+        setStatus('Background push reminders enabled!');
         setTimeout(() => setStatus(''), 5000);
       } else {
         setStatus('Permission denied. Please enable notifications in your browser settings.');
@@ -100,22 +100,22 @@ export default function ReminderSetup() {
   };
 
   return (
-    <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro mt-8">
-      <h2 className="text-2xl font-display uppercase mb-6 border-b-2 border-retro-border pb-4">
-        Background Reminders
+    <div>
+      <h2 className="text-2xl font-display tracking-tight text-ink mb-6 border-b border-ink/10 pb-4">
+        Writing Habit
       </h2>
-      <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-        <div className="flex-1 space-y-2">
-          <p className="text-sm font-code text-retro-text/80 mb-2">
-            Get notified globally even when the app is closed if you haven&apos;t written your journal!
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6">
+        <div className="flex-1 space-y-4">
+          <p className="text-sm font-sans text-muted max-w-lg">
+            Enable daily reminders to maintain your writing streak. We will notify you if you haven't written an entry by the set time.
           </p>
           <div className="flex items-center gap-4">
-             <label className="text-sm font-code uppercase text-retro-text/80">Time:</label>
+             <label className="text-xs font-sans font-medium uppercase tracking-widest text-muted">Daily Time:</label>
              <input 
                type="time" 
                value={reminderTime}
                onChange={(e) => setReminderTime(e.target.value)}
-               className="p-2 font-code bg-retro-bg border-4 border-retro-border text-retro-text focus:border-retro-primary focus:outline-none"
+               className="p-2 font-mono text-sm bg-transparent border border-ink/20 focus:border-ink/50 text-ink focus:outline-none transition-colors"
              />
           </div>
         </div>
@@ -125,19 +125,19 @@ export default function ReminderSetup() {
               Enable Reminders
             </button>
           ) : (
-            <div className="flex gap-2">
+            <div className="flex gap-4">
                <button onClick={handleSave} className="btn-primary">
                  Update Time
                </button>
                <button onClick={handleDisable} className="btn-secondary">
-                 Disable Push
+                 Disable
                </button>
             </div>
           )}
         </div>
       </div>
       {status && (
-        <div className="font-code text-sm text-retro-primary bg-retro-primary/10 p-3 border-l-4 border-retro-primary animate-fade-in mt-4">
+        <div className="font-sans text-sm text-ink bg-ink/5 p-4 border-l-2 border-ink animate-fade-in mt-6">
           {status}
         </div>
       )}

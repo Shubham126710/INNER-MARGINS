@@ -52,49 +52,49 @@ export default function CommentSection({ postId }: CommentSectionProps) {
   };
 
   return (
-    <section className="mt-16 border-t-4 border-retro-border pt-12 font-body text-retro-text">
-      <h3 className="text-2xl font-heading uppercase text-retro-text mb-8">Comments ({comments.length})</h3>
+    <section className="mt-24 border-t border-ink/10 pt-16 font-sans text-ink max-w-3xl">
+      <h3 className="text-xl font-display mb-12">Letters to the Editor ({comments.length})</h3>
 
-      <div className="mb-12">
+      <div className="mb-16">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          {error && <p className="text-retro-primary font-mono text-sm uppercase">{error}</p>}
+          {error && <p className="text-red-600 font-sans text-sm">{error}</p>}
           <div className="flex flex-col gap-2">
-            <label htmlFor="author" className="font-mono text-sm uppercase text-retro-text/80">Name</label>
+            <label htmlFor="author" className="font-sans text-xs font-medium uppercase tracking-widest text-muted">Name</label>
             <input
               id="author"
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="border-2 border-retro-border bg-retro-bg p-3 font-mono text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 uppercase text-sm"
-              placeholder="YOUR NAME"
+              className="border-b border-ink/20 bg-transparent py-3 font-sans text-ink focus:outline-none focus:border-ink/50 transition-colors placeholder:text-muted/50"
+              placeholder="Your name"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="content" className="font-mono text-sm uppercase text-retro-text/80">Comment</label>
+          <div className="flex flex-col gap-2 mt-4">
+            <label htmlFor="content" className="font-sans text-xs font-medium uppercase tracking-widest text-muted">Message</label>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="border-2 border-retro-border bg-retro-bg p-3 font-body text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 min-h-[120px]"
+              className="border border-ink/20 bg-transparent p-4 font-sans text-ink focus:outline-none focus:border-ink/50 transition-colors placeholder:text-muted/50 min-h-[160px] resize-y"
               placeholder="Leave a comment..."
             />
           </div>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-primary self-start disabled:opacity-50"
+            className="btn-primary self-start disabled:opacity-50 mt-4"
           >
-            {isSubmitting ? 'Posting...' : 'Post Comment'}
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </button>
         </form>
       </div>
 
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-12">
         {comments.map((comment) => (
-          <div key={comment.id} className="border-l-4 border-retro-primary pl-6 py-2">
-            <div className="flex items-center gap-4 mb-2">
-              <span className="font-mono font-bold text-retro-primary uppercase">{comment.author}</span>
-              <span className="font-mono text-xs text-retro-text/60">
+          <div key={comment.id} className="pb-8 border-b border-ink/10 last:border-0">
+            <div className="flex items-baseline justify-between mb-4">
+              <span className="font-sans font-medium text-ink">{comment.author}</span>
+              <span className="font-sans text-xs text-muted uppercase tracking-widest">
                 {new Date(comment.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -102,11 +102,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                 })}
               </span>
             </div>
-            <p className="font-body text-lg leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+            <p className="font-sans text-lg leading-relaxed whitespace-pre-wrap text-ink/90">{comment.content}</p>
           </div>
         ))}
         {comments.length === 0 && (
-          <p className="font-mono text-retro-text/60 italic uppercase text-sm">No comments yet. Be the first to share your thoughts.</p>
+          <p className="font-sans text-muted italic text-lg">No letters yet. Be the first to share your thoughts.</p>
         )}
       </div>
     </section>

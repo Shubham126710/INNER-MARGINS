@@ -10,65 +10,65 @@ export default {
   theme: {
     extend: {
       colors: {
-        retro: {
-          bg: '#F4CFCB',      // Pinkish background
-          surface: '#F7DAD6', // Lighter pink for cards
-          text: '#C9413C',    // Dark red text
-          border: '#E2554F',  // Medium red borders
-          primary: '#C9413C', // Reusing dark red for primary
-          secondary: '#E2554F',
-          accent: '#C9413C',
-          muted: '#E2554F',   // Medium red for muted
-        },
+        paper: '#F4F1EA',
+        ink: '#111111',
+        muted: '#77736C',
+        accent: {
+          burgundy: '#6B1F1F',
+          orange: '#C95B30',
+          blue: '#1D3557',
+          green: '#8A9A5B'
+        }
       },
       fontFamily: {
-        heading: ['var(--font-heading)', 'monospace'],
-        display: ['var(--font-heading)', 'monospace'],
-        body: ['var(--font-body)', 'monospace'],
-        mono: ['monospace'], 
-      },
-      boxShadow: {
-        'retro': '4px 4px 0 0 #C9413C',
-        'retro-sm': '2px 2px 0 0 #C9413C',
-        'retro-lg': '8px 8px 0 0 #C9413C',
-        'retro-hover': '6px 6px 0 0 #C9413C',
+        display: ['var(--font-heading)', 'serif'],
+        heading: ['var(--font-heading)', 'serif'],
+        sans: ['var(--font-body)', 'sans-serif'],
+        body: ['var(--font-body)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'], 
       },
       typography: {
         DEFAULT: {
           css: {
-            '--tw-prose-body': '#C9413C',
-            '--tw-prose-headings': '#C9413C',
-            '--tw-prose-lead': '#C9413C',
-            '--tw-prose-links': '#C9413C',
-            '--tw-prose-bold': '#C9413C',
-            '--tw-prose-counters': '#E2554F',
-            '--tw-prose-bullets': '#E2554F',
-            '--tw-prose-hr': '#E2554F',
-            '--tw-prose-quotes': '#C9413C',
-            '--tw-prose-quote-borders': '#E2554F',
-            '--tw-prose-captions': '#E2554F',
-            '--tw-prose-code': '#C9413C',
-            '--tw-prose-pre-code': '#F7DAD6',
-            '--tw-prose-pre-bg': '#C9413C',
+            '--tw-prose-body': '#111111',
+            '--tw-prose-headings': '#111111',
+            '--tw-prose-lead': '#111111',
+            '--tw-prose-links': '#6B1F1F',
+            '--tw-prose-bold': '#111111',
+            '--tw-prose-counters': '#77736C',
+            '--tw-prose-bullets': '#77736C',
+            '--tw-prose-hr': '#77736C',
+            '--tw-prose-quotes': '#111111',
+            '--tw-prose-quote-borders': '#6B1F1F',
+            '--tw-prose-captions': '#77736C',
+            '--tw-prose-code': '#111111',
+            '--tw-prose-pre-code': '#F4F1EA',
+            '--tw-prose-pre-bg': '#111111',
             fontFamily: 'var(--font-body)',
             maxWidth: '65ch',
-            color: 'var(--retro-text)',
+            color: 'var(--tw-prose-body)',
             h1: {
               fontFamily: 'var(--font-heading)',
-              textTransform: 'uppercase',
+              fontWeight: '400',
             },
             h2: {
               fontFamily: 'var(--font-heading)',
-              textTransform: 'uppercase',
+              fontWeight: '400',
             },
             h3: {
               fontFamily: 'var(--font-heading)',
-              textTransform: 'uppercase',
+              fontWeight: '400',
+            },
+            a: {
+              textDecoration: 'underline',
+              textUnderlineOffset: '4px',
+              fontWeight: '400',
+              '&:hover': {
+                color: 'var(--tw-prose-body)',
+              }
             },
             code: {
-              fontFamily: 'monospace',
-              backgroundColor: '#F7DAD6',
-              padding: '0.2em 0.4em',
+              fontFamily: 'var(--font-mono)',
               fontWeight: '400',
             },
             'code::before': {
@@ -77,12 +77,17 @@ export default {
             'code::after': {
               content: '""',
             },
+            blockquote: {
+              fontStyle: 'normal',
+              borderLeftWidth: '1px',
+              borderColor: 'var(--tw-prose-quote-borders)',
+            }
           },
         },
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-out',
-        'slide-up': 'slideUp 0.5s ease-out',
+        'fade-in': 'fadeIn 0.8s ease-out',
+        'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
       },
       keyframes: {
         fadeIn: {
@@ -90,7 +95,7 @@ export default {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         }
       }

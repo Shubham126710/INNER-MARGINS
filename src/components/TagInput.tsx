@@ -33,17 +33,17 @@ export default function TagInput({ tags, onChange, placeholder = 'Add a tag...' 
   };
 
   return (
-    <div className="flex flex-wrap gap-2 p-3 bg-retro-surface border-2 border-retro-border min-h-[48px] shadow-retro-sm focus-within:shadow-retro transition-shadow">
+    <div className="flex flex-wrap gap-2 min-h-[48px]">
       {tags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 px-2 py-1 bg-retro-text text-retro-surface border border-retro-text text-xs font-mono uppercase"
+          className="inline-flex items-center gap-1 px-3 py-1 bg-ink/5 text-ink border border-ink/10 text-xs font-sans uppercase tracking-widest"
         >
           {tag}
           <button
             type="button"
             onClick={() => removeTag(tag)}
-            className="ml-1 text-retro-surface/60 hover:text-retro-surface"
+            className="ml-1 text-muted hover:text-ink transition-colors"
           >
             ×
           </button>
@@ -56,7 +56,7 @@ export default function TagInput({ tags, onChange, placeholder = 'Add a tag...' 
         onKeyDown={handleKeyDown}
         onBlur={() => input && addTag(input)}
         placeholder={tags.length === 0 ? placeholder : ''}
-        className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-retro-text placeholder-retro-border/40 text-sm font-mono"
+        className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-ink placeholder:text-muted/50 text-sm font-sans"
       />
     </div>
   );

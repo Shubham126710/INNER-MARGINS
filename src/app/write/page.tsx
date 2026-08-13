@@ -11,7 +11,7 @@ import { LoadingScreen } from '@/components';
 // Dynamically import TipTap Editor to avoid SSR errors
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
   ssr: false,
-  loading: () => <div className="h-[400px] border border-retro-border/30 bg-retro-surface/50 p-4 animate-pulse flex items-center justify-center font-mono text-[10px] uppercase tracking-widest text-retro-text/50">Warming up editor grid...</div>
+  loading: () => <div className="h-[400px] bg-ink/5 p-4 animate-pulse flex items-center justify-center font-sans text-sm text-muted">Loading Editor...</div>
 });
 
 function WriteForm() {
@@ -75,63 +75,49 @@ function WriteForm() {
       router.push('/journals');
       router.refresh();
     } catch (error: any) {
-      console.error('Failed to encode transmission:', error);
-      alert(`Failed to transmit journal: ${error.message || 'Unknown error'}`);
+      console.error('Failed to save entry:', error);
+      alert(`Failed to save entry: ${error.message || 'Unknown error'}`);
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface">
-      <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-12 py-8 md:py-12 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
+    <div className="min-h-screen bg-paper font-sans text-ink">
+      <div className="max-w-4xl mx-auto px-6 lg:px-12 py-16 lg:py-24 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
         
-        <header className="mb-10 text-center relative border-b border-retro-border/20 pb-8 hover:bg-retro-surface/20 transition-colors">
-          <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-               <rect x="2" y="2" width="4" height="4" />
-               <rect x="18" y="2" width="4" height="4" />
-               <rect x="2" y="18" width="4" height="4" />
-               <rect x="18" y="18" width="4" height="4" />
-            </svg>
-          </div>
-
-          <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-text/10 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-4 shadow-retro-sm">
-            <div className="w-2 h-2 bg-retro-primary animate-pulse"></div>
-            <span>New Transmission</span>
-          </div>
-
-          <h1 className="text-3xl lg:text-4xl font-heading uppercase text-retro-text mb-4">
-            Upload To Archive
+        <header className="mb-16 border-b border-ink/10 pb-8">
+          <h1 className="text-4xl lg:text-5xl font-display tracking-tight text-ink mb-4">
+            Editor's Desk
           </h1>
-          <p className="font-mono text-xs uppercase tracking-widest text-retro-text/60">
-            Write. Record. Execute.
+          <p className="font-sans text-sm text-muted">
+            {editId ? 'Editing existing entry.' : 'Drafting a new entry.'}
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8 bg-retro-surface/30 p-6 lg:p-10 border border-retro-border/30 shadow-retro-sm relative">
+        <form onSubmit={handleSubmit} className="space-y-12">
           
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="group">
-              <label htmlFor="title" className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
-                Transmission Subject *
+              <label htmlFor="title" className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
+                Title *
               </label>
               <input
                 type="text"
                 id="title"
                 required
-                className="w-full px-4 py-3 bg-retro-bg/50 border border-retro-border/30 focus:border-retro-primary focus:bg-retro-surface focus:outline-none transition-all font-heading text-lg lg:text-xl text-retro-text placeholder:text-retro-text/20"
-                placeholder="GIVE IT A NAME"
+                className="w-full px-4 py-3 bg-transparent border border-ink/20 focus:border-ink/50 focus:outline-none transition-colors font-display text-2xl lg:text-3xl text-ink placeholder:text-muted/50"
+                placeholder="The unwritten thought..."
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                <div className="group">
-                <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
-                  Visual Context (Optional)
+                <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
+                  Cover Image (Optional)
                 </label>
-                <div className="flex-1 w-full bg-retro-bg/50">
+                <div className="flex-1 w-full border border-ink/20 bg-ink/5 p-1">
                    <ImageUpload
                       image={formData.coverImage}
                       onChange={(url) => setFormData({ ...formData, coverImage: url })}
@@ -140,14 +126,14 @@ function WriteForm() {
               </div>
 
                <div className="group h-full flex flex-col">
-                <label htmlFor="excerpt" className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
-                  Fragment Summary (Optional)
+                <label htmlFor="excerpt" className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
+                  Excerpt (Optional)
                 </label>
                 <textarea
                   id="excerpt"
                   rows={4}
-                  className="w-full h-full px-4 py-3 bg-retro-bg/50 border border-retro-border/30 focus:border-retro-primary focus:bg-retro-surface focus:outline-none transition-all font-mono text-sm text-retro-text placeholder:text-retro-text/20 resize-none"
-                  placeholder="BRIEF OVERVIEW OF THIS RECORD..."
+                  className="w-full h-full px-4 py-3 bg-transparent border border-ink/20 focus:border-ink/50 focus:outline-none transition-colors font-sans text-base text-ink placeholder:text-muted/50 resize-none"
+                  placeholder="A brief summary..."
                   value={formData.excerpt}
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
                 />
@@ -155,10 +141,10 @@ function WriteForm() {
             </div>
 
             <div className="group">
-               <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
-                Metadata Tags
+               <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-2">
+                Tags
               </label>
-              <div className="bg-retro-bg/50 border border-retro-border/30 focus-within:border-retro-primary focus-within:bg-retro-surface transition-all p-1">
+              <div className="bg-transparent border border-ink/20 focus-within:border-ink/50 transition-colors p-2">
                  <TagInput
                     tags={formData.tags}
                     onChange={(tags) => setFormData({ ...formData, tags })}
@@ -166,18 +152,17 @@ function WriteForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 border border-retro-border/20 bg-retro-text/5">
+            <div className="flex flex-col sm:flex-row gap-6 p-6 border border-ink/10 bg-ink/5">
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     id="isLocked"
-                    title="Lock Journal"
-                    className="w-4 h-4 accent-retro-primary cursor-pointer border-retro-border/50 bg-retro-bg"
+                    className="w-4 h-4 accent-ink cursor-pointer"
                     checked={formData.isLocked}
                     onChange={(e) => setFormData({ ...formData, isLocked: e.target.checked })}
                   />
-                  <label htmlFor="isLocked" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
-                    Lock with Protocol
+                  <label htmlFor="isLocked" className="text-sm font-sans text-ink cursor-pointer select-none">
+                    Lock Entry (Requires Pin)
                   </label>
                 </div>
                 
@@ -185,22 +170,21 @@ function WriteForm() {
                   <input
                     type="checkbox"
                     id="isFeatured"
-                    title="Feature Entry"
-                    className="w-4 h-4 accent-retro-primary cursor-pointer border-retro-border/50 bg-retro-bg"
+                    className="w-4 h-4 accent-ink cursor-pointer"
                     checked={formData.isFeatured}
                     onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
                   />
-                  <label htmlFor="isFeatured" className="text-xs font-mono uppercase tracking-widest text-retro-text cursor-pointer select-none">
+                  <label htmlFor="isFeatured" className="text-sm font-sans text-ink cursor-pointer select-none">
                     Feature Entry
                   </label>
                 </div>
             </div>
             
-            <div className="group mt-8">
-              <label className="block text-xs font-mono uppercase tracking-widest text-retro-text/70 mb-2 group-focus-within:text-retro-primary transition-colors">
-                Main Corpus *
+            <div className="group mt-12 border-t border-ink/10 pt-12">
+              <label className="block text-xs font-sans font-medium uppercase tracking-widest text-muted mb-4">
+                Body *
               </label>
-              <div className="border border-retro-border/30 focus-within:border-retro-primary bg-retro-surface/50 transition-all font-mono">
+              <div className="border border-ink/20 focus-within:border-ink/50 transition-colors bg-white">
                 <RichTextEditor
                   content={formData.content}
                   onChange={(content) => setFormData({ ...formData, content })}
@@ -209,16 +193,13 @@ function WriteForm() {
             </div>
           </div>
 
-          <div className="pt-8 mt-8 border-t border-retro-border/20 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-retro-text/40">
-              [ All operations logged ]
-            </span>
+          <div className="pt-8 border-t border-ink/10 flex justify-end">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full sm:w-auto px-8 py-4 bg-retro-text text-retro-surface font-heading uppercase text-sm tracking-widest hover:bg-retro-primary transition-colors shadow-retro hover:shadow-retro-hover active:translate-y-0 active:shadow-retro-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Transmitting...' : 'Upload Journal To Archive'}
+              {isSubmitting ? 'Saving...' : 'Save Entry'}
             </button>
           </div>
         </form>
