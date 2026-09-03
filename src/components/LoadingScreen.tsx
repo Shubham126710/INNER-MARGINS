@@ -6,6 +6,8 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState('INITIALIZING...');
 
+  const [dateStr, setDateStr] = useState('');
+
   useEffect(() => {
     const duration = 2000; // total 2 seconds loading
     const interval = 50;
@@ -30,17 +32,18 @@ export default function LoadingScreen() {
       }
     }, interval);
 
+    // Set date string safely on client
+    const now = new Date();
+    setDateStr(new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(now).toUpperCase());
+
     return () => clearInterval(timer);
   }, []);
-
-  const now = new Date();
-  const dateStr = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Kolkata',
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  }).format(now).toUpperCase();
 
   return (
     <div className="w-full min-h-[100dvh] flex items-center justify-center bg-accent text-content-surface p-6 overflow-hidden relative">

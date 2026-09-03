@@ -74,7 +74,6 @@ function WriteForm() {
 
       await savePost({ ...formData, isPublished: true });
       router.push('/journals');
-      router.refresh();
     } catch (error: any) {
       console.error('Failed to save entry:', error);
       alert(`Failed to save entry: ${error.message || 'Unknown error'}`);
