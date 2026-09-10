@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FrontMatter } from './Editorial';
+import Image from 'next/image';
 
 interface PinLockProps {
   onUnlock: () => void;
@@ -31,54 +31,62 @@ export default function PinLock({ onUnlock }: PinLockProps) {
   };
 
   return (
-    <div className="flex-1 w-full min-h-[70vh] flex flex-col items-center justify-center p-6 bg-paper font-sans text-ink relative">
-      
-      <div className="w-full max-w-2xl border-t-2 border-b-2 border-ink py-16 text-center relative z-20">
+    <div className="flex-1 w-full flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md bg-retro-surface border-4 border-retro-border p-8 shadow-retro text-center">
+        <div className="mb-6 flex justify-center">
+          <div className="relative w-16 h-16">
+            <Image 
+              src="/lock.png" 
+              alt="Security Lock" 
+              fill
+              className="object-contain"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          </div>
+        </div>
         
-        <FrontMatter items={['SECURE ARCHIVE']} className="justify-center mb-8" />
-        
-        <h2 className="text-5xl md:text-7xl font-display uppercase tracking-tight leading-[0.9] mb-12">
-          Restricted Edition
+        <h2 className="text-2xl font-heading uppercase text-retro-text mb-2">
+          Security Clearance Required
         </h2>
         
-        <p className="text-sm font-sans text-muted max-w-sm mx-auto mb-16 leading-relaxed">
-          This section of the publication contains sensitive personal entries. Access is restricted to the editor.
+        <p className="text-retro-text/80 font-mono text-sm mb-8">
+          This entry is classified. Enter access code to decrypt.
         </p>
 
-        <form onSubmit={handleSubmit} className="max-w-xs mx-auto space-y-8">
-          <div className="relative group">
-            <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">
-              Enter Passkey
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
             <input
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value.replace(/\D/g, '').substring(0, 6))}
-              className={`w-full text-center text-4xl font-mono tracking-[0.5em] bg-transparent outline-none transition-colors py-2 ${
+              className={`w-full text-center text-3xl font-mono tracking-[0.5em] bg-retro-bg border-4 p-4 outline-none transition-colors ${
                 error 
-                  ? 'text-red-700 animate-shake' 
-                  : 'text-ink focus:text-accent'
+                  ? 'border-retro-primary text-retro-primary animate-shake' 
+                  : 'border-retro-border text-retro-text focus:border-retro-text'
               }`}
               placeholder="******"
               autoFocus
             />
           </div>
 
+          <div className="text-xs font-mono text-retro-text/60">
+            HINT: PTSD
+          </div>
+
           <button
             type="submit"
-            className="w-full py-4 border border-ink text-ink font-sans text-xs uppercase tracking-widest hover:bg-ink hover:text-paper transition-colors"
+            className="w-full btn-primary"
           >
             Authenticate
           </button>
         </form>
 
         {attempts > 2 && (
-          <div className="mt-8 text-red-700 font-sans text-[10px] uppercase tracking-widest">
-            Authorization failed. Multiple invalid attempts.
+          <div className="mt-6 p-2 bg-retro-primary text-retro-surface font-mono text-xs uppercase animate-pulse">
+            Warning: Unauthorized Access Detected
           </div>
         )}
       </div>
-      
     </div>
   );
 }

@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'A personal space for thoughts, reflections, and the stories we carry within.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#E6DFF1',
-    theme_color: '#7A6C9D',
+    background_color: '#F4CFCB',
+    theme_color: '#C9413C',
     icons: [
       {
         src: '/icon.png',

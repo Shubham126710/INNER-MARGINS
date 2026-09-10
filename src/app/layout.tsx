@@ -1,34 +1,26 @@
 import type { Metadata } from "next";
-import { Newsreader, Inter, JetBrains_Mono } from "next/font/google";
+import { Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
-import { PublicationHeader, Footer, ElectronNavigation } from "@/components";
+import { Header, Footer } from "@/components";
 
-const newsreader = Newsreader({
-  weight: ["400", "500", "600"],
+const pressStart2P = Press_Start_2P({
+  weight: "400",
   variable: "--font-heading",
   subsets: ["latin"],
-  style: ['normal', 'italic'],
   display: "swap",
 });
 
-const inter = Inter({
-  weight: ["400", "500", "600"],
+const vt323 = VT323({
+  weight: "400",
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  weight: ["400", "500"],
-  variable: "--font-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Inner Margins",
-  description: "A personal archive of things I couldn't leave unwritten.",
-  keywords: ["journal", "editorial", "writing", "archive"],
+  title: "Inner Margins | Pixel Journal",
+  description: "A retro pixel space for thoughts and stories.",
+  keywords: ["journal", "blog", "retro", "pixel art", "writing"],
 };
 
 export default function RootLayout({
@@ -37,12 +29,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
-        className={`${newsreader.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col font-sans bg-paper text-ink selection:bg-ink selection:text-paper relative`}
+        className={`${pressStart2P.variable} ${vt323.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-white`}
       >
-        <ElectronNavigation />
-        <PublicationHeader />
+        <svg width="0" height="0" style={{ position: 'absolute', visibility: 'hidden' }}>
+          <defs>
+            <filter id="pixelate" x="-10%" y="-10%" width="120%" height="120%">
+              <feFlood x="2" y="2" height="2" width="2" />
+              <feComposite width="4" height="4" />
+              <feTile result="a" />
+              <feComposite in="SourceGraphic" in2="a" operator="in" />
+              <feMorphology operator="dilate" radius="2" />
+            </filter>
+          </defs>
+        </svg>
+        <Header />
         <main className="flex-1">
           {children}
         </main>

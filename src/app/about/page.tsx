@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { TagInput, RichTextEditor, ImageUpload, LoadingScreen, PinLock } from '@/components';
-import { Marginalia, FrontMatter } from '@/components/Editorial';
 import { getAboutContent, saveAboutContent } from '@/actions/about.actions';
 import { AboutContent } from '@/lib/types';
 
@@ -58,7 +58,7 @@ export default function AboutPage() {
   if (isLoading) {
     return (
       <div 
-        className="fixed inset-0 min-h-[100dvh] w-screen flex items-center justify-center bg-paper" 
+        className="fixed inset-0 min-h-[100dvh] w-screen flex items-center justify-center bg-retro-primary" 
         style={{ zIndex: 9999 }}
       >
         <LoadingScreen />
@@ -67,16 +67,15 @@ export default function AboutPage() {
   }
 
   const isEmpty = !about.content && !about.profileImage;
-
-  if (showAuth) {
+if (showAuth) {
     return (
-      <div className="min-h-screen bg-paper flex flex-col font-sans text-ink">
-        <div className="max-w-4xl mx-auto w-full px-6 pt-16 relative z-20"> 
+      <div className="min-h-screen bg-retro-bg flex flex-col font-body selection:bg-retro-primary selection:text-white">
+        <div className="p-4"> 
           <button 
              onClick={() => setShowAuth(false)}
-             className="text-muted hover:text-ink mb-4 uppercase font-sans text-xs tracking-widest transition-colors"
+             className="text-retro-text/60 hover:text-retro-text mb-4 uppercase font-mono text-sm"
           >
-             ← Cancel
+             &lt; Cancel
           </button>
         </div>
         <PinLock onUnlock={handleUnlock} />
@@ -84,160 +83,190 @@ export default function AboutPage() {
     );
   }
 
+  
   return (
-    <div className="min-h-screen bg-paper font-sans text-ink pb-32">
-      <main className="max-w-7xl mx-auto px-6 lg:px-12 pt-16 lg:pt-24">
-        
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-ink/20 pb-8 gap-8">
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
+      {/* Hero Section */}
+      <section className="relative py-8 md:py-16 lg:py-24 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
+          {/* Back link */}
+          <Link 
+            href="/"  
+            className="inline-flex items-center text-sm font-mono text-retro-text/60 hover:text-retro-text hover:underline uppercase mb-6 decoration-2 underline-offset-4"
+          >
+            &lt; Return to Main
+          </Link>
+
+          {/* Edit Toggle */}
+          <div className="flex items-center justify-between mb-8 border-b-4 border-retro-border pb-4">
             <div>
-              <div className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted mb-4 flex gap-4 items-center">
-                 <span>THE PUBLICATION</span>
-                 <span className="text-accent/50">•</span>
-                 <span>PROFILE</span>
-              </div>
-              <h1 className="text-4xl lg:text-5xl font-display tracking-tight text-ink uppercase leading-none">
-                {isEditing ? 'Edit Profile' : (about.title || 'About Me')}
-              </h1>
+              <span className="bg-retro-text text-retro-surface px-2 py-1 text-xs font-mono uppercase tracking-widest">
+                System Info
+              </span>
             </div>
             <button
               onClick={() => isEditing ? handleSave() : handleAuth()}
-              className="text-[10px] font-sans uppercase tracking-[0.2em] text-muted hover:text-ink transition-colors pb-1 border-b border-transparent hover:border-ink"
+              className={isEditing ? 'btn-primary' : 'btn-secondary'}
               disabled={isSaving}
             >
-              {isSaving ? 'SAVING...' : isEditing ? 'SAVE CHANGES' : 'AUTHORIZE EDIT'}
+              {isSaving ? 'Saving...' : isEditing ? 'Save Changes' : 'Update Profile'}
             </button>
-        </div>
+          </div>
 
-        <div className="animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-            
-            {isEditing ? (
+          {isEditing ? (
             /* Edit Mode */
-            <div className="space-y-12 max-w-5xl mx-auto">
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-                <div className="group">
-                  <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">Portrait</label>
-                  <div className="aspect-[3/4] max-w-[300px] border border-ink/20 bg-ink/5 p-1">
-                    <ImageUpload
-                      image={about.profileImage || ''}
-                      onChange={(img) => setAbout({ ...about, profileImage: img })}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-8">
-                  <div className="group border-b border-ink/20 pb-4 focus-within:border-ink transition-colors">
-                    <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4">Heading</label>
-                    <input
-                      type="text"
-                      value={about.title}
-                      onChange={(e) => setAbout({ ...about, title: e.target.value })}
-                      className="w-full bg-transparent outline-none font-display text-4xl lg:text-5xl text-ink uppercase"
-                      placeholder="e.g. About Me"
-                    />
-                  </div>
-
-                  <div className="group border-b border-ink/20 pb-4 focus-within:border-ink transition-colors">
-                    <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4">Subheading</label>
-                    <input
-                      type="text"
-                      value={about.subtitle}
-                      onChange={(e) => setAbout({ ...about, subtitle: e.target.value })}
-                      className="w-full bg-transparent outline-none font-sans text-xl text-ink"
-                      placeholder="e.g. The writer behind the words"
-                    />
-                  </div>
-
-                  <div className="group">
-                    <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-4 border-b border-ink/20 pb-2">Interests & Tags</label>
-                    <div className="bg-transparent pt-2">
-                      <TagInput
-                        tags={about.hobbies}
-                        onChange={(hobbies) => setAbout({ ...about, hobbies })}
-                      />
-                    </div>
-                  </div>
-                </div>
+            <div className="space-y-8 bg-retro-bg p-8 border-4 border-retro-border shadow-retro">
+              {/* Profile Image */}
+              <div className="max-w-xs">
+                <ImageUpload
+                  image={about.profileImage || ''}
+                  onChange={(img) => setAbout({ ...about, profileImage: img })}
+                  label="Profile Photo"
+                />
               </div>
 
-              <div className="group border-t-2 border-ink pt-12">
-                <label className="block text-[10px] font-sans font-medium uppercase tracking-widest text-muted mb-8">Content</label>
-                <div className="bg-paper min-h-[400px]">
-                  <RichTextEditor
-                    content={about.content}
-                    onChange={(content) => setAbout({ ...about, content })}
-                    placeholder="Write your story..."
-                  />
-                </div>
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-heading uppercase text-retro-text mb-2">Title</label>
+                <input
+                  type="text"
+                  value={about.title}
+                  onChange={(e) => setAbout({ ...about, title: e.target.value })}
+                  className="retro-input"
+                  placeholder="About Me"
+                />
+              </div>
+
+              {/* Subtitle */}
+              <div>
+                <label className="block text-sm font-heading uppercase text-retro-text mb-2">Subtitle</label>
+                <input
+                  type="text"
+                  value={about.subtitle}
+                  onChange={(e) => setAbout({ ...about, subtitle: e.target.value })}
+                  className="retro-input"
+                  placeholder="A brief tagline about yourself"
+                />
+              </div>
+
+              {/* Content */}
+              <div>
+                <label className="block text-sm font-heading uppercase text-retro-text mb-2">About Content</label>
+                <RichTextEditor
+                  content={about.content}
+                  onChange={(content) => setAbout({ ...about, content })}
+                  placeholder="Tell your story..."
+                />
+              </div>
+
+              {/* Hobbies */}
+              <div className="space-y-4">
+                <label className="block text-sm font-heading uppercase text-retro-text border-b-2 border-retro-border pb-1">Hobbies & Interests</label>
+                <TagInput
+                  tags={about.hobbies}
+                  onChange={(hobbies) => setAbout({ ...about, hobbies })}
+                  placeholder="Add a hobby (Press Enter)..."
+                />
+              </div>
+
+              {/* Cancel Button */}
+              <div className="flex gap-4 pt-4 border-t-2 border-dashed border-retro-border/50">
+                <button
+                  onClick={handleSave}
+                  className="btn-primary"
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Saving...' : 'Confirm'}
+                </button>
+                <button
+                  onClick={async () => {
+                    const data = await getAboutContent();
+                    setAbout(data);
+                    setIsEditing(false);
+                  }}
+                  className="px-6 py-3 border-2 border-retro-primary text-retro-primary font-display uppercase hover:bg-retro-border/10"
+                >
+                  Abort
+                </button>
               </div>
             </div>
-            ) : (
-                /* View Mode */
-                <div className="relative">
-                {isEmpty ? (
-                    <div className="text-center py-24 border border-ink/10 bg-ink/5 max-w-4xl mx-auto">
-                        <p className="text-muted font-sans text-lg mb-8 max-w-md mx-auto">
-                            No profile information has been provided yet.
-                        </p>
-                        <button
-                            onClick={() => handleAuth()}
-                            className="px-8 py-3 bg-ink text-paper font-sans text-xs uppercase tracking-widest hover:bg-ink/90 transition-colors"
-                        >
-                            Set up Profile
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-12 lg:gap-24 items-start">
-                        {/* Main Content (Order 1 on Mobile, Right Column on Desktop) */}
-                        <div className="lg:col-span-9 lg:col-start-4 w-full order-1 lg:order-2 max-w-[750px]">
-                            {about.subtitle && (
-                                <p className="text-2xl lg:text-3xl font-sans text-ink/80 mb-12 lg:mb-16 max-w-2xl leading-snug">
-                                    {about.subtitle}
-                                </p>
-                            )}
-
-                            <div 
-                                className="prose-editor"
-                                dangerouslySetInnerHTML={{ __html: about.content }}
-                            />
-                        </div>
-
-                        {/* Marginalia Sidebar (Order 2 on Mobile, Left Column on Desktop) */}
-                        <div className="lg:col-span-3 lg:col-start-1 w-full order-2 lg:order-1">
-                           <div className="lg:sticky lg:top-28 space-y-12">
-                              {about.profileImage && (
-                                <div className="relative aspect-[3/4] w-full bg-ink/5 grayscale hover:grayscale-0 transition-all duration-700 max-w-[300px] lg:max-w-none">
-                                    <Image
-                                      src={about.profileImage}
-                                      alt="Profile"
-                                      fill
-                                      className="object-cover mix-blend-multiply"
-                                    />
-                                </div>
-                              )}
-                              
-                              <Marginalia title="INTERESTS">
-                                 {about.hobbies.length > 0 ? (
-                                     <ul className="space-y-2 mt-4">
-                                      {about.hobbies.map((hobby, idx) => (
-                                        <li key={hobby} className="text-[10px] font-mono uppercase tracking-widest text-ink flex items-baseline gap-3">
-                                           <span className="text-accent/50">{String(idx + 1).padStart(2, '0')}</span>
-                                           <span>{hobby}</span>
-                                        </li>
-                                      ))}
-                                     </ul>
-                                 ) : (
-                                   <p className="text-sm text-muted">No index data available.</p>
-                                 )}
-                              </Marginalia>
-                           </div>
-                        </div>
-                    </div>
-                )}
+          ) : (
+            /* View Mode */
+            <div>
+              {isEmpty ? (
+                /* Empty State */
+                <div className="text-center py-16 border-4 border-dashed border-retro-border/40">
+                  <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center grayscale text-6xl">
+                    👾
+                  </div>
+                  <h1 className="text-3xl font-heading uppercase text-retro-text mb-4">
+                    Identity Unknown
+                  </h1>
+                  <p className="text-retro-text/60 font-mono mb-8 max-w-md mx-auto">
+                    No profile data found in memory.
+                  </p>
+                  <button
+                    onClick={() => handleAuth()}
+                    className="btn-primary"
+                  >
+                    Initialize Profile
+                  </button>
                 </div>
-            )}
+              ) : (
+                /* Content Display */
+                <div className="space-y-8">
+                  {/* Profile & Header */}
+                  <div className="flex flex-col md:flex-row gap-8 items-start border-b-4 border-retro-border pb-8">
+                    {about.profileImage && (
+                      <div className="relative w-32 h-32 md:w-40 md:h-40 border-4 border-retro-border flex-shrink-0 shadow-retro">
+                        <Image
+                          src={about.profileImage}
+                          alt="Profile"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h1 className="text-5xl md:text-7xl font-heading uppercase text-retro-text mb-4 leading-none tracking-tight">
+                        {about.title}
+                      </h1>
+                      <p className="text-xl text-retro-text/80 font-mono border-l-4 border-retro-primary pl-4">
+                        {about.subtitle}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div 
+                    className="prose-editor font-heading text-retro-text text-sm md:text-base leading-relaxed tracking-wide"
+                    dangerouslySetInnerHTML={{ __html: about.content }}
+                  />
+
+                  {/* Hobbies */}
+                  {about.hobbies.length > 0 && (
+                    <div className="pt-8 border-t-4 border-retro-border">
+                      <h3 className="text-sm font-heading font-bold uppercase tracking-wider mb-4 text-retro-text">
+                        Character Specs
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {about.hobbies.map((hobby) => (
+                          <span 
+                            key={hobby}
+                            className="bg-retro-bg border-2 border-retro-text px-3 py-1 text-sm font-heading text-retro-text uppercase shadow-retro-sm"
+                          >
+                            {hobby}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </main>
+      </section>
     </div>
   );
 }

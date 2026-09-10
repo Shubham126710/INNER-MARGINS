@@ -1,5 +1,4 @@
-export * from './Editorial';
-export { default as PublicationHeader } from './PublicationHeader';
+export { default as Header } from './Header';
 export { default as Footer } from './Footer';
 export { default as PostCard } from './PostCard';
 export { default as RichTextEditor } from './RichTextEditor';
@@ -16,5 +15,3 @@ export { default as PatternChart } from './PatternChart';
 export { default as ReminderSetup } from './ReminderSetup';
 export { default as WeeklyActivityChart } from './charts/WeeklyActivityChart';
 
-export * from './Greeting';
-export * from './ElectronNavigation';

@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { BlogPost } from '@/lib/types';
 import PostCard from './PostCard';
-import { FilterStrip } from './Editorial';
 
 interface JournalSectionProps {
   posts: BlogPost[];
@@ -12,95 +11,106 @@ interface JournalSectionProps {
   activeTag?: string;
 }
 
-type SortOption = 'Latest' | 'Oldest' | 'Alpha [A-Z]';
+type SortOption = 'newest' | 'oldest' | 'alphabetical';
 
 export default function JournalSection({ posts, allTags, activeTag }: JournalSectionProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [sortOption, setSortOption] = useState<SortOption>('Latest');
+  const [sortOption, setSortOption] = useState<SortOption>('newest');
 
+  // Sort posts based on selection
   const sortedPosts = [...posts].sort((a, b) => {
     switch (sortOption) {
-      case 'Latest':
+      case 'newest':
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case 'Oldest':
+      case 'oldest':
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      case 'Alpha [A-Z]':
+      case 'alphabetical':
         return a.title.localeCompare(b.title);
       default:
         return 0;
     }
   });
 
-  const handleTagSelect = (tag: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (tag === 'ALL ENTRIES') {
-      params.delete('tag');
-    } else {
-      params.set('tag', tag);
-    }
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
   return (
-    <section className="py-16 lg:py-24" id="journals">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        
-        {/* Header */}
-        <div className="mb-16 border-b border-ink/20 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div>
-            <div className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted mb-4 flex gap-4 items-center">
-               <span>THE PUBLICATION</span>
-               <span className="text-accent/50">•</span>
-               <span>INDEX</span>
+    <section className="py-8 lg:py-12" id="journals">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b-4 border-retro-border pb-6 gap-6">
+          <div className="flex-1">
+            <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest block mb-2">
+              Directory: /journals
+            </span>
+            <h2 className="text-5xl md:text-7xl font-heading uppercase text-retro-text tracking-tight leading-none">
+              Journals
+            </h2>
+
+            {/* Tag Filters */}
+            <div className="flex flex-wrap gap-2 mt-6">
+              <Link
+                href="/journals"
+                className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
+                  !activeTag
+                    ? 'bg-retro-text text-retro-surface border-retro-text'
+                    : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
+                }`}
+              >
+                All
+              </Link>
+              {allTags.map((t) => (
+                <Link
+                  key={t}
+                  href={`/journals?tag=${t}`}
+                  className={`px-3 py-1 text-xs font-mono uppercase border-2 transition-all ${
+                    activeTag === t
+                      ? 'bg-retro-text text-retro-surface border-retro-text'
+                      : 'bg-retro-surface text-retro-text border-retro-text hover:bg-retro-text hover:text-retro-surface'
+                  }`}
+                >
+                  #{t}
+                </Link>
+              ))}
             </div>
-            <h1 className="text-4xl lg:text-5xl font-display tracking-tight text-ink uppercase leading-none">
-              The Archive
-            </h1>
           </div>
-          <div className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted text-left md:text-right">
-            <p>{posts.length} PIECES OF EVIDENCE THAT I WAS HERE.</p>
+
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            {/* Sort Control */}
+            <div className="flex items-center gap-2 bg-retro-surface border-2 border-retro-border p-1">
+              <span className="text-xs font-mono uppercase text-retro-text/60 px-2">Sort:</span>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                className="bg-transparent font-mono text-sm uppercase text-retro-text outline-none cursor-pointer pr-4"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="alphabetical">A-Z</option>
+              </select>
+            </div>
+
+            <span className="text-retro-text font-mono text-sm bg-retro-surface border-2 border-retro-border px-3 py-1.5 min-w-[100px] text-center">
+              COUNT: {sortedPosts.length}
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
-          
-          {/* Sidebar / Filters */}
-          <div className="lg:col-span-3 space-y-12 sticky top-24">
-             <FilterStrip 
-               label="FILTER BY" 
-               options={['ALL ENTRIES', ...allTags]} 
-               selected={activeTag || 'ALL ENTRIES'} 
-               onSelect={handleTagSelect} 
-             />
-
-             <FilterStrip 
-               label="SORT BY" 
-               options={['Latest', 'Oldest', 'Alpha [A-Z]']} 
-               selected={sortOption} 
-               onSelect={(opt) => setSortOption(opt as SortOption)} 
-             />
+        {sortedPosts.length === 0 ? (
+          <div className="text-center py-24 border-4 border-dashed border-retro-border/30 bg-retro-surface">
+            <div className="text-6xl mb-6 grayscale">💾</div>
+            <h3 className="text-2xl font-heading uppercase text-retro-text/40 mb-4">
+              No Data Found
+            </h3>
+            <p className="text-retro-text/60 font-mono mb-8 max-w-md mx-auto">
+              Initialize database by creating your first entry.
+            </p>
+            <Link href="/write" className="btn-primary no-underline">
+              Initialize
+            </Link>
           </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-9 border-t-2 border-ink lg:border-t-0 pt-8 lg:pt-0">
-            {sortedPosts.length === 0 ? (
-              <div className="py-24 text-center border-b border-ink/20">
-                <p className="text-muted font-sans text-lg">
-                  No entries found.
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col border-t-2 border-ink pt-2">
-                {sortedPosts.map((post, index) => (
-                  <PostCard key={post.id} post={post} index={index} variant="archive-index" />
-                ))}
-              </div>
-            )}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sortedPosts.map((post, index) => (
+              <PostCard key={post.id} post={post} index={index} />
+            ))}
           </div>
-
-        </div>
+        )}
       </div>
     </section>
   );
