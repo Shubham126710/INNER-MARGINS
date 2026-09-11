@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Press_Start_2P, VT323 } from "next/font/google";
+import { Press_Start_2P, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header, Footer } from "@/components";
 
@@ -10,8 +10,8 @@ const pressStart2P = Press_Start_2P({
   display: "swap",
 });
 
-const vt323 = VT323({
-  weight: "400",
+const jetbrainsMono = JetBrains_Mono({
+  weight: ["400", "500", "700"],
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
@@ -29,17 +29,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${pressStart2P.variable} ${vt323.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-white`}
+        className={`${pressStart2P.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-retro-bg relative`}
       >
-        <svg width="0" height="0" style={{ position: 'absolute', visibility: 'hidden' }}>
+        {/* Grain overlay */}
+        <div className="pointer-events-none fixed inset-0 z-50 opacity-10 mix-blend-overlay noise-bg"></div>
+        {/* Scanlines overlay */}
+        <div className="pointer-events-none fixed inset-0 z-40 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]"></div>
+        
+        <svg className="absolute w-0 h-0 pointer-events-none" style={{ position: 'absolute', pointerEvents: 'none' }}>
           <defs>
-            <filter id="pixelate" x="-10%" y="-10%" width="120%" height="120%">
-              <feFlood x="2" y="2" height="2" width="2" />
-              <feComposite width="4" height="4" />
-              <feTile result="a" />
-              <feComposite in="SourceGraphic" in2="a" operator="in" />
+            <filter id="pixelate" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" x="-10%" y="-10%" width="120%" height="120%">
+              <feFlood x="0" y="0" width="2" height="2" floodColor="white" result="dot" />
+              <feOffset in="dot" dx="2" dy="2" width="4" height="4" result="tile" />
+              <feTile in="tile" result="tiled" />
+              <feComposite in="SourceGraphic" in2="tiled" operator="in" />
               <feMorphology operator="dilate" radius="2" />
             </filter>
           </defs>

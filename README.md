@@ -1,4 +1,4 @@
-# Inner Margins v1.5
+# Inner Margins v2.5
 
 <div align="center">
   <img src="src/app/icon.png" alt="Inner Margins Logo" width="128" />

@@ -13,7 +13,7 @@ export default function Header() {
     { href: '/about', label: 'About' },
     { href: '/journals', label: 'Journals' },
     { href: '/analysis', label: 'Analysis' },
-    { href: '/write', label: 'Write', highlight: true },
+    { href: '/write', label: 'New Transmission', highlight: true },
   ];
 
   return (
@@ -38,9 +38,9 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-code uppercase tracking-wide transition-none no-underline hover:bg-retro-text hover:text-retro-surface px-2 py-1 ${
+                className={`text-[10px] md:text-sm font-mono uppercase tracking-widest transition-none no-underline hover:bg-retro-text hover:text-retro-surface px-3 py-1.5 ${
                   link.highlight
-                    ? 'btn-primary'
+                    ? 'border-2 border-retro-border hover:bg-retro-primary hover:text-retro-surface'
                     : pathname === link.href
                     ? 'bg-retro-text text-retro-surface'
                     : 'text-retro-text'

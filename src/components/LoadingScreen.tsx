@@ -1,95 +1,139 @@
-export default function LoadingScreen() {
-  const QUOTES = [
-    "\"THE UNEXAMINED LIFE IS NOT WORTH LIVING.\"",
-    "\"EVERYTHING WE HEAR IS AN OPINION, NOT A FACT.\"",
-    "\"LIFE MUST BE UNDERSTOOD BACKWARD; BUT IT MUST BE LIVED FORWARD.\"",
-    "\"YOUR FOCUS DETERMINES YOUR REALITY.\"",
-    "\"WHAT WE THINK, WE BECOME.\"",
-    "\"STAY AWHILE AND LISTEN.\"",
-    "\"IT'S DANGEROUS TO GO ALONE! TAKE THIS.\"",
-    "\"BE WATER, MY FRIEND.\"",
-  ];
+'use client';
 
-  const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+import { useEffect, useState } from 'react';
+
+export default function LoadingScreen() {
+  const [timeStr, setTimeStr] = useState("05/28/26 14:02:11");
+  const [randomMsg, setRandomMsg] = useState("CHECKING EMOTIONAL SECTORS...");
+  const [cpuText, setCpuText] = useState("UNKNOWN EMOTIONAL PROCESSOR");
+  const [memText, setMemText] = useState("DEGRADED BUT FUNCTIONING");
+
+  useEffect(() => {
+    // Current date and time
+    const updateTime = () => {
+      const now = new Date();
+      setTimeStr(now.toLocaleString('en-US', { hour12: false, year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    
+    const SYS_MESSAGES = [
+      "CHECKING EMOTIONAL SECTORS...",
+      "DEFRAGMENTING GHOSTS...",
+      "CALIBRATING NOSTALGIA LEVELS...",
+      "BYPASSING RATIONAL THOUGHT...",
+      "MOUNTING MEMORY DRIVES...",
+      "RECOVERING FRAGMENTED DREAMS..."
+    ];
+    setRandomMsg(SYS_MESSAGES[Math.floor(Math.random() * SYS_MESSAGES.length)]);
+
+    const CPUS = [
+      "UNKNOWN EMOTIONAL PROCESSOR",
+      "NEURAL PATHWAY ENGINE v2.5",
+      "NOSTALGIA CO-PROCESSOR ACTIVE",
+      "FRAGMENTED LOGIC UNIT"
+    ];
+    setCpuText(CPUS[Math.floor(Math.random() * CPUS.length)]);
+
+    const MEMS = [
+      "DEGRADED BUT FUNCTIONING",
+      "78% SECTORS CORRUPTED",
+      "ARCHIVE CAPACITY: LIMITED",
+      "MEMORY BANKS STABLE"
+    ];
+    setMemText(MEMS[Math.floor(Math.random() * MEMS.length)]);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center font-mono p-4">
+    <div className="w-full min-h-screen flex flex-col items-center justify-center font-mono p-6 relative overflow-hidden bg-retro-text text-retro-surface">
+      {/* Noise and Scanlines directly in loading to ensure it appears */}
+      <div className="pointer-events-none absolute inset-0 z-10 opacity-20 mix-blend-overlay noise-bg"></div>
+      <div className="pointer-events-none absolute inset-0 z-10 opacity-10 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.8)_50%)] bg-[length:100%_4px]"></div>
+      {/* Ambient Flicker */}
+      <div className="pointer-events-none absolute inset-0 z-20 bg-retro-bg/5 animate-flicker mix-blend-color-dodge"></div>
+
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes fillBar {
+        @keyframes fillSegments {
           0% { width: 0%; }
+          10% { width: 15%; }
+          25% { width: 15%; } /* pause */
+          35% { width: 40%; }
+          50% { width: 45%; }
+          60% { width: 45%; } /* pause */
+          75% { width: 80%; }
+          90% { width: 85%; }
           100% { width: 100%; }
         }
-        .animate-fill {
-          animation: fillBar 1.5s ease-out forwards;
+        .animate-segments {
+          animation: fillSegments 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
         @keyframes blinkCursor {
           0%, 100% { opacity: 1; }
           50% { opacity: 0; }
         }
         .animate-cursor {
-          animation: blinkCursor 1s step-end infinite;
+          animation: blinkCursor 0.8s step-end infinite;
         }
         @keyframes loadingSteps {
-          0%, 11% { content: "INITIALIZING SYSTEM ARCHITECTURE..."; }
-          11.1%, 22% { content: "ALLOCATING MEMORY BLOCKS..."; }
-          22.1%, 33% { content: "ESTABLISHING SECURE CONNECTION..."; }
-          33.1%, 44% { content: "LOADING CORE ASSETS..."; }
-          44.1%, 55% { content: "MOUNTING VIRTUAL DRIVES..."; }
-          55.1%, 66% { content: "DECRYPTING ARCHIVES..."; }
-          66.1%, 77% { content: "SYNCHRONIZING TIMESTAMPS..."; }
-          77.1%, 88% { content: "RUNNING DIAGNOSTICS..."; }
-          88.1%, 100% { content: "SYSTEM FULLY OPERATIONAL."; }
+          0%, 15% { content: "INITIALIZING EMOTIONAL ARCHIVE..."; }
+          15.1%, 35% { content: "RECOVERING MEMORY FRAGMENTS..."; }
+          35.1%, 55% { content: "RESTORING LAST SESSION..."; }
+          55.1%, 75% { content: "LOADING INNER DIALOGUE..."; }
+          75.1%, 95% { content: "SYNCHRONIZING THOUGHTS..."; }
+          95.1%, 100% { content: "ARCHIVE READY."; }
         }
         .loading-step::after {
-          content: "INITIALIZING SYSTEM ARCHITECTURE...";
-          animation: loadingSteps 1.5s ease-out forwards;
+          content: "INITIALIZING EMOTIONAL ARCHIVE...";
+          animation: loadingSteps 2.5s ease-out forwards;
         }
-        @keyframes loadingPercentage {
-          0%, 9% { content: "0% COMPLETE"; }
-          10%, 19% { content: "12% COMPLETE"; }
-          20%, 29% { content: "25% COMPLETE"; }
-          30%, 39% { content: "38% COMPLETE"; }
-          40%, 49% { content: "53% COMPLETE"; }
-          50%, 59% { content: "66% COMPLETE"; }
-          60%, 69% { content: "78% COMPLETE"; }
-          70%, 79% { content: "85% COMPLETE"; }
-          80%, 89% { content: "94% COMPLETE"; }
-          90%, 100% { content: "100% COMPLETE"; }
+        @keyframes flicker {
+          0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 0; }
+          20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.8; }
         }
-        .loading-percentage::after {
-          content: "0% COMPLETE";
-          animation: loadingPercentage 1.5s ease-out forwards;
+        .animate-flicker {
+          animation: flicker 4s infinite;
+        }
+        @keyframes glitchDrop {
+          0% { transform: translateY(0); }
+          5% { transform: translateY(2px); opacity: 0.5; }
+          10% { transform: translateY(-1px); opacity: 1; }
+          15% { transform: translateY(0); }
+          100% { transform: translateY(0); }
+        }
+        .glitch-container {
+          animation: glitchDrop 5s infinite 2s;
+        }
+        .segmented-fill {
+           background-image: repeating-linear-gradient(90deg, var(--retro-surface), var(--retro-surface) 10px, transparent 10px, transparent 14px);
         }
       `}} />
 
-      <div className="w-full max-w-sm space-y-8 text-center flex flex-col items-center">
+      <div className="w-full max-w-lg space-y-6 text-left flex flex-col glitch-container relative z-30">
         
-        <div className="font-heading text-4xl sm:text-5xl text-retro-surface uppercase tracking-widest relative">
-          LOADING<span className="animate-cursor">_</span>
+        {/* Boot text */}
+        <div className="font-mono text-xs text-retro-surface/60 mb-8 space-y-1">
+          <p>IM_OS v2.5.0</p>
+          <p suppressHydrationWarning>BIOS DATE: {timeStr} VER 2.5</p>
+          <p suppressHydrationWarning>CPU: {cpuText}</p>
+          <p suppressHydrationWarning>MEMORY: {memText}</p>
+          <p className="pt-2 text-retro-surface/40 whitespace-nowrap" suppressHydrationWarning>&gt; {randomMsg}</p>
+        </div>
+
+        <div className="font-heading text-2xl sm:text-3xl text-retro-surface uppercase tracking-widest relative">
+          SYSTEM_BOOT<span className="animate-cursor ml-1">█</span>
         </div>
         
-        {/* Retro Progress Bar Container */}
-        <div className="w-full h-6 border-4 border-retro-surface p-1 shadow-retro-sm">
-          <div className="h-full bg-retro-surface animate-fill" />
+        {/* Segmented Retro Progress Bar */}
+        <div className="w-full h-8 border-2 border-retro-surface/40 p-1 bg-retro-text shadow-[0_0_15px_rgba(247,218,214,0.1)]">
+          <div className="h-full segmented-fill animate-segments w-0" />
         </div>
         
         {/* Loading status texts */}
-        <div className="font-mono text-xs sm:text-sm text-retro-surface/80 min-h-[40px] space-y-1">
-          <p className="loading-step"></p>
-          <p className="text-[10px] text-retro-surface/60 loading-percentage"></p>
-        </div>
-
-        {/* Random Quote */}
-        <div className="mt-8 pt-6 w-full border-t-2 border-dashed border-retro-surface/30">
-          <p 
-            suppressHydrationWarning 
-            className="font-body text-retro-surface/90 italic text-sm md:text-base leading-relaxed mb-3 px-4"
-          >
-            {randomQuote}
-          </p>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-retro-surface/50">
-             - SYSTEM MEMORY
-          </p>
+        <div className="font-mono text-[10px] sm:text-xs text-retro-surface/80 uppercase tracking-widest">
+          <span className="opacity-50 mr-2">[LOG]</span><span className="loading-step"></span>
         </div>
 
       </div>

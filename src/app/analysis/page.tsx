@@ -2,8 +2,8 @@ import { getAnalysisStats } from '@/actions/analysis.actions';
 import { StatCard, ContributionGraph, PatternChart, ReminderSetup } from '@/components';
 
 export const metadata = {
-  title: 'Analysis | Inner Margins',
-  description: 'Writing statistics and insights.',
+  title: 'Diagnostics | Inner Margins',
+  description: 'System diagnostics and memory analysis.',
 };
 
 export const dynamic = 'force-dynamic';
@@ -13,99 +13,115 @@ export default async function AnalysisPage() {
   const stats = await getAnalysisStats();
 
   return (
-    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white">
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface">
       {/* Hero Section */}
-      <section className="relative py-12 md:py-24 lg:py-32 overflow-hidden border-b-4 border-retro-border bg-retro-surface">
-        <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-12 text-center">
-          <div className="inline-block px-3 py-1 mb-6 border-2 border-retro-text bg-retro-secondary/10 uppercase tracking-widest text-xs font-code">
-            Insights
+      <section className="relative py-16 lg:py-28 overflow-hidden border-b border-retro-border/30 bg-retro-bg">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,65,60,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center">
+          <div className="animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
+            <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/80 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-8 shadow-retro-sm">
+              <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse"></div>
+              <span>Analysis Core Active</span>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-display uppercase tracking-tighter text-retro-text mb-6">
-            Analysis
+          
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-heading uppercase text-retro-text mb-6 tracking-tight animate-fade-in opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+            System Analysis
           </h1>
-          <p className="text-base md:text-xl font-code text-retro-text/80 max-w-2xl mx-auto">
-            A birdseye view of my writing consistency and volume.
-          </p>
+          
+          <div className="animate-fade-in opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
+            <p className="text-sm md:text-base text-retro-text/80 font-mono max-w-xl mx-auto leading-relaxed uppercase tracking-wide">
+              Analyzing memory preservation patterns.
+            </p>
+          </div>
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-8 md:py-16">
+      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-16 relative">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_right,var(--retro-surface)_0%,transparent_20%)] opacity-30 pointer-events-none"></div>
         
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16 animate-fade-in opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
           <StatCard 
-            label="Current Streak" 
+            label="Current Link Streak" 
              value={stats.currentStreak} 
-             suffix={stats.currentStreak === 1 ? 'Day' : 'Days'}
+             suffix={stats.currentStreak === 1 ? 'Cycle' : 'Cycles'}
              highlight={stats.currentStreak > 0}
           />
           <StatCard 
-            label="Longest Streak" 
+            label="Peak Link Streak" 
              value={stats.longestStreak} 
-             suffix={stats.longestStreak === 1 ? 'Day' : 'Days'}
+             suffix={stats.longestStreak === 1 ? 'Cycle' : 'Cycles'}
           />
           <StatCard 
-            label="Total Entries" 
+            label="Total Archived" 
              value={stats.totalEntries} 
+             suffix="Logs"
           />
            <StatCard 
-            label="This Year" 
+            label="Annual Preservations" 
              value={stats.thisYear} 
+             suffix="Logs"
           />
         </div>
 
         {/* Contribution Graph */}
-        <div className="mb-16 border-4 border-retro-border bg-retro-surface p-8 shadow-retro overflow-hidden">
-             <h2 className="text-2xl font-display uppercase mb-6 border-b-2 border-retro-border pb-4 flex justify-between items-end">
-                <span>Year in Pixels</span>
-                <span className="text-xs font-code opacity-60 normal-case hidden sm:inline-block">Last 365 Days</span>
+        <div className="relative z-10 mb-16 border border-retro-border/30 bg-retro-surface/50 p-6 lg:p-8 shadow-retro-sm hover:shadow-retro transition-shadow overflow-hidden animate-fade-in opacity-0" style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}>
+            <h2 className="text-xl lg:text-2xl font-heading uppercase mb-6 border-b border-retro-border/20 pb-4 flex justify-between items-end text-retro-text">
+                <span>Timeline Diagnostics</span>
+                <span className="text-[10px] font-mono tracking-widest opacity-60 uppercase hidden sm:inline-block">Timeframe: 365 Cycles</span>
             </h2>
             <ContributionGraph data={stats.dailyActivity} />
         </div>
 
         {/* Breakdown Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16 animate-fade-in opacity-0" style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}>
             
             {/* Recent Activity */}
-            <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro">
-                <h2 className="text-2xl font-display uppercase mb-8 border-b-2 border-retro-border pb-4">
-                    Recent Activity
+            <div className="border border-retro-border/30 bg-retro-surface/50 p-6 lg:p-8 shadow-retro-sm">
+                <h2 className="text-xl lg:text-2xl font-heading uppercase mb-8 border-b border-retro-border/20 pb-4 text-retro-text">
+                    Network Activity
                 </h2>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center group">
-                        <span className="font-code text-retro-text/70 uppercase">This Week</span>
-                        <div className="flex items-center gap-4">
-                            <div className="h-px flex-1 bg-retro-border w-24 md:w-48 opacity-30"></div>
-                            <span className="font-display text-3xl">{stats.thisWeek}</span>
+                        <span className="font-mono text-[10px] sm:text-xs text-retro-text/70 uppercase tracking-widest">Local Week</span>
+                        <div className="flex items-center gap-4 flex-1 mx-4">
+                            <div className="h-[1px] flex-1 bg-retro-border/20 group-hover:bg-retro-primary/50 transition-colors border-dashed border-t"></div>
                         </div>
+                        <span className="font-heading text-2xl group-hover:text-retro-primary transition-colors">{stats.thisWeek}</span>
                     </div>
                     <div className="flex justify-between items-center group">
-                        <span className="font-code text-retro-text/70 uppercase">This Month</span>
-                        <div className="flex items-center gap-4">
-                            <div className="h-px flex-1 bg-retro-border w-24 md:w-48 opacity-30"></div>
-                            <span className="font-display text-3xl">{stats.thisMonth}</span>
+                        <span className="font-mono text-[10px] sm:text-xs text-retro-text/70 uppercase tracking-widest">Local Month</span>
+                        <div className="flex items-center gap-4 flex-1 mx-4">
+                            <div className="h-[1px] flex-1 bg-retro-border/20 group-hover:bg-retro-primary/50 transition-colors border-dashed border-t"></div>
                         </div>
+                        <span className="font-heading text-2xl group-hover:text-retro-primary transition-colors">{stats.thisMonth}</span>
                     </div>
                     <div className="flex justify-between items-center group">
-                        <span className="font-code text-retro-text/70 uppercase">This Year</span>
-                        <div className="flex items-center gap-4">
-                             <div className="h-px flex-1 bg-retro-border w-24 md:w-48 opacity-30"></div>
-                            <span className="font-display text-3xl">{stats.thisYear}</span>
+                        <span className="font-mono text-[10px] sm:text-xs text-retro-text/70 uppercase tracking-widest">Local Year</span>
+                        <div className="flex items-center gap-4 flex-1 mx-4">
+                             <div className="h-[1px] flex-1 bg-retro-border/20 group-hover:bg-retro-primary/50 transition-colors border-dashed border-t"></div>
                         </div>
+                        <span className="font-heading text-2xl group-hover:text-retro-primary transition-colors">{stats.thisYear}</span>
                     </div>
                 </div>
             </div>
 
             {/* Distribution */}
-            <PatternChart 
-                weeklyPattern={stats.weeklyPattern} 
-                monthlyPattern={stats.monthlyPattern} 
-            />
+            <div className="border border-retro-border/30 bg-retro-surface/50 p-6 lg:p-8 shadow-retro-sm">
+              <PatternChart 
+                  weeklyPattern={stats.weeklyPattern} 
+                  monthlyPattern={stats.monthlyPattern} 
+              />
+            </div>
         </div>
 
         {/* Streak Settings */}
-        <ReminderSetup />
-
+        <div className="relative z-10 animate-fade-in opacity-0" style={{ animationDelay: '900ms', animationFillMode: 'forwards' }}>
+          <ReminderSetup />
+        </div>
       </main>
     </div>
   );
