@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { JournalSection, BelieveSign } from '@/components';
+import { JournalSection } from '@/components';
 import { getPublishedPosts } from '@/actions/post.actions';
 
 export const dynamic = 'force-dynamic';
@@ -25,11 +25,6 @@ export default async function JournalsPage({
 
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white pt-4 md:pt-8">
-      
-      <div className="pt-8 pb-4">
-        <BelieveSign />
-      </div>
-
       {/* Remove hero from here since JournalSection handles its own header, or we can update JournalSection */}
       <JournalSection posts={filteredPosts} allTags={allTags} activeTag={tag} />
       

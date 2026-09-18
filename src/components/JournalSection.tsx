@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { BlogPost } from '@/lib/types';
 import PostCard from './PostCard';
+import BelieveSign from './BelieveSign';
 
 interface JournalSectionProps {
   posts: BlogPost[];
@@ -47,9 +48,16 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
               <div className="w-2 h-2 bg-retro-primary opacity-50"></div>
               <span>Directory Access</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-heading uppercase text-retro-text tracking-tight leading-none mb-2">
-              Journal Archive
-            </h2>
+            
+            <div className="relative">
+              <h2 className="text-4xl md:text-6xl font-heading uppercase text-retro-text tracking-tight leading-none mb-2 relative z-10">
+                Journal Archive
+              </h2>
+              
+              <div className="hidden sm:block absolute right-0 md:right-8 lg:right-24 -top-8 md:-top-16 w-[180px] md:w-[240px] z-0">
+                <BelieveSign className="transform rotate-3 opacity-90 scale-90 md:scale-100" />
+              </div>
+            </div>
             <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest block">
               Path: /journals{activeTag ? `?tag=${activeTag}` : ''}
             </span>
