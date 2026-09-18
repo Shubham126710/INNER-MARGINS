@@ -42,22 +42,22 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
         </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-retro-border/30 pb-6 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-retro-border/30 pb-6 gap-6 relative">
+          
+          {/* Ted Lasso Sign placed in the gap above sort widgets */}
+          <div className="hidden md:block absolute right-0 top-[-10px] w-[200px] z-20 pointer-events-none">
+            <BelieveSign className="transform rotate-2 opacity-95" />
+          </div>
+
           <div className="flex-1 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
             <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/80 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-6 shadow-retro-sm">
               <div className="w-2 h-2 bg-retro-primary opacity-50"></div>
               <span>Directory Access</span>
             </div>
             
-            <div className="relative">
-              <h2 className="text-4xl md:text-6xl font-heading uppercase text-retro-text tracking-tight leading-none mb-2 relative z-10">
-                Journal Archive
-              </h2>
-              
-              <div className="hidden sm:block absolute right-0 md:right-8 lg:right-24 -top-8 md:-top-16 w-[180px] md:w-[240px] z-0">
-                <BelieveSign className="transform rotate-3 opacity-90 scale-90 md:scale-100" />
-              </div>
-            </div>
+            <h2 className="text-4xl md:text-6xl font-heading uppercase text-retro-text tracking-tight leading-none mb-2">
+              Journal Archive
+            </h2>
             <span className="text-retro-text/60 text-xs font-mono uppercase tracking-widest block">
               Path: /journals{activeTag ? `?tag=${activeTag}` : ''}
             </span>
