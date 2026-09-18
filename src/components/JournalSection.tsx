@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { BlogPost } from '@/lib/types';
 import PostCard from './PostCard';
-import BelieveSign from './BelieveSign';
 
 interface JournalSectionProps {
   posts: BlogPost[];
@@ -44,11 +43,6 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-retro-border/30 pb-6 gap-6 relative">
           
-          {/* Ted Lasso Sign placed in the gap above sort widgets */}
-          <div className="hidden md:block absolute right-0 top-[-20px] w-[260px] md:w-[320px] z-20 pointer-events-none">
-            <BelieveSign className="transform rotate-2 opacity-95" />
-          </div>
-
           <div className="flex-1 animate-fade-in opacity-0" style={{ animationFillMode: 'forwards' }}>
             <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/80 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-6 shadow-retro-sm">
               <div className="w-2 h-2 bg-retro-primary opacity-50"></div>

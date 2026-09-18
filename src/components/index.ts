@@ -1,6 +1,5 @@
 export { default as Header } from './Header';
 export { default as Footer } from './Footer';
-export { default as BelieveSign } from './BelieveSign';
 export { default as PostCard } from './PostCard';
 export { default as RichTextEditor } from './RichTextEditor';
 export { default as TagInput } from './TagInput';
