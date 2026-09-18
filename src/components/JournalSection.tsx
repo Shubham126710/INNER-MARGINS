@@ -45,7 +45,7 @@ export default function JournalSection({ posts, allTags, activeTag }: JournalSec
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-retro-border/30 pb-6 gap-6 relative">
           
           {/* Ted Lasso Sign placed in the gap above sort widgets */}
-          <div className="hidden md:block absolute right-0 top-[-10px] w-[200px] z-20 pointer-events-none">
+          <div className="hidden md:block absolute right-0 top-[-20px] w-[260px] md:w-[320px] z-20 pointer-events-none">
             <BelieveSign className="transform rotate-2 opacity-95" />
           </div>
 

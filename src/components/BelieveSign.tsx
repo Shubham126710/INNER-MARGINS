@@ -5,21 +5,21 @@ export default function BelieveSign({ className = '' }: { className?: string }) 
     <div className={`relative flex items-center justify-center w-full max-w-[320px] mx-auto group ${className}`}>
       {/* Font import */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap');
         .font-marker {
-          font-family: 'Patrick Hand SC', cursive;
-          letter-spacing: 0.1em;
+          font-family: 'Caveat Brush', cursive;
+          letter-spacing: 0.05em;
         }
       `}} />
       
       {/* The Paper */}
       <div 
-        className="bg-[#fad346] w-full aspect-[5/3] relative shadow-[2px_3px_5px_rgba(0,0,0,0.15)] transform hover:-rotate-1 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center border border-[#e5c13b]"
+        className="bg-[#fad346] w-full aspect-[16/9] relative shadow-[2px_3px_5px_rgba(0,0,0,0.15)] transform hover:-rotate-1 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center border border-[#e5c13b] overflow-hidden"
       >
         
         {/* The Text */}
         <h2 
-          className="font-marker text-5xl md:text-7xl opacity-90 select-none pb-2 pr-1"
+          className="font-marker text-[3.5rem] md:text-[5rem] leading-none opacity-90 select-none pt-2"
           style={{ color: '#0d2859' }}
         >
           BELIEVE
