@@ -75,7 +75,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </h3>
             <div className="flex items-center gap-2 mt-2 text-[10px] font-mono uppercase tracking-widest text-retro-text/50">
               <time>{formattedDate}</time>
-              <span>//</span>
+              <span>{"//"}</span>
               <span>{post.readTime}</span>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Image from 'next/image';
+import { compressImageFile } from '@/lib/image-compressor';
 
 interface ImageUploadProps {
   image: string;
@@ -12,17 +13,24 @@ interface ImageUploadProps {
 export default function ImageUpload({ image, onChange, label = 'Cover Image' }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFile = useCallback((file: File) => {
+  const handleFile = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Please upload an image file');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      onChange(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedDataUrl = await compressImageFile(file, 1200, 1200, 0.8);
+      onChange(compressedDataUrl);
+    } catch (err) {
+      console.error('Failed to compress image:', err);
+      // Fallback to direct read
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        onChange(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   }, [onChange]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {

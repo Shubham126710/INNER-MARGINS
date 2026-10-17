@@ -1,15 +1,14 @@
 import { getAnalysisStats } from '@/actions/analysis.actions';
-import { StatCard, ContributionGraph, PatternChart, ReminderSetup } from '@/components';
+import { StatCard, TimelineDiagnostics, PatternChart, ReminderSetup, AppleActivityCard } from '@/components';
 
 export const metadata = {
   title: 'Diagnostics | Inner Margins',
   description: 'System diagnostics and memory analysis.',
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export default async function AnalysisPage() {
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Artificial delay for effect
   const stats = await getAnalysisStats();
 
   return (
@@ -67,13 +66,43 @@ export default async function AnalysisPage() {
           />
         </div>
 
-        {/* Contribution Graph */}
-        <div className="relative z-10 mb-16 border border-retro-border/30 bg-retro-surface/50 p-6 lg:p-8 shadow-retro-sm hover:shadow-retro transition-shadow overflow-hidden animate-fade-in opacity-0" style={{ animationDelay: '700ms', animationFillMode: 'forwards' }}>
-            <h2 className="text-xl lg:text-2xl font-heading uppercase mb-6 border-b border-retro-border/20 pb-4 flex justify-between items-end text-retro-text">
-                <span>Timeline Diagnostics</span>
-                <span className="text-[10px] font-mono tracking-widest opacity-60 uppercase hidden sm:inline-block">Timeframe: 365 Cycles</span>
-            </h2>
-            <ContributionGraph data={stats.dailyActivity} />
+        {/* Timeline Diagnostics: 2D Matrix (Default) with Expandable 3D Terrain */}
+        <TimelineDiagnostics data={stats.dailyActivity} />
+
+        {/* Activity Rings Widget */}
+        <div className="relative z-10 mb-16 animate-fade-in opacity-0" style={{ animationDelay: '750ms', animationFillMode: 'forwards' }}>
+          <AppleActivityCard
+            title="Telemetry Rings // Cadence"
+            activities={[
+              {
+                label: "WEEKLY TRANSMISSIONS",
+                color: "#C9413C",
+                colorEnd: "#E2554F",
+                size: 210,
+                current: stats.thisWeek,
+                target: 7,
+                unit: "LOGS",
+              },
+              {
+                label: "MONTHLY ARCHIVE",
+                color: "#D96B43",
+                colorEnd: "#F08C68",
+                size: 168,
+                current: stats.thisMonth,
+                target: 20,
+                unit: "LOGS",
+              },
+              {
+                label: "ACTIVE LINK STREAK",
+                color: "#C88A2E",
+                colorEnd: "#E8B058",
+                size: 126,
+                current: stats.currentStreak,
+                target: Math.max(7, stats.longestStreak || 7),
+                unit: stats.currentStreak === 1 ? "CYCLE" : "CYCLES",
+              },
+            ]}
+          />
         </div>
 
         {/* Breakdown Section */}

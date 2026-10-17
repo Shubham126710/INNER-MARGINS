@@ -18,33 +18,38 @@ export default function LoadingScreen() {
     updateTime();
     const interval = setInterval(updateTime, 1000);
     
-    const SYS_MESSAGES = [
-      "CHECKING EMOTIONAL SECTORS...",
-      "DEFRAGMENTING GHOSTS...",
-      "CALIBRATING NOSTALGIA LEVELS...",
-      "BYPASSING RATIONAL THOUGHT...",
-      "MOUNTING MEMORY DRIVES...",
-      "RECOVERING FRAGMENTED DREAMS..."
-    ];
-    setRandomMsg(SYS_MESSAGES[Math.floor(Math.random() * SYS_MESSAGES.length)]);
+    const timer = setTimeout(() => {
+      const SYS_MESSAGES = [
+        "CHECKING EMOTIONAL SECTORS...",
+        "DEFRAGMENTING GHOSTS...",
+        "CALIBRATING NOSTALGIA LEVELS...",
+        "BYPASSING RATIONAL THOUGHT...",
+        "MOUNTING MEMORY DRIVES...",
+        "RECOVERING FRAGMENTED DREAMS..."
+      ];
+      setRandomMsg(SYS_MESSAGES[Math.floor(Math.random() * SYS_MESSAGES.length)]);
 
-    const CPUS = [
-      "UNKNOWN EMOTIONAL PROCESSOR",
-      "NEURAL PATHWAY ENGINE v2.5",
-      "NOSTALGIA CO-PROCESSOR ACTIVE",
-      "FRAGMENTED LOGIC UNIT"
-    ];
-    setCpuText(CPUS[Math.floor(Math.random() * CPUS.length)]);
+      const CPUS = [
+        "UNKNOWN EMOTIONAL PROCESSOR",
+        "NEURAL PATHWAY ENGINE v2.5",
+        "NOSTALGIA CO-PROCESSOR ACTIVE",
+        "FRAGMENTED LOGIC UNIT"
+      ];
+      setCpuText(CPUS[Math.floor(Math.random() * CPUS.length)]);
 
-    const MEMS = [
-      "DEGRADED BUT FUNCTIONING",
-      "78% SECTORS CORRUPTED",
-      "ARCHIVE CAPACITY: LIMITED",
-      "MEMORY BANKS STABLE"
-    ];
-    setMemText(MEMS[Math.floor(Math.random() * MEMS.length)]);
+      const MEMS = [
+        "DEGRADED BUT FUNCTIONING",
+        "78% SECTORS CORRUPTED",
+        "ARCHIVE CAPACITY: LIMITED",
+        "MEMORY BANKS STABLE"
+      ];
+      setMemText(MEMS[Math.floor(Math.random() * MEMS.length)]);
+    }, 0);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

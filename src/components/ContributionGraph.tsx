@@ -66,7 +66,7 @@ export function ContributionGraph({ data }: { data: { [date: string]: number } }
                 <div className="flex gap-[2px]">
                     {weeks.map((week, i) => (
                         <div key={i} className="flex flex-col gap-[2px]">
-                            {week.map((day, j) => (
+                            {week.map((day) => (
                                 <div 
                                     key={day.date}
                                     className={`w-3 h-3 rounded-[1px] ${getColor(day.count, day.isFuture)} transition-colors duration-200 cursor-default relative group`}

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { TagInput, RichTextEditor, ImageUpload, LoadingScreen, PinLock } from '@/components';
 import { getAboutContent, saveAboutContent } from '@/actions/about.actions';

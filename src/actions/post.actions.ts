@@ -11,40 +11,75 @@ function calculateReadTime(content: string): string {
   return `${minutes} min read`;
 }
 
+// Common select projection for cards/lists to prevent fetching megabytes of content
+const postCardSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  excerpt: true,
+  coverImage: true,
+  isFeatured: true,
+  isPublished: true,
+  isLocked: true,
+  createdAt: true,
+  updatedAt: true,
+  readTime: true,
+  tags: { select: { name: true } },
+} as const;
+
 // Helper to map Prisma Post to BlogPost
-function mapToBlogPost(post: any): BlogPost {
+function mapToBlogPost(post: {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content?: string | null;
+  coverImage?: string | null;
+  isFeatured: boolean;
+  isPublished: boolean;
+  isLocked: boolean;
+  createdAt: Date | string;
+  updatedAt?: Date | string | null;
+  readTime?: string | null;
+  tags?: Array<{ name: string } | string>;
+}): BlogPost {
   return {
     ...post,
-    readTime: calculateReadTime(post.content),
-    tags: post.tags ? post.tags.map((t: any) => t.name) : [],
-    createdAt: post.createdAt.toISOString(),
-    updatedAt: post.updatedAt.toISOString(),
+    coverImage: post.coverImage || undefined,
+    content: post.content || undefined,
+    readTime: post.readTime || (post.content ? calculateReadTime(post.content) : '1 min read'),
+    tags: post.tags ? post.tags.map((t) => typeof t === 'string' ? t : t.name) : [],
+    createdAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt,
+    updatedAt: post.updatedAt instanceof Date ? post.updatedAt.toISOString() : (post.updatedAt || (post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt)),
     isLocked: post.isLocked ?? false,
   };
 }
 
-export async function getPosts(): Promise<BlogPost[]> {
+export async function getPosts(limit?: number): Promise<BlogPost[]> {
     const posts = await db.post.findMany({
-        include: { tags: true },
-        orderBy: { createdAt: 'desc' }
+        select: postCardSelect,
+        orderBy: { createdAt: 'desc' },
+        ...(limit ? { take: limit } : {})
     });
     return posts.map(mapToBlogPost);
 }
 
-export async function getPublishedPosts(): Promise<BlogPost[]> {
+export async function getPublishedPosts(limit?: number): Promise<BlogPost[]> {
     const posts = await db.post.findMany({
         where: { isPublished: true },
-        include: { tags: true },
-        orderBy: { createdAt: 'desc' }
+        select: postCardSelect,
+        orderBy: { createdAt: 'desc' },
+        ...(limit ? { take: limit } : {})
     });
     return posts.map(mapToBlogPost);
 }
 
-export async function getFeaturedPosts(): Promise<BlogPost[]> {
+export async function getFeaturedPosts(limit?: number): Promise<BlogPost[]> {
     const posts = await db.post.findMany({
         where: { isPublished: true, isFeatured: true },
-        include: { tags: true },
-        orderBy: { createdAt: 'desc' }
+        select: postCardSelect,
+        orderBy: { createdAt: 'desc' },
+        ...(limit ? { take: limit } : {})
     });
     return posts.map(mapToBlogPost);
 }
@@ -124,12 +159,16 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
     }
 
     revalidatePath('/');
+    revalidatePath('/journals');
+    revalidatePath('/analysis');
     return mapToBlogPost(savedPost);
 }
 
 export async function deletePost(id: string): Promise<void> {
     await db.post.delete({ where: { id } });
     revalidatePath('/');
+    revalidatePath('/journals');
+    revalidatePath('/analysis');
 }
 
 export async function getPostById(id: string): Promise<BlogPost | null> {

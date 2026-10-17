@@ -1,12 +1,26 @@
 'use client';
 
 import { useRef, useState, useCallback, useEffect } from 'react';
+import { compressImageFile } from '@/lib/image-compressor';
 
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
   placeholder?: string;
 }
+
+const TOOLBAR_BUTTONS = [
+  { icon: 'B', command: 'bold', title: 'Bold' },
+  { icon: 'I', command: 'italic', title: 'Italic' },
+  { icon: 'U', command: 'underline', title: 'Underline' },
+  { icon: '""', command: 'quote', title: 'Quote' },
+  { icon: 'H2', command: 'h2', title: 'Heading 2' },
+  { icon: 'H3', command: 'h3', title: 'Heading 3' },
+  { icon: '•', command: 'insertUnorderedList', title: 'Bullet List' },
+  { icon: '1.', command: 'insertOrderedList', title: 'Numbered List' },
+  { icon: '🔗', command: 'link', title: 'Insert Link' },
+  { icon: '🖼️', command: 'image', title: 'Insert Image' },
+] as const;
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -26,32 +40,40 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }
   }, [content]);
 
-  const execCommand = useCallback((command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    editorRef.current?.focus();
-    handleInput(); // Ensure state stays in sync after command
-  }, []);
-
   const handleInput = useCallback(() => {
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
     }
   }, [onChange]);
 
+  const execCommand = useCallback((command: string, value?: string) => {
+    document.execCommand(command, false, value);
+    editorRef.current?.focus();
+    handleInput(); // Ensure state stays in sync after command
+  }, [handleInput]);
+
   const handleImageUpload = useCallback(() => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = `<img src="${event.target?.result}" alt="Uploaded image" class="max-w-full rounded-lg my-4" />`;
+        try {
+          const compressedSrc = await compressImageFile(file, 1000, 1000, 0.8);
+          const img = `<img src="${compressedSrc}" alt="Uploaded image" class="max-w-full rounded-lg my-4" />`;
           document.execCommand('insertHTML', false, img);
           handleInput();
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+          console.error('Failed to compress image:', err);
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = `<img src="${event.target?.result}" alt="Uploaded image" class="max-w-full rounded-lg my-4" />`;
+            document.execCommand('insertHTML', false, img);
+            handleInput();
+          };
+          reader.readAsDataURL(file);
+        }
       }
     };
     input.click();
@@ -83,30 +105,23 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
     }
   }, [handleInput]);
 
-  const toolbarButtons = [
-    { icon: 'B', command: 'bold', title: 'Bold' },
-    { icon: 'I', command: 'italic', title: 'Italic' },
-    { icon: 'U', command: 'underline', title: 'Underline' },
-    { icon: '""', command: 'quote', title: 'Quote', action: insertBlockquote },
-    { icon: 'H2', command: 'h2', title: 'Heading 2', action: () => insertHeading(2) },
-    { icon: 'H3', command: 'h3', title: 'Heading 3', action: () => insertHeading(3) },
-    { icon: '•', command: 'insertUnorderedList', title: 'Bullet List' },
-    { icon: '1.', command: 'insertOrderedList', title: 'Numbered List' },
-    { icon: '🔗', command: 'link', title: 'Insert Link' },
-    { icon: '🖼️', command: 'image', title: 'Insert Image', action: handleImageUpload },
-  ];
-
-  const handleToolbarClick = (button: typeof toolbarButtons[0]) => {
-    if (button.action) {
-      button.action();
-    } else if (button.command === 'link') {
+  const handleToolbarClick = (command: string) => {
+    if (command === 'quote') {
+      insertBlockquote();
+    } else if (command === 'h2') {
+      insertHeading(2);
+    } else if (command === 'h3') {
+      insertHeading(3);
+    } else if (command === 'image') {
+      handleImageUpload();
+    } else if (command === 'link') {
       const url = prompt('Enter URL:');
       if (url) {
         execCommand('createLink', url);
         handleInput();
       }
     } else {
-      execCommand(button.command);
+      execCommand(command);
       handleInput();
     }
   };
@@ -116,11 +131,11 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
       {/* Toolbar */}
       {showToolbar && (
         <div className="flex flex-wrap items-center gap-2 p-2 bg-retro-bg border-b-4 border-retro-border">
-          {toolbarButtons.map((button, index) => (
+          {TOOLBAR_BUTTONS.map((button, index) => (
             <button
               key={index}
               type="button"
-              onClick={() => handleToolbarClick(button)}
+              onClick={() => handleToolbarClick(button.command)}
               title={button.title}
               className="w-8 h-8 flex items-center justify-center border-2 border-transparent hover:border-retro-border hover:bg-retro-text hover:text-retro-surface transition-none text-sm font-mono text-retro-text font-bold"
             >

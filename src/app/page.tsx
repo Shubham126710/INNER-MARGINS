@@ -3,18 +3,11 @@ import { PostCard, StatCard, Greeting } from '@/components';
 import { getPublishedPosts, getFeaturedPosts } from '@/actions/post.actions';
 import { getAnalysisStats } from '@/actions/analysis.actions';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ tag?: string }>;
-}) {
-  await new Promise(resolve => setTimeout(resolve, 1200));
-
-  const { tag } = await searchParams;
-  const posts = await getPublishedPosts();
-  const featuredPosts = await getFeaturedPosts();
+export default async function Home() {
+  const posts = await getPublishedPosts(3);
+  const featuredPosts = await getFeaturedPosts(2);
   const stats = await getAnalysisStats();
 
   return (

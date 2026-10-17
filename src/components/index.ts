@@ -14,5 +14,8 @@ export { default as CommentSection } from './CommentSection';
 export { default as PatternChart } from './PatternChart';
 export { default as ReminderSetup } from './ReminderSetup';
 export { default as WeeklyActivityChart } from './charts/WeeklyActivityChart';
+export { default as AppleActivityCard } from './kokonutui/apple-activity-card';
+export { default as ActivityTerrain } from './kokonutui/activity-terrain';
+export * from './TimelineDiagnostics';
 
 export * from './Greeting';

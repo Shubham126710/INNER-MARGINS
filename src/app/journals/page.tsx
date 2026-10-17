@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { JournalSection } from '@/components';
 import { getPublishedPosts } from '@/actions/post.actions';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata = {
   title: 'Archive | Inner Margins',

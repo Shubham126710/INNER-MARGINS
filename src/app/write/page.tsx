@@ -43,7 +43,7 @@ function WriteForm() {
             title: post.title,
             slug: post.slug,
             excerpt: post.excerpt || '',
-            content: post.content,
+            content: post.content || '',
             coverImage: post.coverImage || '',
             category: '',
             tags: post.tags || [],
@@ -74,9 +74,10 @@ function WriteForm() {
       await savePost({ ...formData, isPublished: true });
       router.push('/journals');
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to encode transmission:', error);
-      alert(`Failed to transmit journal: ${error.message || 'Unknown error'}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Failed to transmit journal: ${message}`);
       setIsSubmitting(false);
     }
   };

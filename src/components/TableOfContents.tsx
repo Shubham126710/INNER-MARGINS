@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface TableOfContentsProps {
   content: string;
@@ -12,26 +12,25 @@ interface TOCItem {
   level: number;
 }
 
-export default function TableOfContents({ content }: TableOfContentsProps) {
-  const [items, setItems] = useState<TOCItem[]>([]);
-  const [activeId, setActiveId] = useState<string>('');
+function parseHeadings(html: string): TOCItem[] {
+  const headingRegex = /<h([23])[^>]*>(.*?)<\/h\1>/gi;
+  const tocItems: TOCItem[] = [];
+  let match;
+  let index = 0;
+  while ((match = headingRegex.exec(html)) !== null) {
+    const level = parseInt(match[1]);
+    const text = match[2].replace(/<[^>]*>/g, '').trim();
+    if (text) {
+      tocItems.push({ id: `heading-${index}`, text, level });
+      index++;
+    }
+  }
+  return tocItems;
+}
 
-  useEffect(() => {
-    // Parse headings from HTML content
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, 'text/html');
-    const headings = doc.querySelectorAll('h2, h3');
-    
-    const tocItems: TOCItem[] = [];
-    headings.forEach((heading, index) => {
-      const id = `heading-${index}`;
-      const text = heading.textContent || '';
-      const level = parseInt(heading.tagName.charAt(1));
-      tocItems.push({ id, text, level });
-    });
-    
-    setItems(tocItems);
-  }, [content]);
+export default function TableOfContents({ content }: TableOfContentsProps) {
+  const items = useMemo(() => parseHeadings(content || ''), [content]);
+  const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
     const handleScroll = () => {

@@ -1,22 +1,29 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
+
+function getHourGreeting() {
+  const hour = new Date().getHours();
+  if (hour >= 4 && hour < 12) {
+    return 'good morning, shubham.';
+  }
+  if (hour >= 12 && hour < 17) {
+    return 'good afternoon, shubham.';
+  }
+  if (hour >= 17 && hour < 22) {
+    return 'good evening, shubham.';
+  }
+  return 'hope your day went well. sweet dreams, shubham.';
+}
+
+const emptySubscribe = () => () => {};
 
 export function Greeting() {
-  const [greeting, setGreeting] = useState('Welcome back, Shubham.');
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour >= 4 && hour < 12) {
-      setGreeting('good morning, shubham.');
-    } else if (hour >= 12 && hour < 17) {
-      setGreeting('good afternoon, shubham.');
-    } else if (hour >= 17 && hour < 22) {
-      setGreeting('good evening, shubham.');
-    } else {
-      setGreeting('hope your day went well. sweet dreams, shubham.');
-    }
-  }, []);
+  const greeting = useSyncExternalStore(
+    emptySubscribe,
+    getHourGreeting,
+    () => 'Welcome back, Shubham.'
+  );
 
   return <span suppressHydrationWarning className="lowercase tracking-widest opacity-80">{greeting}</span>;
 }

@@ -3,10 +3,13 @@
 import { db } from '@/lib/db';
 
 export async function checkHasPostedToday(): Promise<boolean> {
-  const posts = await db.post.findMany({
+  const latestPost = await db.post.findFirst({
     where: { isPublished: true },
+    orderBy: { createdAt: 'desc' },
     select: { createdAt: true }
   });
+
+  if (!latestPost) return false;
   
   const toDateString = (date: Date) => {
     return new Date(date).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
@@ -15,5 +18,5 @@ export async function checkHasPostedToday(): Promise<boolean> {
   const now = new Date();
   const todayStr = toDateString(now);
   
-  return posts.some(p => toDateString(p.createdAt) === todayStr);
+  return toDateString(latestPost.createdAt) === todayStr;
 }

@@ -83,7 +83,7 @@ export default function PostPage({ params }: PostPageProps) {
     });
   };
 
-  const processedContent = processContent(post.content);
+  const processedContent = processContent(post.content || '');
 
   return (
     <article className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface pb-20 relative overflow-hidden">
@@ -211,7 +211,7 @@ export default function PostPage({ params }: PostPageProps) {
           {/* Sidebar with TOC */}
           <aside className="hidden lg:block relative">
             <div className="sticky top-24 pl-6 border-l border-dashed border-retro-border/20 mt-2">
-              <TableOfContents content={post.content} />
+              <TableOfContents content={post.content || ''} />
             </div>
           </aside>
         </div>
