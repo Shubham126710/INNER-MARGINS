@@ -3,7 +3,7 @@
 /**
  * @author: @kokonutui (adapted for Inner Margins Retro Theme)
  * @description: Activity Terrain - Retro Themed 3D / 2D Activity Heatmap
- * @version: 1.1.0
+ * @version: 1.2.0
  * @license: MIT
  * @website: https://kokonutui.com
  */
@@ -51,20 +51,7 @@ const PADDING = 28;
 const REST_EPSILON = 0.0005;
 const LABELS = ["Mon", "", "Wed", "", "Fri", "", ""];
 
-export interface ActivityTerrainProps {
-  /** Count per day, oldest first, OR dictionary mapping "YYYY-MM-DD" to count. */
-  data?: number[] | { [date: string]: number };
-  /** The day of the last value, as YYYY-MM-DD. */
-  endDate?: string;
-  title?: string;
-  /** Start in the flat, heatmap view. Defaults to true. */
-  defaultFlat?: boolean;
-  className?: string;
-  /** Number of weeks to display when converting dictionary or generating demo data. Defaults to 52. */
-  weeks?: number;
-}
-
-interface Cell {
+export interface TerrainCell {
   index: number;
   col: number;
   row: number;
@@ -72,6 +59,25 @@ interface Cell {
   level: number;
   height: number;
   date: Date;
+}
+
+export interface ActivityTerrainProps {
+  /** Count per day, oldest first, OR dictionary mapping "YYYY-MM-DD" to count. */
+  data?: number[] | { [date: string]: number };
+  /** The day of the last value, as YYYY-MM-DD. */
+  endDate?: string;
+  title?: string;
+  /** Start in the flat, heatmap view. Defaults to false in 3D terrain container. */
+  defaultFlat?: boolean;
+  className?: string;
+  /** Number of weeks to display when converting dictionary or generating demo data. Defaults to 52. */
+  weeks?: number;
+  /** Whether to render the built-in card header. Set false when embedded in a parent container. Defaults to true. */
+  showHeader?: boolean;
+  /** Whether to render the built-in footer with legend. Defaults to true. */
+  showFooter?: boolean;
+  /** Callback when hovered cell changes. */
+  onActiveChange?: (cell: TerrainCell | null) => void;
 }
 
 interface Pose {
@@ -168,13 +174,13 @@ function normalizeData(
   return { data: demoData(weeksCount), endDate: resolvedEndDate };
 }
 
-function buildCells(data: number[], endDate: string) {
+function buildCells(data: number[], endDate: string): TerrainCell[] {
   const end = parseDay(endDate);
   const start = new Date(end.getTime() - (data.length - 1) * 86_400_000);
   // Rows run Monday to Sunday.
   const offset = (start.getUTCDay() + 6) % 7;
   const max = Math.max(1, ...data);
-  return data.map((count, index): Cell => {
+  return data.map((count, index): TerrainCell => {
     const slot = index + offset;
     const norm = count / max;
     return {
@@ -183,20 +189,21 @@ function buildCells(data: number[], endDate: string) {
       row: slot % DAYS,
       count,
       level: count === 0 ? 0 : Math.min(4, Math.ceil(norm * 4)),
-      height: 0.06 + norm ** 0.85 * MAX_HEIGHT,
+      // Empty tiles lie flat with height 0 (no vertical wall shadows), active tiles elevate
+      height: count === 0 ? 0 : 0.15 + (norm ** 0.85) * MAX_HEIGHT,
       date: new Date(start.getTime() + index * 86_400_000),
     };
   });
 }
 
-function hexToRgb(value: string): Rgb {
+function hexToRgb(value: string, fallback: Rgb = [240, 196, 191]): Rgb {
   const hex = value.trim().replace("#", "");
   const n = Number.parseInt(
     hex.length === 3 ? hex.replace(/./g, "$&$&") : hex,
     16
   );
   if (Number.isNaN(n)) {
-    return [201, 65, 60]; // Retro primary fallback #C9413C
+    return fallback;
   }
   return [Math.floor(n / 65_536) % 256, Math.floor(n / 256) % 256, n % 256];
 }
@@ -212,11 +219,15 @@ function readPalette(node: HTMLElement): Palette {
     node.parentElement ||
     node;
   const style = getComputedStyle(target);
-  const read = (name: string) => style.getPropertyValue(name).trim() || "#888888";
+  const read = (name: string, fallback: string) =>
+    style.getPropertyValue(name).trim() || fallback;
+  const defaults = ["#F0C4BF", "#E58E88", "#DC6E67", "#C9413C", "#9B2520"];
   return {
-    levels: [0, 1, 2, 3, 4].map((l) => hexToRgb(read(`--terrain-${l}`))),
-    accent: hexToRgb(read("--terrain-accent")),
-    text: read("--terrain-text"),
+    levels: [0, 1, 2, 3, 4].map((l) =>
+      hexToRgb(read(`--terrain-${l}`, defaults[l]), hexToRgb(defaults[l]))
+    ),
+    accent: hexToRgb(read("--terrain-accent", "#FFFFFF"), [255, 255, 255]),
+    text: read("--terrain-text", "#C9413C"),
     font: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
   };
 }
@@ -313,9 +324,12 @@ export default function ActivityTerrain({
   data: rawData,
   endDate: rawEndDate,
   title = "Telemetry Activity Terrain",
-  defaultFlat = true,
+  defaultFlat = false,
   className,
   weeks: rawWeeks = 52,
+  showHeader = true,
+  showFooter = true,
+  onActiveChange,
 }: ActivityTerrainProps) {
   const { data, endDate } = useMemo(
     () => normalizeData(rawData, rawWeeks, rawEndDate),
@@ -326,7 +340,7 @@ export default function ActivityTerrain({
   const weeks = (cells.at(-1)?.col ?? 0) + 1;
   const total = useMemo(() => data.reduce((sum, n) => sum + n, 0), [data]);
   const [flat, setFlat] = useState(defaultFlat);
-  const [active, setActive] = useState<Cell | null>(null);
+  const [active, setActive] = useState<TerrainCell | null>(null);
   const [dragging, setDragging] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -366,10 +380,9 @@ export default function ActivityTerrain({
     sim.current.bumpSpeeds = new Float64Array(cells.length);
   }
 
-  // How tall each column stands right now: the rise travels as a wave out
-  // from the origin, and each column overshoots a touch as it lands.
+  // How tall each column stands right now
   const columnHeight = useCallback(
-    (cell: Cell, lift: number) => {
+    (cell: TerrainCell, lift: number) => {
       const s = sim.current;
       const span = Math.hypot(weeks, DAYS) || 1;
       const d =
@@ -424,7 +437,7 @@ export default function ActivityTerrain({
     (p: Pose) => {
       const sin = Math.sin(p.yaw);
       const cos = Math.cos(p.yaw);
-      const depth = (c: Cell) =>
+      const depth = (c: TerrainCell) =>
         (c.col + 0.5 - weeks / 2) * sin + (c.row + 0.5 - DAYS / 2) * cos;
       return [...cellsRef.current].sort((a, b) => depth(a) - depth(b));
     },
@@ -438,8 +451,6 @@ export default function ActivityTerrain({
       lift: number,
       palette: Palette
     ) => {
-      // Labels lie on the ground, so they'd hide behind the columns; they
-      // fade out as the terrain rises, and the readout names each day.
       const alpha = clamp(1 - lift * 1.6, 0, 1);
       if (alpha === 0) {
         return;
@@ -502,7 +513,6 @@ export default function ActivityTerrain({
         const fill = shade(color, face.tone);
         ctx.fillStyle = fill;
         ctx.fill();
-        // A hairline in the same colour closes the seams between faces.
         ctx.strokeStyle = fill;
         ctx.lineWidth = 0.6;
         ctx.stroke();
@@ -537,11 +547,9 @@ export default function ActivityTerrain({
     const s = sim.current;
     let energy = 0;
     if (!s.drag) {
-      // Spin coasts, then the edge pulls it back in range.
       s.yawSpeed *= 0.5 ** (dt / SPIN_HALF_LIFE);
       let target = s.yaw;
       if (s.pitchTarget === 0) {
-        // Flat is always square on.
         target = 0;
       } else if (s.yaw > YAW_LIMIT) {
         target = YAW_LIMIT;
@@ -601,8 +609,6 @@ export default function ActivityTerrain({
     [draw, stepSprings]
   );
 
-  // Swing round from straight on as it tilts up, coasting to a stop at
-  // the resting turn.
   const turnIn = useCallback(() => {
     const s = sim.current;
     if (Math.abs(s.yaw) > 2 * DEG) {
@@ -618,7 +624,6 @@ export default function ActivityTerrain({
   const wake = useCallback(() => {
     const s = sim.current;
     if (s.reduceMotion) {
-      // No travel: everything lands where it's going.
       s.pitch = s.pitchTarget;
       s.yaw = clamp(s.yaw, -YAW_LIMIT, YAW_LIMIT);
       s.pitchSpeed = 0;
@@ -674,7 +679,6 @@ export default function ActivityTerrain({
     intersection.observe(canvas);
     document.addEventListener("visibilitychange", update);
 
-    // Repaint when the theme flips, since the canvas reads its colours.
     const repaint = () => {
       paletteRef.current = null;
       draw();
@@ -684,14 +688,11 @@ export default function ActivityTerrain({
       attributes: true,
       attributeFilter: ["class", "style", "data-theme"],
     });
-    const scheme = window.matchMedia("(prefers-color-scheme: dark)");
-    scheme.addEventListener("change", repaint);
 
     return () => {
       resize.disconnect();
       intersection.disconnect();
       theme.disconnect();
-      scheme.removeEventListener("change", repaint);
       document.removeEventListener("visibilitychange", update);
       cancelAnimationFrame(s.raf);
       s.raf = 0;
@@ -732,12 +733,13 @@ export default function ActivityTerrain({
       : { x: 0, y: 0 };
   };
 
-  const hover = (cell: Cell | null) => {
+  const hover = (cell: TerrainCell | null) => {
     const s = sim.current;
     const index = cell ? cell.index : -1;
     if (index !== s.hovered) {
       s.hovered = index;
       setActive(cell);
+      onActiveChange?.(cell);
       if (s.reduceMotion) {
         draw();
       } else {
@@ -815,7 +817,7 @@ export default function ActivityTerrain({
         event.currentTarget.releasePointerCapture(event.pointerId);
       }
     } catch {
-      // Ignore if pointer capture was already released
+      // Ignore
     }
     setDragging(false);
     s.drag = null;
@@ -873,51 +875,55 @@ export default function ActivityTerrain({
     <div
       data-terrain-container
       className={cn(
-        "w-full select-none border border-retro-border/30 bg-retro-surface/50 text-retro-text shadow-retro-sm transition-shadow hover:shadow-retro",
-        "[--terrain-0:#F3C6C1] [--terrain-1:#E58E88] [--terrain-2:#DC6E67] [--terrain-3:#C9413C] [--terrain-4:#9B2520] [--terrain-accent:#FFF1F0] [--terrain-text:#C9413C]",
-        "dark:[--terrain-0:#3A1B1A] dark:[--terrain-1:#6E2E2A] dark:[--terrain-2:#A43E38] dark:[--terrain-3:#C9413C] dark:[--terrain-4:#E58E88] dark:[--terrain-accent:#FFE5E2] dark:[--terrain-text:#F4CFCB]",
+        "w-full select-none text-retro-text",
+        showHeader &&
+          "border border-retro-border/30 bg-retro-surface/50 p-5 shadow-retro-sm transition-shadow hover:shadow-retro",
+        // Retro palette: light warm blush (#F0C4BF) for flat surfaces, coral/crimson for heights, white highlight
+        "[--terrain-0:#F0C4BF] [--terrain-1:#E58E88] [--terrain-2:#DC6E67] [--terrain-3:#C9413C] [--terrain-4:#9B2520] [--terrain-accent:#FFFFFF] [--terrain-text:#C9413C]",
         className
       )}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 pb-0 border-b border-retro-border/20">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-            <p className="font-heading text-lg uppercase tracking-tight text-retro-text">
-              {title}
+      {showHeader && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-2 border-b border-retro-border/20">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
+              <p className="font-heading text-lg uppercase tracking-tight text-retro-text">
+                {title}
+              </p>
+            </div>
+            <p
+              aria-live="polite"
+              className="truncate font-mono text-xs text-retro-text/70 uppercase tracking-widest tabular-nums"
+            >
+              {readout}
             </p>
           </div>
-          <p
-            aria-live="polite"
-            className="truncate font-mono text-xs text-retro-text/70 uppercase tracking-widest tabular-nums"
-          >
-            {readout}
-          </p>
+          <div className="flex shrink-0 border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-mono">
+            {(
+              [
+                ["[ 2D FLAT ]", true],
+                ["[ 3D TERRAIN ]", false],
+              ] as const
+            ).map(([name, value]) => (
+              <button
+                aria-pressed={flat === value}
+                className={cn(
+                  "px-3 py-1 font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-colors duration-150 outline-none cursor-pointer",
+                  flat === value
+                    ? "bg-retro-primary text-retro-surface font-bold shadow-retro-sm"
+                    : "text-retro-text/70 hover:text-retro-text hover:bg-retro-surface/80"
+                )}
+                key={name}
+                onClick={() => flat !== value && setView(value)}
+                type="button"
+              >
+                {name}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex shrink-0 border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-mono">
-          {(
-            [
-              ["[ 2D FLAT ]", true],
-              ["[ 3D TERRAIN ]", false],
-            ] as const
-          ).map(([name, value]) => (
-            <button
-              aria-pressed={flat === value}
-              className={cn(
-                "px-3 py-1 font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-colors duration-150 outline-none",
-                flat === value
-                  ? "bg-retro-primary text-retro-surface font-bold shadow-retro-sm"
-                  : "text-retro-text/70 hover:text-retro-text hover:bg-retro-surface/80"
-              )}
-              key={name}
-              onClick={() => flat !== value && setView(value)}
-              type="button"
-            >
-              {name}
-            </button>
-          ))}
-        </div>
-      </div>
+      )}
 
       <canvas
         aria-label={`${title}: ${total} contributions over ${weeks} weeks. Use the arrow keys to read each day.`}
@@ -937,22 +943,24 @@ export default function ActivityTerrain({
         tabIndex={0}
       />
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-5 py-3 border-t border-retro-border/20 text-xs font-mono text-retro-text/60">
-        <span className="text-[10px] tracking-widest uppercase opacity-70">
-          Drag / Flick to orbit • Hover to elevate
-        </span>
-        <div className="flex items-center gap-1.5 self-end sm:self-auto">
-          <span className="mr-1 text-[10px] tracking-wider uppercase">Less</span>
-          {[0, 1, 2, 3, 4].map((level) => (
-            <span
-              className="size-3 rounded-[1px] border border-retro-border/20"
-              key={level}
-              style={{ background: `var(--terrain-${level})` }}
-            />
-          ))}
-          <span className="ml-1 text-[10px] tracking-wider uppercase">More</span>
+      {showFooter && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1 pt-4 border-t border-retro-border/20 text-xs font-mono text-retro-text/60">
+          <span className="text-[10px] tracking-widest uppercase opacity-70">
+            Drag / Flick to orbit • Hover to elevate
+          </span>
+          <div className="flex items-center gap-1.5 self-end sm:self-auto">
+            <span className="mr-1 text-[10px] tracking-wider uppercase">Less</span>
+            {[0, 1, 2, 3, 4].map((level) => (
+              <span
+                className="size-3 rounded-[1px] border border-retro-border/20"
+                key={level}
+                style={{ background: `var(--terrain-${level})` }}
+              />
+            ))}
+            <span className="ml-1 text-[10px] tracking-wider uppercase">More</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
