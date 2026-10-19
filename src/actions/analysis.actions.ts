@@ -8,6 +8,8 @@ export type AnalysisStats = {
   thisWeek: number;
   thisMonth: number;
   thisYear: number;
+  daysInMonth: number;
+  daysInYear: number;
   longestStreak: number;
   entriesByYear: { year: number; count: number }[];
   dailyActivity: { [date: string]: number };
@@ -37,6 +39,13 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
   const todayStr = toDateString(now);
   // Use noon UTC to avoid daylight saving or boundary issues when subtracting days
   const today = new Date(`${todayStr}T12:00:00Z`);
+
+  const [yearNum, monthNum] = todayStr.split('-').map(Number);
+  // Day 0 of next month in 1-based indexing yields the total days in current month (28, 29, 30, or 31)
+  const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+  // Leap year: divisible by 4 and (not divisible by 100 or divisible by 400) -> 366 days, else 365
+  const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || (yearNum % 400 === 0);
+  const daysInYear = isLeapYear ? 366 : 365;
   
   const postDates = new Set(posts.map(p => toDateString(p.createdAt)));
   const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
@@ -181,6 +190,8 @@ export async function getAnalysisStats(): Promise<AnalysisStats> {
     thisWeek,
     thisMonth,
     thisYear,
+    daysInMonth,
+    daysInYear,
     longestStreak,
     entriesByYear,
     dailyActivity,

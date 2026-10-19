@@ -41,7 +41,7 @@ const MAX_LAPS = 3;
 
 export const RETRO_SAMPLE_ACTIVITIES: ActivityData[] = [
   {
-    label: "WEEKLY CYCLES",
+    label: "WEEKLY TRANSMISSIONS",
     color: "#C9413C",      // Retro Crimson Primary
     colorEnd: "#E2554F",   // Retro Coral Border
     size: 200,
@@ -50,22 +50,22 @@ export const RETRO_SAMPLE_ACTIVITIES: ActivityData[] = [
     unit: "LOGS",
   },
   {
-    label: "MONTHLY CADENCE",
+    label: "MONTHLY ARCHIVE",
     color: "#D96B43",      // Warm Terracotta
     colorEnd: "#F08C68",   // Soft Terracotta
     size: 160,
-    current: 18,
-    target: 20,
+    current: 24,
+    target: 31,
     unit: "LOGS",
   },
   {
-    label: "ACTIVE STREAK",
+    label: "ANNUAL PRESERVATIONS",
     color: "#C88A2E",      // Vintage Amber / Ochre Gold
     colorEnd: "#E8B058",   // Warm Gold
     size: 120,
-    current: 12,
-    target: 14,
-    unit: "DAYS",
+    current: 118,
+    target: 365,
+    unit: "LOGS",
   },
 ];
 

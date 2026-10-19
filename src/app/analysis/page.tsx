@@ -89,17 +89,17 @@ export default async function AnalysisPage() {
                 colorEnd: "#F08C68",
                 size: 168,
                 current: stats.thisMonth,
-                target: 20,
+                target: stats.daysInMonth || 31,
                 unit: "LOGS",
               },
               {
-                label: "ACTIVE LINK STREAK",
+                label: "ANNUAL PRESERVATIONS",
                 color: "#C88A2E",
                 colorEnd: "#E8B058",
                 size: 126,
-                current: stats.currentStreak,
-                target: Math.max(7, stats.longestStreak || 7),
-                unit: stats.currentStreak === 1 ? "CYCLE" : "CYCLES",
+                current: stats.thisYear,
+                target: stats.daysInYear || 365,
+                unit: "LOGS",
               },
             ]}
           />
