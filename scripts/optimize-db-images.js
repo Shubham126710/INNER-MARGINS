@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /**
- * One-time optimization script to compress bloated Base64 images directly inside Neon DB.
- * Shrinks embedded PNG screenshots and cover photos so queries and backups are lightweight.
+ * Optimization script to compress bloated Base64 images directly inside Neon DB.
+ * Shrinks cover photos and embedded content images so query payloads are lightweight.
  */
+require('dotenv').config();
 const sharp = require('sharp');
 const { PrismaClient } = require('../src/generated/client');
 const prisma = new PrismaClient();
 
 async function optimizeDatabaseImages() {
-  console.log('Connecting to database and finding posts with Base64 images...');
+  console.log('Connecting to Neon DB and scanning posts for oversized Base64 images...');
   const posts = await prisma.post.findMany({
     select: { id: true, title: true, content: true, coverImage: true }
   });
@@ -18,31 +19,31 @@ async function optimizeDatabaseImages() {
   let updatedPostsCount = 0;
 
   for (const p of posts) {
-    let pBefore = Buffer.byteLength(p.content || '', 'utf8') + Buffer.byteLength(p.coverImage || '', 'utf8');
+    const pBefore = Buffer.byteLength(p.content || '', 'utf8') + Buffer.byteLength(p.coverImage || '', 'utf8');
     let pAfter = pBefore;
     let needsUpdate = false;
     let newCoverImage = p.coverImage;
     let newContent = p.content;
 
-    // 1. Optimize coverImage
+    // 1. Optimize coverImage (resize to max width 600px, quality 75 WebP)
     if (p.coverImage && p.coverImage.startsWith('data:image')) {
       const match = p.coverImage.match(/^data:image\/[^;]+;base64,(.+)$/);
       if (match) {
         const buf = Buffer.from(match[1], 'base64');
-        if (buf.length > 50 * 1024) { // Only touch if > 50KB
+        if (buf.length > 15 * 1024) { // Target anything > 15KB
           try {
             const comp = await sharp(buf)
-              .resize({ width: 1200, withoutEnlargement: true })
-              .jpeg({ quality: 80, mozjpeg: true })
+              .resize({ width: 600, withoutEnlargement: true })
+              .webp({ quality: 75 })
               .toBuffer();
 
             if (comp.length < buf.length * 0.85) {
-              const compDataUrl = 'data:image/jpeg;base64,' + comp.toString('base64');
+              const compDataUrl = 'data:image/webp;base64,' + comp.toString('base64');
               pAfter -= Buffer.byteLength(p.coverImage, 'utf8');
               pAfter += Buffer.byteLength(compDataUrl, 'utf8');
               newCoverImage = compDataUrl;
               needsUpdate = true;
-              console.log(`[Cover Optimized] "${p.title}": ${(buf.length / 1024).toFixed(1)} KB -> ${(comp.length / 1024).toFixed(1)} KB`);
+              console.log(`[Cover Optimized] "${p.title.slice(0, 30)}": ${(buf.length / 1024).toFixed(1)} KB -> ${(comp.length / 1024).toFixed(1)} KB`);
             }
           } catch (e) {
             console.error(`Failed to optimize cover for "${p.title}":`, e.message);
@@ -51,7 +52,7 @@ async function optimizeDatabaseImages() {
       }
     }
 
-    // 2. Optimize content embedded images
+    // 2. Optimize content embedded images (resize to max width 900px, quality 75 WebP)
     if (p.content && p.content.includes('data:image')) {
       const imgRegex = /data:image\/[^;]+;base64,([A-Za-z0-9+/=]+)/g;
       let match;
@@ -63,18 +64,18 @@ async function optimizeDatabaseImages() {
         const base64Data = match[1];
         const buf = Buffer.from(base64Data, 'base64');
 
-        if (buf.length > 50 * 1024) { // Only touch if > 50KB
+        if (buf.length > 20 * 1024) {
           try {
             const comp = await sharp(buf)
-              .resize({ width: 1200, withoutEnlargement: true })
-              .jpeg({ quality: 80, mozjpeg: true })
+              .resize({ width: 900, withoutEnlargement: true })
+              .webp({ quality: 75 })
               .toBuffer();
 
             if (comp.length < buf.length * 0.85) {
-              const compDataUrl = 'data:image/jpeg;base64,' + comp.toString('base64');
+              const compDataUrl = 'data:image/webp;base64,' + comp.toString('base64');
               contentWorking = contentWorking.replace(fullDataUrl, compDataUrl);
               contentModified = true;
-              console.log(`[Content Img Optimized] "${p.title}": ${(buf.length / 1024).toFixed(1)} KB -> ${(comp.length / 1024).toFixed(1)} KB`);
+              console.log(`[Content Img Optimized] "${p.title.slice(0, 30)}": ${(buf.length / 1024).toFixed(1)} KB -> ${(comp.length / 1024).toFixed(1)} KB`);
             }
           } catch (e) {
             console.error(`Failed to optimize content image in "${p.title}":`, e.message);

@@ -50,8 +50,11 @@ export function compressImageFile(
         }
 
         ctx.drawImage(img, 0, 0, width, height);
-        // Default to JPEG with quality 0.8 for strong compression
-        const compressed = canvas.toDataURL('image/jpeg', quality);
+        // Prefer WebP for superior compression, fallback to JPEG
+        let compressed = canvas.toDataURL('image/webp', quality);
+        if (!compressed.startsWith('data:image/webp')) {
+          compressed = canvas.toDataURL('image/jpeg', quality);
+        }
         resolve(compressed);
       };
       img.src = dataUrl;

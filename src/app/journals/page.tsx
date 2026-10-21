@@ -1,32 +1,30 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { JournalSection } from '@/components';
 import { getPublishedPosts } from '@/actions/post.actions';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Archive | Inner Margins',
   description: 'Journal archive and memory retrieval.',
 };
 
-export default async function JournalsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ tag?: string }>;
-}) {
-  const { tag } = await searchParams;
+export default async function JournalsPage() {
   const posts = await getPublishedPosts();
-
-  const allTags = Array.from(new Set(posts.flatMap(p => p.tags))).sort();
-
-  const filteredPosts = tag 
-    ? posts.filter(p => p.tags.includes(tag))
-    : posts;
+  const allTags = Array.from(new Set(posts.flatMap((p) => p.tags))).sort();
 
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white pt-4 md:pt-8">
-      {/* Remove hero from here since JournalSection handles its own header, or we can update JournalSection */}
-      <JournalSection posts={filteredPosts} allTags={allTags} activeTag={tag} />
+      <Suspense
+        fallback={
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 flex justify-center">
+            <div className="w-8 h-8 border border-retro-primary animate-pulse"></div>
+          </div>
+        }
+      >
+        <JournalSection posts={posts} allTags={allTags} />
+      </Suspense>
       
        {/* CTA Section */}
        <section className="py-24 border-t border-retro-border/30 bg-retro-bg text-retro-text mt-12 relative overflow-hidden">

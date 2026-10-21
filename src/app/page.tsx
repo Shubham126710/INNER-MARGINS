@@ -3,7 +3,7 @@ import { PostCard, StatCard, Greeting } from '@/components';
 import { getPublishedPosts, getFeaturedPosts } from '@/actions/post.actions';
 import { getAnalysisStats } from '@/actions/analysis.actions';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function Home() {
   const posts = await getPublishedPosts(3);

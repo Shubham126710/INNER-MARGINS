@@ -17,5 +17,8 @@ export { default as WeeklyActivityChart } from './charts/WeeklyActivityChart';
 export { default as AppleActivityCard } from './kokonutui/apple-activity-card';
 export { default as ActivityTerrain } from './kokonutui/activity-terrain';
 export * from './TimelineDiagnostics';
+export { default as PostActions } from './PostActions';
+export { default as PostView } from './PostView';
+export { default as LockedPostView } from './LockedPostView';
 
 export * from './Greeting';

@@ -1,23 +1,27 @@
-'use server'
+'use server';
 
 import { db } from '@/lib/db';
-import { revalidatePath } from 'next/cache';
+import { unstable_cache, updateTag, revalidatePath } from 'next/cache';
 
-export async function getCommentsAction(postId: string) {
-  try {
-    const comments = await db.comment.findMany({
-      where: { postId },
-      orderBy: { createdAt: 'desc' },
-    });
-    return comments.map(c => ({
-      ...c,
-      createdAt: c.createdAt.toISOString()
-    }));
-  } catch (error) {
-    console.error('Failed to fetch comments', error);
-    return [];
-  }
-}
+export const getCommentsAction = unstable_cache(
+  async (postId: string) => {
+    try {
+      const comments = await db.comment.findMany({
+        where: { postId },
+        orderBy: { createdAt: 'desc' },
+      });
+      return comments.map((c) => ({
+        ...c,
+        createdAt: c.createdAt.toISOString(),
+      }));
+    } catch (error) {
+      console.error('Failed to fetch comments', error);
+      return [];
+    }
+  },
+  ['get-comments'],
+  { revalidate: 3600, tags: ['comments'] }
+);
 
 export async function addCommentAction(postId: string, author: string, content: string) {
   try {
@@ -33,8 +37,8 @@ export async function addCommentAction(postId: string, author: string, content: 
       },
     });
 
-    // Revalidate the post page to show the new comment
-    revalidatePath(`/posts/[slug]`, 'page');
+    updateTag('comments');
+    revalidatePath('/posts/[slug]', 'page');
     return { success: true, comment: { ...comment, createdAt: comment.createdAt.toISOString() } };
   } catch (error) {
     console.error('Failed to add comment', error);

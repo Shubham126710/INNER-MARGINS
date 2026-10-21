@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { BlogPost } from '@/lib/types';
 import PostCard from './PostCard';
 
@@ -13,11 +14,17 @@ interface JournalSectionProps {
 
 type SortOption = 'newest' | 'oldest' | 'alphabetical';
 
-export default function JournalSection({ posts, allTags, activeTag }: JournalSectionProps) {
+export default function JournalSection({ posts, allTags, activeTag: propActiveTag }: JournalSectionProps) {
+  const searchParams = useSearchParams();
+  const activeTag = propActiveTag !== undefined ? propActiveTag : (searchParams?.get('tag') || undefined);
   const [sortOption, setSortOption] = useState<SortOption>('newest');
 
+  const filteredPosts = activeTag 
+    ? posts.filter(p => p.tags.includes(activeTag))
+    : posts;
+
   // Sort posts based on selection
-  const sortedPosts = [...posts].sort((a, b) => {
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
     switch (sortOption) {
       case 'newest':
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

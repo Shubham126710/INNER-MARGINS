@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
+import { unstable_cache } from 'next/cache';
 
 export type AnalysisStats = {
   currentStreak: number;
@@ -17,185 +18,181 @@ export type AnalysisStats = {
   monthlyPattern: { month: string; count: number }[];
 };
 
-export async function getAnalysisStats(): Promise<AnalysisStats> {
-  const posts = await db.post.findMany({
-    where: {
-      isPublished: true,
-    },
-    select: {
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
+export const getAnalysisStats = unstable_cache(
+  async (): Promise<AnalysisStats> => {
+    const posts = await db.post.findMany({
+      where: {
+        isPublished: true,
+      },
+      select: {
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
-  // Helper to normalize date to YYYY-MM-DD string in Asia/Kolkata
-  const toDateString = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-  };
-  
-  const now = new Date();
-  const todayStr = toDateString(now);
-  // Use noon UTC to avoid daylight saving or boundary issues when subtracting days
-  const today = new Date(`${todayStr}T12:00:00Z`);
+    // Helper to normalize date to YYYY-MM-DD string in Asia/Kolkata
+    const toDateString = (date: Date) => {
+      return new Date(date).toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    };
+    
+    const now = new Date();
+    const todayStr = toDateString(now);
+    // Use noon UTC to avoid daylight saving or boundary issues when subtracting days
+    const today = new Date(`${todayStr}T12:00:00Z`);
 
-  const [yearNum, monthNum] = todayStr.split('-').map(Number);
-  // Day 0 of next month in 1-based indexing yields the total days in current month (28, 29, 30, or 31)
-  const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
-  // Leap year: divisible by 4 and (not divisible by 100 or divisible by 400) -> 366 days, else 365
-  const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || (yearNum % 400 === 0);
-  const daysInYear = isLeapYear ? 366 : 365;
-  
-  const postDates = new Set(posts.map(p => toDateString(p.createdAt)));
-  const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
+    const [yearNum, monthNum] = todayStr.split('-').map(Number);
+    // Day 0 of next month in 1-based indexing yields the total days in current month (28, 29, 30, or 31)
+    const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+    // Leap year: divisible by 4 and (not divisible by 100 or divisible by 400) -> 366 days, else 365
+    const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || (yearNum % 400 === 0);
+    const daysInYear = isLeapYear ? 366 : 365;
+    
+    const postDates = new Set(posts.map(p => toDateString(p.createdAt)));
+    const sortedDates = Array.from(postDates).sort((a, b) => b.localeCompare(a)); // Descending
 
-  const dailyActivity: { [date: string]: number } = {};
-  
-  posts.forEach(post => {
-      const dateStr = toDateString(post.createdAt);
-      dailyActivity[dateStr] = (dailyActivity[dateStr] || 0) + 1;
-  });
+    const dailyActivity: { [date: string]: number } = {};
+    
+    posts.forEach(post => {
+        const dateStr = toDateString(post.createdAt);
+        dailyActivity[dateStr] = (dailyActivity[dateStr] || 0) + 1;
+    });
 
 
-  // 1. Calculate Current Streak
-  let currentStreak = 0;
-  let checkDate = new Date(today);
-  
-  // If no post today, check if there was one yesterday to keep streak alive?
-  // Usually streak includes today. If I didn't post today, is streak 0? 
-  // Duolingo style: if I haven't done it today, streak is still valid until end of day.
-  // GitHub style: Current streak is consecutive days ending today or yesterday.
-  
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = toDateString(yesterday);
+    // 1. Calculate Current Streak
+    let currentStreak = 0;
+    let checkDate = new Date(today);
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = toDateString(yesterday);
 
-  if (postDates.has(todayStr)) {
-      // Streak is active today
-      currentStreak = 1;
-      checkDate = yesterday;
-  } else if (postDates.has(yesterdayStr)) {
-      // Streak is active from yesterday
-      currentStreak = 1; // It counts yesterday
-      checkDate = yesterday;
-      checkDate.setDate(checkDate.getDate() - 1);
-  } else {
-      currentStreak = 0;
-  }
+    if (postDates.has(todayStr)) {
+        // Streak is active today
+        currentStreak = 1;
+        checkDate = yesterday;
+    } else if (postDates.has(yesterdayStr)) {
+        // Streak is active from yesterday
+        currentStreak = 1; // It counts yesterday
+        checkDate = yesterday;
+        checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+        currentStreak = 0;
+    }
 
-  if (currentStreak > 0) {
-      while (true) {
-          const dateStr = toDateString(checkDate);
-          if (postDates.has(dateStr)) {
-              currentStreak++;
-              checkDate.setDate(checkDate.getDate() - 1);
-          } else {
-              break;
-          }
-      }
-  }
+    if (currentStreak > 0) {
+        while (true) {
+            const dateStr = toDateString(checkDate);
+            if (postDates.has(dateStr)) {
+                currentStreak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+    }
 
-  // 2. Longest Streak
-  let longestStreak = 0;
-  let tempStreak = 0;
-  // We need to iterate through all days in history or just iterate sorted unique dates?
-  // Iterating sorted unique dates is not enough because gaps break streaks.
-  // Better: Iterate distinct sorted dates (ascending) and check continuity.
-  
-  if (sortedDates.length > 0) {
-      const ascDates = [...sortedDates].reverse();
-      let prevDate: Date | null = null;
-      
-      for (const dateStr of ascDates) {
-          const currentDate = new Date(dateStr);
-          if (prevDate) {
-              const diffTime = Math.abs(currentDate.getTime() - prevDate.getTime());
-              const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
-              
-              if (diffDays === 1) {
-                  tempStreak++;
-              } else {
-                  tempStreak = 1;
-              }
-          } else {
-              tempStreak = 1;
-          }
-          
-          if (tempStreak > longestStreak) {
-              longestStreak = tempStreak;
-          }
-          prevDate = currentDate;
-      }
-  }
+    // 2. Longest Streak
+    let longestStreak = 0;
+    let tempStreak = 0;
+    
+    if (sortedDates.length > 0) {
+        const ascDates = [...sortedDates].reverse();
+        let prevDate: Date | null = null;
+        
+        for (const dateStr of ascDates) {
+            const currentDate = new Date(dateStr);
+            if (prevDate) {
+                const diffTime = Math.abs(currentDate.getTime() - prevDate.getTime());
+                const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24)); 
+                
+                if (diffDays === 1) {
+                    tempStreak++;
+                } else {
+                    tempStreak = 1;
+                }
+            } else {
+                tempStreak = 1;
+            }
+            
+            if (tempStreak > longestStreak) {
+                longestStreak = tempStreak;
+            }
+            prevDate = currentDate;
+        }
+    }
 
-  // 3. Entries counts
-  let thisWeek = 0;
-  let thisMonth = 0;
-  let thisYear = 0;
-  
-  // Calculate start of week (Sunday)
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay());
-  startOfWeek.setHours(0,0,0,0);
+    // 3. Entries counts
+    let thisWeek = 0;
+    let thisMonth = 0;
+    let thisYear = 0;
+    
+    // Calculate start of week (Sunday)
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setHours(0,0,0,0);
 
-  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
 
-  const entriesByYearMap = new Map<number, number>();
+    const entriesByYearMap = new Map<number, number>();
 
-  posts.forEach(post => {
-      const d = new Date(post.createdAt);
-      if (d >= startOfWeek) thisWeek++;
-      if (d >= startOfMonth) thisMonth++;
-      if (d >= startOfYear) thisYear++;
+    posts.forEach(post => {
+        const d = new Date(post.createdAt);
+        if (d >= startOfWeek) thisWeek++;
+        if (d >= startOfMonth) thisMonth++;
+        if (d >= startOfYear) thisYear++;
 
-      const y = d.getFullYear();
-      entriesByYearMap.set(y, (entriesByYearMap.get(y) || 0) + 1);
-  });
+        const y = d.getFullYear();
+        entriesByYearMap.set(y, (entriesByYearMap.get(y) || 0) + 1);
+    });
 
-  const entriesByYear = Array.from(entriesByYearMap.entries())
-      .map(([year, count]) => ({ year, count }))
-      .sort((a, b) => b.year - a.year);
+    const entriesByYear = Array.from(entriesByYearMap.entries())
+        .map(([year, count]) => ({ year, count }))
+        .sort((a, b) => b.year - a.year);
 
-  // Calculate day of week distribution (already partially done at the start)
-  const dayCounts: { [key: number]: number } = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
-  
-  posts.forEach(post => {
-      const dayOfWeek = post.createdAt.getDay();
-      dayCounts[dayOfWeek]++;
-  });
+    // Calculate day of week distribution (already partially done at the start)
+    const dayCounts: { [key: number]: number } = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+    
+    posts.forEach(post => {
+        const dayOfWeek = post.createdAt.getDay();
+        dayCounts[dayOfWeek]++;
+    });
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const weeklyPattern = days.map((day, index) => ({
-      day,
-      count: dayCounts[index]
-  }));
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weeklyPattern = days.map((day, index) => ({
+        day,
+        count: dayCounts[index]
+    }));
 
-  const monthCounts: { [key: number]: number } = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0 };
-  posts.forEach(post => {
-      const month = post.createdAt.getMonth();
-      monthCounts[month]++;
-  });
-  
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const monthlyPattern = months.map((month, index) => ({
-      month,
-      count: monthCounts[index]
-  }));
+    const monthCounts: { [key: number]: number } = { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0 };
+    posts.forEach(post => {
+        const month = post.createdAt.getMonth();
+        monthCounts[month]++;
+    });
+    
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthlyPattern = months.map((month, index) => ({
+        month,
+        count: monthCounts[index]
+    }));
 
-  return {
-    currentStreak,
-    totalEntries: posts.length,
-    thisWeek,
-    thisMonth,
-    thisYear,
-    daysInMonth,
-    daysInYear,
-    longestStreak,
-    entriesByYear,
-    dailyActivity,
-    weeklyPattern,
-    monthlyPattern,
-  };
-}
+    return {
+      currentStreak,
+      totalEntries: posts.length,
+      thisWeek,
+      thisMonth,
+      thisYear,
+      daysInMonth,
+      daysInYear,
+      longestStreak,
+      entriesByYear,
+      dailyActivity,
+      weeklyPattern,
+      monthlyPattern,
+    };
+  },
+  ['get-analysis-stats'],
+  { revalidate: 3600, tags: ['analysis', 'posts'] }
+);
