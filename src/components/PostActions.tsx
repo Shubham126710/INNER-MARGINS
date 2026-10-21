@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { deletePost } from '@/actions/post.actions';
 
 interface PostActionsProps {
@@ -10,7 +9,6 @@ interface PostActionsProps {
 }
 
 export default function PostActions({ postId }: PostActionsProps) {
-  const router = useRouter();
   const [showActions, setShowActions] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -19,7 +17,7 @@ export default function PostActions({ postId }: PostActionsProps) {
       setIsDeleting(true);
       try {
         await deletePost(postId);
-        router.push('/journals');
+        window.location.href = '/journals';
       } catch (err) {
         console.error('Failed to delete post', err);
         setIsDeleting(false);

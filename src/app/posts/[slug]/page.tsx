@@ -12,10 +12,15 @@ interface PostPageProps {
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
-  const posts = await getPublishedPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  try {
+    const posts = await getPublishedPosts(30);
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (err) {
+    console.warn('generateStaticParams: DB unreachable at build time, using on-demand ISR fallback.', err);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
@@ -24,6 +29,13 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   if (!post) {
     return {
       title: 'Post Not Found | Inner Margins',
+    };
+  }
+
+  if (post.isLocked) {
+    return {
+      title: 'Encrypted Fragment | Inner Margins',
+      description: 'Encrypted transmission fragment. Clearance required to decrypt.',
     };
   }
 
@@ -42,7 +54,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   if (post.isLocked) {
-    return <LockedPostView post={post} />;
+    return <LockedPostView slug={slug} />;
   }
 
   return <PostView post={post} />;

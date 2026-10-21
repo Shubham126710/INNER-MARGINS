@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogPost } from '@/lib/types';
+import { cleanExcerpt } from '@/lib/utils';
 
 interface PostCardProps {
   post: BlogPost;
@@ -49,7 +50,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </h2>
             
             <p className={`text-sm font-mono mb-6 line-clamp-2 text-retro-text/80 leading-relaxed ${post.isLocked ? 'pixelated-blur' : ''}`}>
-              {post.excerpt}
+              {cleanExcerpt(post.excerpt)}
             </p>
             
             <div className="flex items-center justify-between text-xs font-mono border-t border-retro-border/20 pt-4 text-retro-text/50 uppercase tracking-widest">
@@ -125,7 +126,7 @@ export default function PostCard({ post, index = 0, variant = 'default' }: PostC
             </h2>
 
             <p className={`text-retro-text/70 font-mono text-sm leading-relaxed mb-6 line-clamp-4 flex-1 ${post.isLocked ? 'pixelated-blur' : ''}`}>
-              {post.excerpt}
+              {cleanExcerpt(post.excerpt)}
             </p>
 
             {/* Footer block */}

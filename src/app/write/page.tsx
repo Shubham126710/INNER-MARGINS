@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { savePost, getPostById } from '@/actions/post.actions';
 import { TagInput, ImageUpload, PinLock } from '@/components';
@@ -15,7 +15,6 @@ const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
 });
 
 function WriteForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -72,8 +71,7 @@ function WriteForm() {
       }
 
       await savePost({ ...formData, isPublished: true });
-      router.push('/journals');
-      router.refresh();
+      window.location.href = '/journals';
     } catch (error: unknown) {
       console.error('Failed to encode transmission:', error);
       const message = error instanceof Error ? error.message : 'Unknown error';

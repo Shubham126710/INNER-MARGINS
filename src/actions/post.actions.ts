@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/db';
 import { BlogPost } from '@/lib/types';
+import { cleanExcerpt } from '@/lib/utils';
 import { unstable_cache, updateTag, revalidatePath } from 'next/cache';
 
 function calculateReadTime(content: string): string {
@@ -27,31 +28,48 @@ const postCardSelect = {
   tags: { select: { name: true } },
 } as const;
 
-// Helper to map Prisma Post to BlogPost
-function mapToBlogPost(post: {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  content?: string | null;
-  coverImage?: string | null;
-  isFeatured: boolean;
-  isPublished: boolean;
-  isLocked: boolean;
-  createdAt: Date | string;
-  updatedAt?: Date | string | null;
-  readTime?: string | null;
-  tags?: Array<{ name: string } | string>;
-}): BlogPost {
+// Helper to map Prisma Post to BlogPost, with secure masking for locked posts
+function mapToBlogPost(
+  post: {
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string;
+    content?: string | null;
+    coverImage?: string | null;
+    isFeatured: boolean;
+    isPublished: boolean;
+    isLocked: boolean;
+    createdAt: Date | string;
+    updatedAt?: Date | string | null;
+    readTime?: string | null;
+    tags?: Array<{ name: string } | string>;
+  },
+  allowLocked = false
+): BlogPost {
+  const isLocked = post.isLocked ?? false;
+
+  // Mask locked content on public feeds so nothing sensitive leaks in inspect/HTML
+  const title = isLocked && !allowLocked ? '[ ENCRYPTED ARCHIVE ]' : post.title;
+  const excerpt = isLocked && !allowLocked
+    ? 'Encrypted memory fragment. Clearance required to decrypt transmission.'
+    : cleanExcerpt(post.excerpt || post.content || '', 150);
+  const coverImage = isLocked && !allowLocked ? undefined : (post.coverImage || undefined);
+  const tags = isLocked && !allowLocked
+    ? ['locked']
+    : post.tags ? post.tags.map((t) => (typeof t === 'string' ? t : t.name)) : [];
+
   return {
     ...post,
-    coverImage: post.coverImage || undefined,
-    content: post.content || undefined,
+    title,
+    excerpt,
+    coverImage,
+    content: isLocked && !allowLocked ? undefined : (post.content || undefined),
     readTime: post.readTime || (post.content ? calculateReadTime(post.content) : '1 min read'),
-    tags: post.tags ? post.tags.map((t) => typeof t === 'string' ? t : t.name) : [],
+    tags,
     createdAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt,
     updatedAt: post.updatedAt instanceof Date ? post.updatedAt.toISOString() : (post.updatedAt || (post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt)),
-    isLocked: post.isLocked ?? false,
+    isLocked,
   };
 }
 
@@ -62,7 +80,7 @@ export const getPosts = unstable_cache(
       orderBy: { createdAt: 'desc' },
       ...(limit ? { take: limit } : {}),
     });
-    return posts.map(mapToBlogPost);
+    return posts.map((p) => mapToBlogPost(p, false));
   },
   ['get-posts'],
   { revalidate: 3600, tags: ['posts'] }
@@ -76,7 +94,7 @@ export const getPublishedPosts = unstable_cache(
       orderBy: { createdAt: 'desc' },
       ...(limit ? { take: limit } : {}),
     });
-    return posts.map(mapToBlogPost);
+    return posts.map((p) => mapToBlogPost(p, false));
   },
   ['get-published-posts'],
   { revalidate: 3600, tags: ['posts'] }
@@ -90,7 +108,7 @@ export const getFeaturedPosts = unstable_cache(
       orderBy: { createdAt: 'desc' },
       ...(limit ? { take: limit } : {}),
     });
-    return posts.map(mapToBlogPost);
+    return posts.map((p) => mapToBlogPost(p, false));
   },
   ['get-featured-posts'],
   { revalidate: 3600, tags: ['posts'] }
@@ -102,7 +120,9 @@ export const getPostBySlug = unstable_cache(
       where: { slug },
       include: { tags: true },
     });
-    return post ? mapToBlogPost(post) : null;
+    if (!post) return null;
+    // If locked, map with allowLocked = false so initial HTML doesn't leak secrets
+    return mapToBlogPost(post, !post.isLocked);
   },
   ['get-post-by-slug'],
   { revalidate: 86400, tags: ['posts'] }
@@ -114,7 +134,8 @@ export const getPostById = unstable_cache(
       where: { id },
       include: { tags: true },
     });
-    return post ? mapToBlogPost(post) : null;
+    // Used by editor on authenticated /write route
+    return post ? mapToBlogPost(post, true) : null;
   },
   ['get-post-by-id'],
   { revalidate: 86400, tags: ['posts'] }
@@ -143,6 +164,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
 
   let savedPost;
   const readTime = calculateReadTime(post.content);
+  const excerpt = cleanExcerpt(post.excerpt || post.content, 150);
 
   if (post.id) {
     savedPost = await db.post.update({
@@ -151,7 +173,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
         title: post.title,
         slug,
         content: post.content,
-        excerpt: post.excerpt || post.content.substring(0, 150) + '...',
+        excerpt,
         coverImage: post.coverImage,
         isFeatured: post.isFeatured,
         isPublished: post.isPublished,
@@ -170,7 +192,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
         title: post.title,
         slug,
         content: post.content,
-        excerpt: post.excerpt || post.content.substring(0, 150) + '...',
+        excerpt,
         coverImage: post.coverImage,
         isFeatured: post.isFeatured || false,
         isLocked: post.isLocked || false,
@@ -186,13 +208,13 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
 
   updateTag('posts');
   updateTag('analysis');
-  revalidatePath('/');
-  revalidatePath('/journals');
-  revalidatePath('/analysis');
+  revalidatePath('/', 'page');
+  revalidatePath('/journals', 'page');
+  revalidatePath('/analysis', 'page');
   if (savedPost.slug) {
-    revalidatePath(`/posts/${savedPost.slug}`);
+    revalidatePath(`/posts/${savedPost.slug}`, 'page');
   }
-  return mapToBlogPost(savedPost);
+  return mapToBlogPost(savedPost, true);
 }
 
 export async function deletePost(id: string): Promise<void> {
@@ -201,10 +223,10 @@ export async function deletePost(id: string): Promise<void> {
 
   updateTag('posts');
   updateTag('analysis');
-  revalidatePath('/');
-  revalidatePath('/journals');
-  revalidatePath('/analysis');
+  revalidatePath('/', 'page');
+  revalidatePath('/journals', 'page');
+  revalidatePath('/analysis', 'page');
   if (post?.slug) {
-    revalidatePath(`/posts/${post.slug}`);
+    revalidatePath(`/posts/${post.slug}`, 'page');
   }
 }
