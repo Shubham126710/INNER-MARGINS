@@ -21,7 +21,7 @@ export default function LoadingScreen({
   const [progress, setProgress] = useState(0);
   const [activeMessage, setActiveMessage] = useState('CALIBRATING RETROSPECTIVE FREQUENCIES...');
 
-  // Smooth shutter exit
+  // Smooth curtain slide exit
   const handleDismiss = useCallback(() => {
     if (isDismissing.current) return;
     isDismissing.current = true;
@@ -34,7 +34,7 @@ export default function LoadingScreen({
 
     gsap.to(containerRef.current, {
       yPercent: -100,
-      duration: 0.8,
+      duration: 0.85,
       ease: 'power4.inOut',
       onComplete: () => {
         document.body.style.overflow = '';
@@ -43,7 +43,7 @@ export default function LoadingScreen({
     });
   }, [onComplete]);
 
-  // Lock body scroll and listen for skip keys if in preloader mode
+  // Lock body scroll and listen for skip keys in preloader mode
   useEffect(() => {
     if (!isPreloader) return;
 
@@ -88,7 +88,7 @@ export default function LoadingScreen({
       'DEFRAGMENTING EMOTIONAL ARCHIVES...',
       'RETRIEVING UNPUBLISHED MARGINALIA...',
       'ALIGNING ESSAYS & EPHEMERAL THOUGHTS...',
-      'SYNCHRONIZING RETRO MEMORY BANKS...',
+      'SYNCHRONIZING MEMORY SECTORS...',
       'ALL ARTIFACTS VERIFIED // ARCHIVE READY.',
     ];
     let idx = 0;
@@ -103,77 +103,67 @@ export default function LoadingScreen({
     () => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      // Frame & Editorial entrance
-      tl.from('.loader-frame', {
-        scale: 0.985,
+      // Clean typographic entrance
+      tl.from('.type-meta', {
+        y: -12,
         opacity: 0,
-        duration: 0.6,
-        ease: 'power2.out',
+        duration: 0.5,
+        stagger: 0.08,
       })
         .from(
-          '.loader-meta',
+          '.type-kicker',
           {
-            y: -10,
             opacity: 0,
-            duration: 0.4,
-            stagger: 0.08,
-          },
-          '-=0.3'
-        )
-        .from(
-          '.loader-badge',
-          {
-            scale: 0.92,
-            opacity: 0,
-            duration: 0.35,
-          },
-          '-=0.2'
-        )
-        .from(
-          '.loader-title-line',
-          {
-            y: 35,
-            opacity: 0,
-            duration: 0.65,
-            stagger: 0.1,
-            ease: 'expo.out',
-          },
-          '-=0.2'
-        )
-        .from(
-          '.loader-desc',
-          {
-            y: 15,
-            opacity: 0,
-            duration: 0.45,
-          },
-          '-=0.3'
-        )
-        .from(
-          '.loader-progress-box',
-          {
-            y: 20,
-            opacity: 0,
+            y: 10,
             duration: 0.45,
           },
           '-=0.25'
         )
         .from(
-          '.loader-footer-meta',
+          '.type-heading-line',
           {
-            y: 10,
+            y: 35,
             opacity: 0,
-            duration: 0.4,
+            duration: 0.75,
+            stagger: 0.12,
+            ease: 'power3.out',
+          },
+          '-=0.2'
+        )
+        .from(
+          '.type-subtext',
+          {
+            y: 15,
+            opacity: 0,
+            duration: 0.5,
+          },
+          '-=0.3'
+        )
+        .from(
+          '.type-counter-block',
+          {
+            scale: 0.95,
+            opacity: 0,
+            duration: 0.6,
+          },
+          '-=0.25'
+        )
+        .from(
+          '.type-footer',
+          {
+            y: 12,
+            opacity: 0,
+            duration: 0.5,
             stagger: 0.08,
           },
           '-=0.3'
         );
 
-      // Percentage counter & progress bar animation (2.4s duration)
+      // Percentage counter & progress bar animation (2.2s duration)
       const counter = { val: 0 };
       gsap.to(counter, {
         val: 100,
-        duration: 2.4,
+        duration: 2.2,
         ease: 'power2.inOut',
         onUpdate: () => {
           const current = Math.round(counter.val);
@@ -188,10 +178,9 @@ export default function LoadingScreen({
             progressBarRef.current.style.transform = 'scaleX(1)';
           }
           if (isPreloader) {
-            // Give user 650ms to appreciate completion before lifting curtain
             setTimeout(() => {
               handleDismiss();
-            }, 650);
+            }, 600);
           }
         },
       });
@@ -205,167 +194,119 @@ export default function LoadingScreen({
       role="status"
       aria-live="polite"
       aria-label="Loading archival memory"
-      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col items-center justify-center p-3 sm:p-6 md:p-10 bg-retro-bg text-retro-text select-none overflow-hidden font-body ${className}`}
+      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col justify-between p-6 sm:p-10 md:p-16 lg:p-20 bg-retro-bg text-retro-text select-none overflow-hidden font-body ${className}`}
     >
-      {/* Background Ambience: Noise & Hairline Grid */}
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-15 mix-blend-overlay noise-bg" />
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.035] bg-[linear-gradient(transparent_50%,rgba(201,65,60,0.5)_50%)] bg-[length:100%_4px]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(201,65,60,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(201,65,60,0.035)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(201,65,60,0.05)_0%,transparent_75%)]" />
+      {/* Background Ambience: Subtle Noise & Fine Millimeter Grid */}
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-12 mix-blend-overlay noise-bg" />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(201,65,60,0.5)_50%)] bg-[length:100%_4px]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(201,65,60,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(201,65,60,0.035)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-      {/* Editorial Frame */}
-      <div className="loader-frame relative z-10 w-full max-w-5xl h-full max-h-[92dvh] flex flex-col justify-between border border-retro-border/40 bg-retro-surface/40 backdrop-blur-[2px] p-5 sm:p-8 md:p-12 shadow-retro-lg overflow-hidden">
-        {/* Corner Precision Hairline Markers */}
-        <div className="absolute top-2 left-2.5 font-mono text-[9px] uppercase tracking-widest text-retro-text/40 select-none">
-          ┌ [SEC:01]
-        </div>
-        <div className="absolute top-2 right-2.5 font-mono text-[9px] uppercase tracking-widest text-retro-text/40 select-none">
-          [SYS:LIVE] ┐
-        </div>
-        <div className="absolute bottom-2 left-2.5 font-mono text-[9px] uppercase tracking-widest text-retro-text/40 select-none">
-          └ [REF:2026]
-        </div>
-        <div className="absolute bottom-2 right-2.5 font-mono text-[9px] uppercase tracking-widest text-retro-text/40 select-none">
-          [ARCHIVE] ┘
+      {/* TOP MARGIN: Archival Telemetry */}
+      <header className="type-meta relative z-10 flex items-start justify-between border-b border-retro-border/20 pb-5">
+        <div className="space-y-1">
+          <div className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-retro-text font-medium flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-retro-primary animate-pulse" />
+            <span>Archival Transmission</span>
+          </div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-retro-text/50">
+            Vol. IV &bull; Sector 0x4B
+          </div>
         </div>
 
-        {/* TOP RAIL: Archival Micro-Typography */}
-        <header className="loader-meta flex items-center justify-between border-b border-retro-border/30 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-retro-primary animate-pulse" />
-            <div className="space-y-0.5">
-              <span className="font-heading text-[10px] sm:text-xs uppercase tracking-wider text-retro-text block">
-                Inner Margins
-              </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-retro-text/60 block">
-                Archival Protocol // Vol. IV
-              </span>
-            </div>
+        <div className="hidden md:block font-mono text-[10px] uppercase tracking-[0.3em] text-retro-text/40 pt-1">
+          [ Ephemeral Thoughts &bull; Memory Recovery ]
+        </div>
+
+        <div className="text-right font-mono space-y-1">
+          <div
+            className="text-[11px] sm:text-xs uppercase tracking-widest text-retro-text font-bold tabular-nums"
+            suppressHydrationWarning
+          >
+            {timeStr}
+          </div>
+          <div className="text-[9px] uppercase tracking-[0.2em] text-retro-text/50">
+            Universal Telemetry
+          </div>
+        </div>
+      </header>
+
+      {/* CENTERPIECE: Typography-Heavy Monumental Layout */}
+      <main className="relative z-10 my-auto py-8 sm:py-12 flex flex-col items-center justify-center text-center">
+        {/* Kicker */}
+        <div className="type-kicker mb-4 sm:mb-6">
+          <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-retro-primary/80 font-medium border-b border-retro-border/30 pb-1">
+            Cataloguing The Unwritten
+          </span>
+        </div>
+
+        {/* Monumental Editorial Headline in Instrument Serif */}
+        <div className="space-y-0 sm:space-y-1 max-w-4xl mx-auto">
+          <h2 className="type-heading-line font-serif italic text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-retro-text font-normal leading-[1.05]">
+            &ldquo;Every thought left
+          </h2>
+          <h2 className="type-heading-line font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-retro-text font-normal leading-[1.05]">
+            between the margins,&rdquo;
+          </h2>
+        </div>
+
+        {/* Poetic Monospace Subtext */}
+        <p className="type-subtext mt-4 sm:mt-6 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-retro-text/60 max-w-lg mx-auto leading-relaxed">
+          awaiting the quiet act of remembering
+        </p>
+
+        {/* Minimalist Typographic Counter & Hairline Gauge */}
+        <div className="type-counter-block mt-8 sm:mt-12 w-full max-w-lg mx-auto flex flex-col items-center gap-4">
+          {/* Giant Number Readout */}
+          <div className="flex items-baseline gap-2 font-serif italic text-6xl sm:text-8xl md:text-9xl text-retro-text font-normal tabular-nums tracking-tighter leading-none">
+            <span>{String(progress).padStart(3, '0')}</span>
+            <span className="font-mono text-xl sm:text-2xl not-italic text-retro-primary/70 tracking-normal font-normal">
+              %
+            </span>
           </div>
 
-          <div className="hidden md:flex flex-col items-center justify-center font-mono text-[10px] uppercase tracking-widest text-retro-text/70 border border-retro-border/30 px-3 py-1 bg-retro-surface/70 shadow-retro-sm">
-            <span>Transmission In Flight</span>
-          </div>
-
-          <div className="text-right font-mono space-y-0.5">
+          {/* Ultra-Clean Hairline Progress Rule */}
+          <div className="w-full relative h-[2px] bg-retro-border/20 overflow-hidden">
             <div
-              className="text-[10px] sm:text-xs uppercase tracking-widest text-retro-text font-bold tabular-nums"
-              suppressHydrationWarning
+              ref={progressBarRef}
+              className="h-full bg-retro-primary origin-left transition-transform duration-75 ease-out shadow-[0_0_8px_rgba(201,65,60,0.4)]"
+              style={{ transform: `scaleX(${progress / 100})` }}
+            />
+          </div>
+
+          {/* Cycling Poetic Log */}
+          <div className="pt-2 flex items-center justify-center gap-2 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-retro-text/75 text-center">
+            <span className="text-retro-primary font-bold">&gt;</span>
+            <span className="truncate">{activeMessage}</span>
+            <span className="inline-block w-1.5 h-3 bg-retro-primary animate-pulse flex-shrink-0" />
+          </div>
+        </div>
+      </main>
+
+      {/* BOTTOM MARGIN: Archival Ledger & Subtle Skip Action */}
+      <footer className="type-footer relative z-10 flex items-center justify-between border-t border-retro-border/20 pt-5 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-retro-text/60">
+        <div>
+          <span>LAT. 37.7749&deg; N // LON. 122.4194&deg; W</span>
+        </div>
+
+        {isPreloader && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="px-4 py-1.5 border border-retro-border/30 hover:border-retro-primary bg-retro-surface/40 hover:bg-retro-primary hover:text-white transition-all text-[9px] uppercase tracking-[0.25em] text-retro-text cursor-pointer"
             >
-              {timeStr}
-            </div>
-            <div className="text-[8px] sm:text-[9px] uppercase tracking-widest text-retro-text/50">
-              Local Telemetry
-            </div>
+              {progress >= 100 ? 'Enter Archive ↵' : 'Skip ↵'}
+            </button>
+            <span className="hidden sm:inline text-[8px] text-retro-text/40 lowercase tracking-normal">
+              (esc)
+            </span>
           </div>
-        </header>
+        )}
 
-        {/* CENTERPIECE: Massive Typography Lockup */}
-        <main className="my-auto py-6 sm:py-10 text-center flex flex-col items-center justify-center">
-          {/* Badge */}
-          <div className="loader-badge mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-2 border border-retro-border/50 bg-retro-surface/90 px-3 py-1 shadow-retro-sm">
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-retro-primary font-semibold">
-                [ EDITION 2026.4 • EPHEMERAL ESSAYS &amp; MARGINALIA ]
-              </span>
-            </div>
-          </div>
-
-          {/* Grand Typographic Title */}
-          <div className="space-y-1 sm:space-y-3 tracking-tighter">
-            <h1 className="loader-title-line font-heading text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-retro-text uppercase leading-none drop-shadow-sm">
-              INNER
-            </h1>
-            <h1 className="loader-title-line font-heading text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-retro-text uppercase leading-none drop-shadow-sm">
-              MARGINS
-            </h1>
-          </div>
-
-          {/* Subtitle & Poetic Marginalia */}
-          <div className="loader-desc mt-6 sm:mt-8 max-w-xl mx-auto space-y-2">
-            <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-retro-primary font-medium">
-              An Archival Space For Fleeting Thoughts &amp; Unspoken Prose
-            </p>
-            <p className="font-mono text-[9px] sm:text-[11px] text-retro-text/60 italic leading-relaxed max-w-md mx-auto">
-              &ldquo;Everything written between the lines remains catalogued; nothing is discarded.&rdquo;
-            </p>
-          </div>
-
-          {/* Oversized Progress Readout & Architectural Gauge */}
-          <div className="loader-progress-box mt-8 sm:mt-12 w-full max-w-md sm:max-w-lg mx-auto space-y-3">
-            <div className="flex items-end justify-between font-mono">
-              <div className="text-left space-y-0.5">
-                <span className="text-[8px] sm:text-[9px] uppercase tracking-widest text-retro-text/50 block">
-                  Stream Buffer
-                </span>
-                <span className="text-[10px] sm:text-xs uppercase tracking-wider text-retro-text font-bold">
-                  Sector 0x4B // Sync
-                </span>
-              </div>
-              <div className="flex items-baseline gap-1 font-heading text-3xl sm:text-5xl text-retro-text">
-                <span className="tabular-nums">{String(progress).padStart(3, '0')}</span>
-                <span className="text-base sm:text-xl text-retro-primary">%</span>
-              </div>
-            </div>
-
-            {/* Architectural Hairline Progress Gauge */}
-            <div className="relative w-full h-3 sm:h-3.5 border border-retro-border/50 bg-retro-surface/80 p-[2px] shadow-retro-sm overflow-hidden">
-              <div
-                ref={progressBarRef}
-                className="h-full bg-retro-primary origin-left transition-transform duration-75 ease-out"
-                style={{ transform: `scaleX(${progress / 100})` }}
-              />
-            </div>
-
-            {/* Archival Tick Scales */}
-            <div className="flex justify-between font-mono text-[8px] uppercase tracking-widest text-retro-text/40 pt-0.5">
-              <span>[000]</span>
-              <span className="hidden sm:inline">[025]</span>
-              <span>[050]</span>
-              <span className="hidden sm:inline">[075]</span>
-              <span>[100]</span>
-            </div>
-
-            {/* Poetic Cycling Status Line */}
-            <div className="pt-2 flex items-center justify-center gap-2 font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-retro-text/80 text-center">
-              <span className="text-retro-primary font-bold">&gt;</span>
-              <span className="truncate">{activeMessage}</span>
-              <span className="inline-block w-1.5 h-3 bg-retro-primary animate-pulse flex-shrink-0" />
-            </div>
-
-            {/* Interactive Skip / Enter Controls */}
-            {isPreloader && (
-              <div className="pt-3 flex flex-col items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={handleDismiss}
-                  className="px-4 py-1.5 border border-retro-border/60 bg-retro-surface/90 hover:bg-retro-primary hover:text-white active:translate-y-0.5 transition-all text-[9px] font-mono uppercase tracking-[0.2em] text-retro-text shadow-retro-sm cursor-pointer"
-                >
-                  {progress >= 100 ? 'ENTER ARCHIVE ↵' : 'SKIP INTRO ↵'}
-                </button>
-                <span className="text-[8px] font-mono uppercase tracking-widest text-retro-text/40">
-                  (or press ESC / SPACE)
-                </span>
-              </div>
-            )}
-          </div>
-        </main>
-
-        {/* BOTTOM RAIL: Archival Ledger */}
-        <footer className="loader-footer-meta flex items-center justify-between border-t border-retro-border/30 pt-4 font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-retro-text/60">
-          <div>
-            <span>COORDINATES: 37.7749&deg; N // 122.4194&deg; W</span>
-          </div>
-
-          <div className="hidden lg:block text-retro-text/40 tracking-[0.2em]">
-            + &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; ARCHIVE ENGINE &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash; +
-          </div>
-
-          <div className="text-right">
-            <span>INNER MARGINS &copy; 2026 // ALL RIGHTS RESERVED</span>
-          </div>
-        </footer>
-      </div>
+        <div className="text-right">
+          <span>Archive Protocol &bull; 2026</span>
+        </div>
+      </footer>
     </div>
   );
 }

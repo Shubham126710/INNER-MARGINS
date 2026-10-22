@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Press_Start_2P, JetBrains_Mono } from "next/font/google";
+import { Press_Start_2P, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Header, Footer, AppPreloader } from "@/components";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -18,6 +18,14 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Inner Margins | Pixel Journal",
   description: "A retro pixel space for thoughts and stories.",
@@ -32,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${pressStart2P.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-retro-bg relative`}
+        className={`${pressStart2P.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-retro-bg relative`}
       >
         {/* Grain overlay */}
         <div className="pointer-events-none fixed inset-0 z-50 opacity-10 mix-blend-overlay noise-bg"></div>

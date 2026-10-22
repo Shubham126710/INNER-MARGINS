@@ -24,6 +24,7 @@ const tailwindConfig = {
       fontFamily: {
         heading: ['var(--font-heading)', 'monospace'],
         display: ['var(--font-heading)', 'monospace'],
+        serif: ['var(--font-serif)', 'serif'],
         body: ['var(--font-body)', 'monospace'],
         mono: ['monospace'], 
       },
