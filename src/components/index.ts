@@ -20,5 +20,7 @@ export * from './TimelineDiagnostics';
 export { default as PostActions } from './PostActions';
 export { default as PostView } from './PostView';
 export { default as LockedPostView } from './LockedPostView';
+export { default as Magnetic } from './Magnetic';
+export { default as ScrollProgress } from './ScrollProgress';
 
 export * from './Greeting';
