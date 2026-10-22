@@ -5,17 +5,19 @@ import { db } from '@/lib/db';
 import { BlogPost } from '@/lib/types';
 
 // Server-side SHA-256 hash for default master clearance credentials
-const DEFAULT_PASSCODE_HASH = 'b065ec060934cf10a8d6263ecae93094b8156157143e11ad9cffebf9c3ffbbec';
+const DEFAULT_PASSCODE_HASH = 'c5b389beb081fe1e43ae92e895deca086b4eed5cf9efc7b78eebbbc9dc75c3f0';
 
 export async function verifyPasscode(inputPin: string): Promise<boolean> {
   if (!inputPin || typeof inputPin !== 'string') return false;
+  const trimmed = inputPin.trim();
+  if (!trimmed) return false;
 
   const envPasscode = process.env.APP_PASSCODE || process.env.SITE_PASSCODE;
   const targetHash = envPasscode
     ? crypto.createHash('sha256').update(envPasscode.trim()).digest('hex')
     : DEFAULT_PASSCODE_HASH;
 
-  const inputHash = crypto.createHash('sha256').update(inputPin.trim()).digest('hex');
+  const inputHash = crypto.createHash('sha256').update(trimmed).digest('hex');
 
   const targetBuffer = Buffer.from(targetHash, 'hex');
   const inputBuffer = Buffer.from(inputHash, 'hex');

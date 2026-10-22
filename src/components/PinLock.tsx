@@ -42,9 +42,13 @@ export default function PinLock({ onUnlock, onUnlockPin }: PinLockProps) {
 
       if (!isSuccess) {
         setError(true);
+        setErrorMessage('Clearance denied. Invalid passcode.');
         setAttempts((prev) => prev + 1);
         setPin('');
-        setTimeout(() => setError(false), 1200);
+        setTimeout(() => {
+          setError(false);
+          setErrorMessage('');
+        }, 1500);
       }
     } catch {
       setError(true);

@@ -11,6 +11,7 @@ export function stripHtml(html: string): string {
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<[^>]+>/g, ' ')
+    .replace(/<[^>]*$/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
@@ -23,7 +24,7 @@ export function stripHtml(html: string): string {
 
 export function cleanExcerpt(text: string, maxLength = 150): string {
   const plainText = stripHtml(text);
-  if (!plainText) return '';
+  if (!plainText) return '[ Visual transmission ]';
   if (plainText.length <= maxLength) return plainText;
 
   const truncated = plainText.substring(0, maxLength);

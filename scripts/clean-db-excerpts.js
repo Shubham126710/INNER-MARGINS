@@ -12,6 +12,7 @@ function stripHtml(html) {
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<[^>]+>/g, ' ')
+    .replace(/<[^>]*$/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
@@ -24,7 +25,7 @@ function stripHtml(html) {
 
 function cleanExcerpt(text, maxLength = 150) {
   const plainText = stripHtml(text);
-  if (!plainText) return '';
+  if (!plainText) return '[ Visual transmission ]';
   if (plainText.length <= maxLength) return plainText;
 
   const truncated = plainText.substring(0, maxLength);
@@ -43,9 +44,8 @@ async function cleanDatabaseExcerpts() {
 
   for (const post of posts) {
     const rawExcerpt = post.excerpt || '';
-    const cleaned = cleanExcerpt(rawExcerpt.includes('<') ? (rawExcerpt || post.content) : rawExcerpt, 150);
-
-    if (rawExcerpt !== cleaned && rawExcerpt.includes('<')) {
+    if (rawExcerpt.includes('<')) {
+      const cleaned = cleanExcerpt(rawExcerpt.includes('<img') && stripHtml(rawExcerpt).length === 0 ? post.content : rawExcerpt, 150);
       console.log(`Cleaning excerpt for: "${post.title}" (${post.slug})`);
       console.log(`  Before: ${rawExcerpt.substring(0, 60)}...`);
       console.log(`  After:  ${cleaned.substring(0, 60)}...`);

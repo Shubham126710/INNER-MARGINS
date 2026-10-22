@@ -163,10 +163,14 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
   }));
 
   let savedPost;
+  let previousSlug: string | undefined;
   const readTime = calculateReadTime(post.content);
   const excerpt = cleanExcerpt(post.excerpt || post.content, 150);
 
   if (post.id) {
+    const existing = await db.post.findUnique({ where: { id: post.id }, select: { slug: true } });
+    previousSlug = existing?.slug;
+
     savedPost = await db.post.update({
       where: { id: post.id },
       data: {
@@ -213,6 +217,9 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
   revalidatePath('/analysis', 'page');
   if (savedPost.slug) {
     revalidatePath(`/posts/${savedPost.slug}`, 'page');
+  }
+  if (previousSlug && previousSlug !== savedPost.slug) {
+    revalidatePath(`/posts/${previousSlug}`, 'page');
   }
   return mapToBlogPost(savedPost, true);
 }
