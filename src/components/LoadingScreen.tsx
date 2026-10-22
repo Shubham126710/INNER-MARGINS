@@ -16,9 +16,9 @@ export default function LoadingScreen({
 }: LoadingScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const percentTextRef = useRef<HTMLSpanElement>(null);
   const isDismissing = useRef(false);
-  const [timeStr, setTimeStr] = useState('');
+  const [timeStr, setTimeStr] = useState('00:00:00.00');
+  const [progress, setProgress] = useState(0);
   const [activeMessage, setActiveMessage] = useState('CALIBRATING RETROSPECTIVE FREQUENCIES...');
 
   // Smooth shutter exit
@@ -34,7 +34,7 @@ export default function LoadingScreen({
 
     gsap.to(containerRef.current, {
       yPercent: -100,
-      duration: 0.75,
+      duration: 0.8,
       ease: 'power4.inOut',
       onComplete: () => {
         document.body.style.overflow = '';
@@ -95,13 +95,12 @@ export default function LoadingScreen({
     const msgInterval = setInterval(() => {
       idx = (idx + 1) % MESSAGES.length;
       setActiveMessage(MESSAGES[idx]);
-    }, 1800);
+    }, 1500);
     return () => clearInterval(msgInterval);
   }, []);
 
   useGSAP(
     () => {
-      const counter = { val: 0 };
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       // Frame & Editorial entrance
@@ -170,25 +169,29 @@ export default function LoadingScreen({
           '-=0.3'
         );
 
-      // Percentage counter & progress bar animation
+      // Percentage counter & progress bar animation (2.4s duration)
+      const counter = { val: 0 };
       gsap.to(counter, {
         val: 100,
-        duration: 1.8,
+        duration: 2.4,
         ease: 'power2.inOut',
         onUpdate: () => {
           const current = Math.round(counter.val);
-          if (percentTextRef.current) {
-            percentTextRef.current.textContent = String(current).padStart(3, '0');
-          }
+          setProgress(current);
           if (progressBarRef.current) {
             progressBarRef.current.style.transform = `scaleX(${current / 100})`;
           }
         },
         onComplete: () => {
+          setProgress(100);
+          if (progressBarRef.current) {
+            progressBarRef.current.style.transform = 'scaleX(1)';
+          }
           if (isPreloader) {
+            // Give user 650ms to appreciate completion before lifting curtain
             setTimeout(() => {
               handleDismiss();
-            }, 300);
+            }, 650);
           }
         },
       });
@@ -202,10 +205,7 @@ export default function LoadingScreen({
       role="status"
       aria-live="polite"
       aria-label="Loading archival memory"
-      onClick={isPreloader ? handleDismiss : undefined}
-      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col items-center justify-center p-3 sm:p-6 md:p-10 bg-retro-bg text-retro-text select-none overflow-hidden font-body ${
-        isPreloader ? 'cursor-pointer' : ''
-      } ${className}`}
+      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col items-center justify-center p-3 sm:p-6 md:p-10 bg-retro-bg text-retro-text select-none overflow-hidden font-body ${className}`}
     >
       {/* Background Ambience: Noise & Hairline Grid */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-15 mix-blend-overlay noise-bg" />
@@ -252,7 +252,7 @@ export default function LoadingScreen({
               className="text-[10px] sm:text-xs uppercase tracking-widest text-retro-text font-bold tabular-nums"
               suppressHydrationWarning
             >
-              {timeStr || '00:00:00.00'}
+              {timeStr}
             </div>
             <div className="text-[8px] sm:text-[9px] uppercase tracking-widest text-retro-text/50">
               Local Telemetry
@@ -303,7 +303,7 @@ export default function LoadingScreen({
                 </span>
               </div>
               <div className="flex items-baseline gap-1 font-heading text-3xl sm:text-5xl text-retro-text">
-                <span ref={percentTextRef} className="tabular-nums">000</span>
+                <span className="tabular-nums">{String(progress).padStart(3, '0')}</span>
                 <span className="text-base sm:text-xl text-retro-primary">%</span>
               </div>
             </div>
@@ -312,8 +312,8 @@ export default function LoadingScreen({
             <div className="relative w-full h-3 sm:h-3.5 border border-retro-border/50 bg-retro-surface/80 p-[2px] shadow-retro-sm overflow-hidden">
               <div
                 ref={progressBarRef}
-                className="h-full bg-retro-primary origin-left"
-                style={{ transform: 'scaleX(0)' }}
+                className="h-full bg-retro-primary origin-left transition-transform duration-75 ease-out"
+                style={{ transform: `scaleX(${progress / 100})` }}
               />
             </div>
 
@@ -333,10 +333,19 @@ export default function LoadingScreen({
               <span className="inline-block w-1.5 h-3 bg-retro-primary animate-pulse flex-shrink-0" />
             </div>
 
-            {/* Skip Hint for Preloader */}
+            {/* Interactive Skip / Enter Controls */}
             {isPreloader && (
-              <div className="pt-2 text-[8px] sm:text-[9px] font-mono uppercase tracking-[0.2em] text-retro-text/40 animate-pulse">
-                [ Click anywhere or press ESC to proceed ]
+              <div className="pt-3 flex flex-col items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleDismiss}
+                  className="px-4 py-1.5 border border-retro-border/60 bg-retro-surface/90 hover:bg-retro-primary hover:text-white active:translate-y-0.5 transition-all text-[9px] font-mono uppercase tracking-[0.2em] text-retro-text shadow-retro-sm cursor-pointer"
+                >
+                  {progress >= 100 ? 'ENTER ARCHIVE ↵' : 'SKIP INTRO ↵'}
+                </button>
+                <span className="text-[8px] font-mono uppercase tracking-widest text-retro-text/40">
+                  (or press ESC / SPACE)
+                </span>
               </div>
             )}
           </div>
