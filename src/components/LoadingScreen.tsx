@@ -25,11 +25,10 @@ export default function LoadingScreen({
   const comboTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [progress, setProgress] = useState(0);
-  const [score, setScore] = useState(1250);
+  const [score, setScore] = useState(1400);
   const [combo, setCombo] = useState(0);
-  const [isJumping, setIsJumping] = useState(false);
   const [floaters, setFloaters] = useState<FloatingScore[]>([]);
-  const [activeMessage, setActiveMessage] = useState('STAGE 01: SECTOR MEMORY');
+  const [activeMessage, setActiveMessage] = useState('CALIBRATING NOSTALGIA BOOST');
 
   // Smooth upward curtain exit
   const handleDismiss = useCallback(() => {
@@ -62,10 +61,6 @@ export default function LoadingScreen({
       return;
     }
 
-    // Trigger runner jump
-    setIsJumping(true);
-    setTimeout(() => setIsJumping(false), 180);
-
     // Increment combo
     setCombo((prev) => {
       const nextCombo = prev + 1;
@@ -75,7 +70,7 @@ export default function LoadingScreen({
     });
 
     // Score increment
-    const pts = 100 + Math.min(combo * 50, 400);
+    const pts = 100 + Math.min(combo * 50, 500);
     setScore((s) => s + pts);
 
     // Spawn floating score badge
@@ -141,7 +136,7 @@ export default function LoadingScreen({
           }, 450);
         }
       }
-    }, 38);
+    }, 36);
 
     return () => clearInterval(timer);
   }, [isPreloader, handleDismiss]);
@@ -149,9 +144,9 @@ export default function LoadingScreen({
   // Cycling retro arcade log status
   useEffect(() => {
     const MESSAGES = [
-      'STAGE 01: SECTOR MEMORY',
       'CALIBRATING NOSTALGIA BOOST',
-      'INDEXING RETRO LOGS',
+      'RECOVERING MEMORY SECTORS',
+      'INDEXING EPHEMERAL LOGS',
       'BUFFERING PIXEL BITSTREAM',
       'STAGE CLEAR: ALL SYSTEMS GO',
     ];
@@ -178,7 +173,7 @@ export default function LoadingScreen({
           scale: 0.94,
           opacity: 0,
           duration: 0.6,
-          ease: 'back.out(1.4)',
+          ease: 'power3.out',
         },
         '-=0.3'
       );
@@ -229,62 +224,46 @@ export default function LoadingScreen({
         </div>
       </header>
 
-      {/* CENTERPIECE: The Gigantic Loading Number + Pixel Runner Track */}
+      {/* CENTERPIECE: Scaled Up Gigantic Loading Number + Retro Gamified Loading Bar */}
       <main className="arcade-center relative z-10 my-auto flex flex-col items-center justify-center text-center">
         {/* Floating Gamified Score Badges */}
-        <div className="relative h-6 w-full flex items-center justify-center pointer-events-none">
+        <div className="relative h-7 w-full flex items-center justify-center pointer-events-none mb-1">
           {floaters.map((f) => (
             <span
               key={f.id}
-              className="absolute font-mono font-bold text-[11px] sm:text-xs text-retro-primary tracking-widest bg-retro-surface/90 px-2 py-0.5 border border-retro-primary/40 shadow-retro-sm transition-all animate-[floatUp_0.7s_ease-out_forwards]"
+              className="absolute font-mono font-bold text-xs text-retro-primary tracking-widest bg-retro-surface/90 px-2.5 py-0.5 border border-retro-primary/40 shadow-retro-sm transition-all animate-[floatUp_0.7s_ease-out_forwards]"
             >
               {f.text}
             </span>
           ))}
         </div>
 
-        {/* GIGANTIC NUMBER */}
+        {/* SCALED-UP GIGANTIC NUMBER */}
         <div className="relative flex items-baseline justify-center">
-          <span className="font-mono font-bold text-[min(30vw,38vh)] leading-none tracking-tighter text-retro-text tabular-nums">
+          <span className="font-mono font-bold text-[min(45vw,52vh)] leading-none tracking-tighter text-retro-text tabular-nums select-none">
             {String(progress).padStart(2, '0')}
           </span>
-          <span className="font-mono text-[min(7vw,9vh)] font-normal text-retro-primary/60 -ml-1 sm:-ml-3 tracking-normal">
+          <span className="font-mono text-[min(10vw,12vh)] font-normal text-retro-primary/60 -ml-1 sm:-ml-3 tracking-normal select-none">
             %
           </span>
         </div>
 
-        {/* Gamified 8-Bit Pixel Runner Track */}
-        <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm md:max-w-md flex flex-col gap-2">
-          {/* Track Baseline with Moving Runner */}
-          <div className="relative w-full h-6 border-b-2 border-dashed border-retro-border/40">
-            {/* 8-Bit Pixel Runner Sprite */}
+        {/* SIMPLE GAMIFIED RETRO LOADING BAR */}
+        <div className="mt-4 sm:mt-6 w-full max-w-xs sm:max-w-md md:max-w-lg flex flex-col gap-2.5">
+          {/* Retro Segmented Bar Container */}
+          <div className="w-full h-5 sm:h-6 border-2 border-retro-border bg-retro-surface/70 p-0.5 shadow-retro-sm relative overflow-hidden">
+            {/* Active Progress Fill */}
             <div
-              className={`absolute bottom-0 text-retro-primary transition-all duration-100 ease-linear ${
-                isJumping ? '-translate-y-3' : 'translate-y-0'
-              }`}
-              style={{ left: `calc(${progress}% - 8px)` }}
+              className="h-full bg-retro-primary transition-all duration-75 ease-out relative"
+              style={{ width: `${progress}%` }}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <rect x="5" y="1" width="6" height="5" />
-                <rect x="4" y="6" width="8" height="4" />
-                <rect x="3" y="7" width="2" height="3" />
-                <rect x="11" y="7" width="2" height="3" />
-                <rect x="5" y="10" width="2" height="4" />
-                <rect x="9" y="10" width="2" height="4" />
-              </svg>
-            </div>
-
-            {/* Finish Line Flag */}
-            <div className="absolute right-0 bottom-0 text-retro-text/60">
-              <svg width="12" height="16" viewBox="0 0 12 16" fill="currentColor">
-                <rect x="1" y="1" width="2" height="15" />
-                <polygon points="3,2 11,5 3,8" />
-              </svg>
+              {/* Segmented notches overlay */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_6px,rgba(247,218,214,0.45)_6px,rgba(247,218,214,0.45)_8px)]" />
             </div>
           </div>
 
-          {/* Prompt: Tap or Press Space to Boost */}
-          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-retro-text/75 pt-1">
+          {/* Interactive Arcade Prompt & Progress Fraction */}
+          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-retro-text/75 pt-0.5">
             <span className="text-retro-primary font-bold animate-pulse">
               {progress >= 100 ? '★ STAGE CLEAR ★' : 'TAP SCREEN OR SPACE TO BOOST'}
             </span>
