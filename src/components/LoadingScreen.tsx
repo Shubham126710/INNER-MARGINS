@@ -1,14 +1,67 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 
-export default function LoadingScreen() {
+interface LoadingScreenProps {
+  onComplete?: () => void;
+  isPreloader?: boolean;
+  className?: string;
+}
+
+export default function LoadingScreen({
+  onComplete,
+  isPreloader = false,
+  className = '',
+}: LoadingScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const percentTextRef = useRef<HTMLSpanElement>(null);
+  const isDismissing = useRef(false);
   const [timeStr, setTimeStr] = useState('');
   const [activeMessage, setActiveMessage] = useState('CALIBRATING RETROSPECTIVE FREQUENCIES...');
+
+  // Smooth shutter exit
+  const handleDismiss = useCallback(() => {
+    if (isDismissing.current) return;
+    isDismissing.current = true;
+
+    if (!containerRef.current) {
+      document.body.style.overflow = '';
+      onComplete?.();
+      return;
+    }
+
+    gsap.to(containerRef.current, {
+      yPercent: -100,
+      duration: 0.75,
+      ease: 'power4.inOut',
+      onComplete: () => {
+        document.body.style.overflow = '';
+        onComplete?.();
+      },
+    });
+  }, [onComplete]);
+
+  // Lock body scroll and listen for skip keys if in preloader mode
+  useEffect(() => {
+    if (!isPreloader) return;
+
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPreloader, handleDismiss]);
 
   // Precision real-time clock with milliseconds
   useEffect(() => {
@@ -42,7 +95,7 @@ export default function LoadingScreen() {
     const msgInterval = setInterval(() => {
       idx = (idx + 1) % MESSAGES.length;
       setActiveMessage(MESSAGES[idx]);
-    }, 1900);
+    }, 1800);
     return () => clearInterval(msgInterval);
   }, []);
 
@@ -55,7 +108,7 @@ export default function LoadingScreen() {
       tl.from('.loader-frame', {
         scale: 0.985,
         opacity: 0,
-        duration: 0.7,
+        duration: 0.6,
         ease: 'power2.out',
       })
         .from(
@@ -63,7 +116,7 @@ export default function LoadingScreen() {
           {
             y: -10,
             opacity: 0,
-            duration: 0.45,
+            duration: 0.4,
             stagger: 0.08,
           },
           '-=0.3'
@@ -73,36 +126,36 @@ export default function LoadingScreen() {
           {
             scale: 0.92,
             opacity: 0,
-            duration: 0.4,
+            duration: 0.35,
           },
-          '-=0.25'
+          '-=0.2'
         )
         .from(
           '.loader-title-line',
           {
             y: 35,
             opacity: 0,
-            duration: 0.75,
-            stagger: 0.12,
+            duration: 0.65,
+            stagger: 0.1,
             ease: 'expo.out',
           },
-          '-=0.25'
+          '-=0.2'
         )
         .from(
           '.loader-desc',
           {
             y: 15,
             opacity: 0,
-            duration: 0.5,
+            duration: 0.45,
           },
-          '-=0.35'
+          '-=0.3'
         )
         .from(
           '.loader-progress-box',
           {
             y: 20,
             opacity: 0,
-            duration: 0.5,
+            duration: 0.45,
           },
           '-=0.25'
         )
@@ -111,16 +164,16 @@ export default function LoadingScreen() {
           {
             y: 10,
             opacity: 0,
-            duration: 0.45,
+            duration: 0.4,
             stagger: 0.08,
           },
           '-=0.3'
         );
 
-      // Smooth percentage counter and progress bar animation
+      // Percentage counter & progress bar animation
       gsap.to(counter, {
         val: 100,
-        duration: 2.4,
+        duration: 1.8,
         ease: 'power2.inOut',
         onUpdate: () => {
           const current = Math.round(counter.val);
@@ -129,6 +182,13 @@ export default function LoadingScreen() {
           }
           if (progressBarRef.current) {
             progressBarRef.current.style.transform = `scaleX(${current / 100})`;
+          }
+        },
+        onComplete: () => {
+          if (isPreloader) {
+            setTimeout(() => {
+              handleDismiss();
+            }, 300);
           }
         },
       });
@@ -142,17 +202,19 @@ export default function LoadingScreen() {
       role="status"
       aria-live="polite"
       aria-label="Loading archival memory"
-      className="fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col items-center justify-center p-3 sm:p-6 md:p-10 bg-retro-bg text-retro-text select-none overflow-hidden font-body"
+      onClick={isPreloader ? handleDismiss : undefined}
+      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col items-center justify-center p-3 sm:p-6 md:p-10 bg-retro-bg text-retro-text select-none overflow-hidden font-body ${
+        isPreloader ? 'cursor-pointer' : ''
+      } ${className}`}
     >
-      {/* Background Ambience: Subtle Noise & Scanlines */}
+      {/* Background Ambience: Noise & Hairline Grid */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-15 mix-blend-overlay noise-bg" />
       <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.035] bg-[linear-gradient(transparent_50%,rgba(201,65,60,0.5)_50%)] bg-[length:100%_4px]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(201,65,60,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(201,65,60,0.035)_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(201,65,60,0.05)_0%,transparent_75%)]" />
 
       {/* Editorial Frame */}
-      <div className="loader-frame relative z-10 w-full max-w-5xl h-full max-h-[92dvh] flex flex-col justify-between border border-retro-border/40 bg-retro-surface/35 backdrop-blur-[2px] p-5 sm:p-8 md:p-12 shadow-retro-lg overflow-hidden">
-        
+      <div className="loader-frame relative z-10 w-full max-w-5xl h-full max-h-[92dvh] flex flex-col justify-between border border-retro-border/40 bg-retro-surface/40 backdrop-blur-[2px] p-5 sm:p-8 md:p-12 shadow-retro-lg overflow-hidden">
         {/* Corner Precision Hairline Markers */}
         <div className="absolute top-2 left-2.5 font-mono text-[9px] uppercase tracking-widest text-retro-text/40 select-none">
           ┌ [SEC:01]
@@ -270,6 +332,13 @@ export default function LoadingScreen() {
               <span className="truncate">{activeMessage}</span>
               <span className="inline-block w-1.5 h-3 bg-retro-primary animate-pulse flex-shrink-0" />
             </div>
+
+            {/* Skip Hint for Preloader */}
+            {isPreloader && (
+              <div className="pt-2 text-[8px] sm:text-[9px] font-mono uppercase tracking-[0.2em] text-retro-text/40 animate-pulse">
+                [ Click anywhere or press ESC to proceed ]
+              </div>
+            )}
           </div>
         </main>
 
@@ -287,7 +356,6 @@ export default function LoadingScreen() {
             <span>INNER MARGINS &copy; 2026 // ALL RIGHTS RESERVED</span>
           </div>
         </footer>
-
       </div>
     </div>
   );

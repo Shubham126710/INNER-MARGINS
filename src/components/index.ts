@@ -22,5 +22,6 @@ export { default as PostView } from './PostView';
 export { default as LockedPostView } from './LockedPostView';
 export { default as Magnetic } from './Magnetic';
 export { default as ScrollProgress } from './ScrollProgress';
+export { default as AppPreloader } from './AppPreloader';
 
 export * from './Greeting';

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Header, Footer } from "@/components";
+import { Header, Footer, AppPreloader } from "@/components";
 import ScrollProgress from "@/components/ScrollProgress";
 
 const pressStart2P = Press_Start_2P({
@@ -50,6 +50,7 @@ export default function RootLayout({
             </filter>
           </defs>
         </svg>
+        <AppPreloader />
         <ScrollProgress />
         <Header />
         <main className="flex-1">
