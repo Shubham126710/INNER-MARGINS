@@ -36,7 +36,6 @@ export default function LoadingScreen({
     isDismissing.current = true;
 
     if (!containerRef.current) {
-      document.body.style.overflow = '';
       onComplete?.();
       return;
     }
@@ -46,7 +45,6 @@ export default function LoadingScreen({
       duration: 0.75,
       ease: 'power4.inOut',
       onComplete: () => {
-        document.body.style.overflow = '';
         onComplete?.();
       },
     });
@@ -100,8 +98,6 @@ export default function LoadingScreen({
   useEffect(() => {
     if (!isPreloader) return;
 
-    document.body.style.overflow = 'hidden';
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         handleDismiss();
@@ -114,7 +110,6 @@ export default function LoadingScreen({
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
       if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
     };
@@ -188,7 +183,9 @@ export default function LoadingScreen({
       aria-live="polite"
       aria-label="Arcade Loading"
       onClick={handleBoost}
-      className={`fixed inset-0 min-h-[100dvh] w-screen z-[9999] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-16 bg-retro-bg text-retro-text select-none overflow-hidden font-body cursor-pointer ${className}`}
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      className={`fixed inset-0 min-h-[100dvh] w-full z-[9999] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-16 bg-retro-bg text-retro-text select-none overflow-hidden touch-none overscroll-contain font-body cursor-pointer ${className}`}
     >
       {/* Background Ambience: Subtle Noise & Retro Scanlines */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-10 mix-blend-overlay noise-bg" />
