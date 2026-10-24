@@ -878,8 +878,6 @@ export default function ActivityTerrain({
         "w-full select-none text-retro-text",
         showHeader &&
           "border border-retro-border/30 bg-retro-surface/50 p-5 shadow-retro-sm transition-shadow hover:shadow-retro",
-        // Retro palette: light warm blush (#F0C4BF) for flat surfaces, coral/crimson for heights, white highlight
-        "[--terrain-0:#F0C4BF] [--terrain-1:#E58E88] [--terrain-2:#DC6E67] [--terrain-3:#C9413C] [--terrain-4:#9B2520] [--terrain-accent:#FFFFFF] [--terrain-text:#C9413C]",
         className
       )}
     >
@@ -887,31 +885,31 @@ export default function ActivityTerrain({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-2 border-b border-retro-border/20">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-              <p className="font-heading text-lg uppercase tracking-tight text-retro-text">
+              <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse motion-reduce:animate-none" />
+              <p className="font-heading text-lg tracking-tight text-retro-text">
                 {title}
               </p>
             </div>
             <p
               aria-live="polite"
-              className="truncate font-mono text-xs text-retro-text/70 uppercase tracking-widest tabular-nums"
+              className="truncate font-body text-xs text-retro-text/75 tabular-nums"
             >
               {readout}
             </p>
           </div>
-          <div className="flex shrink-0 border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-mono">
+          <div className="flex shrink-0 border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-body">
             {(
               [
-                ["[ 2D FLAT ]", true],
-                ["[ 3D TERRAIN ]", false],
+                ["2D Flat", true],
+                ["3D Terrain", false],
               ] as const
             ).map(([name, value]) => (
               <button
                 aria-pressed={flat === value}
                 className={cn(
-                  "px-3 py-1 font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-colors duration-150 outline-none cursor-pointer",
+                  "px-3 py-1 font-body text-xs transition-colors duration-150 outline-none cursor-pointer active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary disabled:opacity-50",
                   flat === value
-                    ? "bg-retro-primary text-retro-surface font-bold shadow-retro-sm"
+                    ? "bg-retro-primary text-retro-surface font-semibold shadow-retro-sm"
                     : "text-retro-text/70 hover:text-retro-text hover:bg-retro-surface/80"
                 )}
                 key={name}
@@ -944,12 +942,12 @@ export default function ActivityTerrain({
       />
 
       {showFooter && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1 pt-4 border-t border-retro-border/20 text-xs font-mono text-retro-text/60">
-          <span className="text-[10px] tracking-widest uppercase opacity-70">
-            Drag / Flick to orbit • Hover to elevate
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 px-1 pt-4 border-t border-retro-border/20 text-xs font-body text-retro-text/70">
+          <span className="text-xs opacity-75">
+            Drag to orbit · Hover to inspect cells
           </span>
           <div className="flex items-center gap-1.5 self-end sm:self-auto">
-            <span className="mr-1 text-[10px] tracking-wider uppercase">Less</span>
+            <span className="mr-1 text-xs">Less</span>
             {[0, 1, 2, 3, 4].map((level) => (
               <span
                 className="size-3 rounded-[1px] border border-retro-border/20"
@@ -957,7 +955,7 @@ export default function ActivityTerrain({
                 style={{ background: `var(--terrain-${level})` }}
               />
             ))}
-            <span className="ml-1 text-[10px] tracking-wider uppercase">More</span>
+            <span className="ml-1 text-xs">More</span>
           </div>
         </div>
       )}

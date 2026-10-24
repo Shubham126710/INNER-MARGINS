@@ -53,38 +53,38 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
   return (
     <section className="mt-16 border-t-4 border-retro-border pt-12 font-body text-retro-text">
-      <h3 className="text-2xl font-heading uppercase text-retro-text mb-8">Comments ({comments.length})</h3>
+      <h3 className="text-2xl font-heading text-retro-text mb-8">Comments ({comments.length})</h3>
 
       <div className="mb-12">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          {error && <p className="text-retro-primary font-mono text-sm uppercase">{error}</p>}
+          {error && <p className="text-retro-primary font-body text-sm font-medium">{error}</p>}
           <div className="flex flex-col gap-2">
-            <label htmlFor="author" className="font-mono text-sm uppercase text-retro-text/80">Name</label>
+            <label htmlFor="author" className="font-body text-xs font-medium text-retro-text/80">Name</label>
             <input
               id="author"
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="border-2 border-retro-border bg-retro-bg p-3 font-mono text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 uppercase text-sm"
-              placeholder="YOUR NAME"
+              className="border-2 border-retro-border bg-retro-bg p-3 font-body text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 text-sm"
+              placeholder="Your name"
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label htmlFor="content" className="font-mono text-sm uppercase text-retro-text/80">Comment</label>
+            <label htmlFor="content" className="font-body text-xs font-medium text-retro-text/80">Comment</label>
             <textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="border-2 border-retro-border bg-retro-bg p-3 font-body text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 min-h-[120px]"
-              placeholder="Leave a comment..."
+              className="border-2 border-retro-border bg-retro-bg p-3 font-body text-retro-text focus:outline-none focus:border-retro-primary focus:ring-1 focus:ring-retro-primary placeholder-retro-text/30 min-h-[120px] text-sm"
+              placeholder="Leave a comment…"
             />
           </div>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-primary self-start disabled:opacity-50"
+            className="btn-primary self-start disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:translate-y-px"
           >
-            {isSubmitting ? 'Posting...' : 'Post Comment'}
+            {isSubmitting ? 'Posting…' : 'Post comment'}
           </button>
         </form>
       </div>
@@ -93,7 +93,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
         {comments.map((comment) => (
           <div key={comment.id} className="border-l-4 border-retro-primary pl-6 py-2">
             <div className="flex items-center gap-4 mb-2">
-              <span className="font-mono font-bold text-retro-primary uppercase">{comment.author}</span>
+              <span className="font-body font-semibold text-retro-primary">{comment.author}</span>
               <span className="font-mono text-xs text-retro-text/60">
                 {new Date(comment.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -102,11 +102,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                 })}
               </span>
             </div>
-            <p className="font-body text-lg leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+            <p className="font-body text-base leading-relaxed whitespace-pre-wrap text-retro-text/90">{comment.content}</p>
           </div>
         ))}
         {comments.length === 0 && (
-          <p className="font-mono text-retro-text/60 italic uppercase text-sm">No comments yet. Be the first to share your thoughts.</p>
+          <p className="font-body text-retro-text/70 text-sm">No comments yet. Be the first to share your thoughts.</p>
         )}
       </div>
     </section>

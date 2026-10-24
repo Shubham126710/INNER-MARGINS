@@ -376,7 +376,7 @@ function DetailedActivityInfo({
               className="w-2 h-2 rounded-none inline-block shrink-0"
               style={{ backgroundColor: activity.color }}
             />
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-retro-text/70">
+            <span className="font-body text-xs text-retro-text/75">
               {activity.label}
             </span>
           </div>
@@ -397,7 +397,7 @@ function DetailedActivityInfo({
               <span className="font-mono text-sm text-retro-text/40">
                 /{activity.target}
               </span>
-              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-wider text-retro-text/60 ml-1">
+              <span className="font-body text-xs text-retro-text/60 ml-1">
                 {activity.unit}
               </span>
             </span>
@@ -451,13 +451,13 @@ export default function AppleActivityCard({
     >
       <div className="flex items-center justify-between border-b border-retro-border/20 pb-4 mb-8">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-          <span className="font-mono text-[10px] tracking-widest uppercase text-retro-text/60">
-            Cadence Diagnostics // Telemetry
+          <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse motion-reduce:animate-none" />
+          <span className="font-body text-xs text-retro-text/70">
+            Cadence diagnostics · Telemetry
           </span>
         </div>
-        <span className="font-mono text-[10px] tracking-widest uppercase text-retro-text/40 hidden sm:inline-block">
-          [ Rings Active ]
+        <span className="font-body text-xs text-retro-text/60 hidden sm:inline-block">
+          Rings active
         </span>
       </div>
 

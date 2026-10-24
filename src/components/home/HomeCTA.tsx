@@ -29,19 +29,19 @@ export default function HomeCTA() {
     <section ref={sectionRef} className="py-24 border-t border-retro-border/40 bg-retro-bg relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(circle_at_center,var(--retro-text)_0%,transparent_70%)] pointer-events-none" />
       <div className="cta-content max-w-4xl mx-auto px-6 lg:px-12 text-center relative">
-        <div className="inline-flex justify-center items-center w-16 h-16 mb-8 border border-retro-text/20 bg-retro-surface/50 rotate-45 transition-transform hover:rotate-90 duration-500">
+        <div className="inline-flex justify-center items-center w-16 h-16 mb-8 border border-retro-text/20 bg-retro-surface/50 rotate-45 transition-transform hover:rotate-90 duration-500 motion-reduce:transform-none motion-reduce:transition-none">
           <div className="w-8 h-8 border border-retro-primary/50 relative -rotate-45 flex items-center justify-center">
-            <div className="w-2 h-2 bg-retro-text animate-pulse" />
+            <div className="w-2 h-2 bg-retro-text animate-pulse motion-reduce:animate-none" />
           </div>
         </div>
         <h2 className="text-2xl lg:text-3xl font-heading uppercase mb-4 text-retro-text opacity-90 tracking-tight">
-          Awaiting new input...
+          Awaiting new input…
         </h2>
-        <p className="font-mono text-sm mb-10 max-w-md mx-auto text-retro-text/60 leading-relaxed uppercase tracking-wide">
+        <p className="font-body text-sm mb-10 max-w-md mx-auto text-retro-text/70 leading-relaxed">
           Record a thought. Unload the cache. Save state.
         </p>
         <Magnetic strength={0.3}>
-          <Link href="/write" className="btn-primary no-underline text-xs tracking-widest">
+          <Link href="/write" className="btn-primary no-underline text-xs">
             Initiate Sequence
           </Link>
         </Magnetic>

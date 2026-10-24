@@ -62,15 +62,6 @@ export default function PostView({ post }: PostViewProps) {
         '-=0.4'
       )
         .from(
-          '.post-header-badge',
-          {
-            y: 15,
-            opacity: 0,
-            duration: 0.5,
-          },
-          '-=0.3'
-        )
-        .from(
           '.post-title',
           {
             y: 30,
@@ -118,13 +109,12 @@ export default function PostView({ post }: PostViewProps) {
       className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface pb-20 relative overflow-hidden"
     >
       {/* Absolute Noise and Gradients */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,65,60,0.02)_0%,transparent_80%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--retro-primary)_0%,transparent_80%)] opacity-[0.03] pointer-events-none" />
 
       {/* Hero Section with Cover Image */}
       {post.coverImage && (
         <div className="relative h-[32vh] border-b border-retro-border/30 bg-retro-surface/50 overflow-hidden group">
           <div className="absolute inset-0 z-10 bg-retro-bg/40 mix-blend-color" />
-          <div className="absolute inset-0 z-10 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none" />
           <Image
             src={post.coverImage}
             alt={post.title}
@@ -132,8 +122,8 @@ export default function PostView({ post }: PostViewProps) {
             className="post-cover-image object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-1000 grayscale group-hover:grayscale-0"
             priority
           />
-          <div className="absolute bottom-4 right-4 z-20 font-mono text-[10px] tracking-widest uppercase text-retro-surface bg-retro-text/80 px-2 py-1 backdrop-blur-sm shadow-retro-sm">
-            [ VISUAL CONTEXT MOUNTED ]
+          <div className="absolute bottom-4 right-4 z-20 font-body text-xs text-retro-surface bg-retro-text/80 px-2.5 py-1 backdrop-blur-sm shadow-retro-sm">
+            Visual context mounted
           </div>
         </div>
       )}
@@ -143,9 +133,9 @@ export default function PostView({ post }: PostViewProps) {
         <div className="post-top-nav flex items-center justify-between pt-6 pb-6 border-b border-dashed border-retro-border/20 mb-8">
           <Link
             href="/journals"
-            className="inline-flex items-center text-[10px] text-retro-text/60 hover:text-retro-text font-mono tracking-widest uppercase no-underline transition-colors"
+            className="inline-flex items-center text-xs text-retro-text/70 hover:text-retro-text font-body no-underline transition-colors active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
           >
-            <span className="mr-2 opacity-50">&lt;</span> Return to Archive
+            <span className="mr-2 opacity-50" aria-hidden="true">&lt;</span> Return to archive
           </Link>
 
           <PostActions postId={post.id} />
@@ -153,36 +143,34 @@ export default function PostView({ post }: PostViewProps) {
 
         {/* Header */}
         <header className="mb-12 border-b border-retro-border/30 pb-12 relative">
-          <div className="absolute top-0 right-0 p-2 opacity-30">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <div className="absolute top-0 right-0 p-2 opacity-30" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <rect x="2" y="2" width="2" height="2" />
               <rect x="6" y="2" width="2" height="2" />
             </svg>
           </div>
 
-          <div className="post-header-badge inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/50 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-8 shadow-retro-sm">
-            <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-            <span>Transmission Log</span>
-          </div>
-
-          <h1 className="post-title text-4xl md:text-5xl lg:text-7xl font-heading text-retro-text mb-6 leading-tight uppercase tracking-tight">
+          <h1 className="post-title text-4xl md:text-5xl lg:text-7xl font-heading text-retro-text mb-6 leading-tight tracking-tight">
             {post.title}
           </h1>
 
-          <div className="post-meta flex flex-wrap items-center gap-y-4 gap-x-6 text-[10px] font-mono text-retro-text/60 uppercase tracking-widest">
-            <div className="flex items-center gap-2">
-              <span className="text-retro-primary">DATE:</span> {formattedDate}
+          <div className="post-meta flex flex-wrap items-center gap-y-3 gap-x-6 text-xs font-body text-retro-text/75">
+            <div className="flex items-center gap-1.5">
+              <span className="text-retro-primary font-medium">Date:</span>
+              <time className="font-mono text-xs">{formattedDate}</time>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-retro-primary">TIME:</span> {formattedTime}
+            <div className="flex items-center gap-1.5">
+              <span className="text-retro-primary font-medium">Time:</span>
+              <time className="font-mono text-xs">{formattedTime}</time>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-retro-primary">DUR:</span> {post.readTime}
+            <div className="flex items-center gap-1.5">
+              <span className="text-retro-primary font-medium">Read time:</span>
+              <span className="font-mono text-xs">{post.readTime}</span>
             </div>
 
             {post.isFeatured && (
-              <span className="bg-retro-text/10 text-retro-text px-2 py-1 border border-retro-border/30 shadow-retro-sm">
-                [ Pinned Sequence ]
+              <span className="bg-retro-text/10 text-retro-text px-2 py-0.5 border border-retro-border/30 shadow-retro-sm text-xs">
+                Pinned sequence
               </span>
             )}
 
@@ -194,7 +182,7 @@ export default function PostView({ post }: PostViewProps) {
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] uppercase tracking-widest italic text-retro-text/70 opacity-80"
+                      className="text-xs font-body text-retro-text/70 hover:text-retro-primary transition-colors lowercase"
                     >
                       #{tag}
                     </span>

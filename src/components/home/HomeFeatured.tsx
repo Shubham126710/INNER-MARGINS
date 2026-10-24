@@ -44,16 +44,15 @@ export default function HomeFeatured({ posts }: HomeFeaturedProps) {
 
   return (
     <section ref={sectionRef} className="py-16 lg:py-24 border-b border-retro-border/30 bg-retro-bg relative">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(244,207,203,0.1)_2px,transparent_2px),linear-gradient(90deg,rgba(244,207,203,0.1)_2px,transparent_2px)] bg-[length:32px_32px] pointer-events-none opacity-50" />
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative">
         <div className="featured-header flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
-            <span className="inline-block bg-retro-text/10 text-retro-text px-2 py-1 text-[10px] font-mono uppercase tracking-widest border border-retro-border/20">
-              Priority Memory
-            </span>
-            <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text mt-4">
+            <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text">
               Highlighted Transmissions
             </h2>
+            <p className="text-xs text-retro-text/60 font-body mt-1">
+              Priority archival entries &amp; featured fragments
+            </p>
           </div>
         </div>
 

@@ -62,7 +62,7 @@ export default function ImageUpload({ image, onChange, label = 'Cover Image' }: 
 
   return (
     <div>
-      <label className="block text-sm font-heading uppercase text-retro-text mb-2">
+      <label className="block text-xs font-body font-medium text-retro-text/80 mb-2">
         {label}
       </label>
       
@@ -78,14 +78,14 @@ export default function ImageUpload({ image, onChange, label = 'Cover Image' }: 
             <button
               type="button"
               onClick={handleClick}
-              className="btn-secondary text-xs"
+              className="btn-secondary text-xs disabled:opacity-50"
             >
               Change
             </button>
             <button
               type="button"
               onClick={() => onChange('')}
-              className="px-4 py-2 bg-retro-primary text-retro-surface border-2 border-retro-border text-xs hover:bg-retro-text transition-colors font-mono uppercase shadow-retro hover:translate-y-[1px] hover:shadow-retro-sm active:translate-y-[2px] active:shadow-none"
+              className="px-4 py-2 bg-retro-primary text-retro-surface border-2 border-retro-border text-xs hover:bg-retro-text transition-colors font-body shadow-retro active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary cursor-pointer disabled:opacity-50"
             >
               Remove
             </button>
@@ -103,11 +103,11 @@ export default function ImageUpload({ image, onChange, label = 'Cover Image' }: 
               : 'border-retro-border/40 hover:border-retro-border hover:bg-retro-bg'
           }`}
         >
-          <svg className="w-12 h-12 text-retro-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-12 h-12 text-retro-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <p className="text-retro-text/60 font-mono text-sm uppercase">
-            [ Drop image or click ]
+          <p className="text-retro-text/70 font-body text-xs">
+            Drop image here or click to browse
           </p>
         </div>
       )}

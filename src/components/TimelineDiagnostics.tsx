@@ -32,18 +32,18 @@ export function TimelineDiagnostics({ data, className }: TimelineDiagnosticsProp
       <div className="border-b border-retro-border/20 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-            <h2 className="text-xl lg:text-2xl font-heading uppercase tracking-tight text-retro-text">
+            <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse motion-reduce:animate-none" />
+            <h2 className="text-xl lg:text-2xl font-heading tracking-tight text-retro-text">
               Timeline Diagnostics
             </h2>
           </div>
-          <p className="font-mono text-[10px] tracking-widest text-retro-text/60 uppercase">
+          <p className="font-body text-xs text-retro-text/70">
             {readout}
           </p>
         </div>
 
         {/* View Switcher Controls - Single Clean Toggle */}
-        <div className="flex border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-mono">
+        <div className="flex border border-retro-border/30 bg-retro-bg/60 p-0.5 text-xs font-body">
           <button
             type="button"
             onClick={() => {
@@ -51,25 +51,25 @@ export function TimelineDiagnostics({ data, className }: TimelineDiagnosticsProp
               setActiveCell(null);
             }}
             className={cn(
-              "px-3 py-1 text-[10px] sm:text-xs uppercase tracking-wider transition-colors outline-none cursor-pointer",
+              "px-3 py-1 text-xs font-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary active:translate-y-px cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
               viewMode === "flat"
-                ? "bg-retro-primary text-retro-surface font-bold shadow-retro-sm"
+                ? "bg-retro-primary text-retro-surface font-semibold shadow-retro-sm"
                 : "text-retro-text/70 hover:text-retro-text hover:bg-retro-surface/80"
             )}
           >
-            [ 2D MATRIX ]
+            2D Matrix
           </button>
           <button
             type="button"
             onClick={() => setViewMode("3d")}
             className={cn(
-              "px-3 py-1 text-[10px] sm:text-xs uppercase tracking-wider transition-colors outline-none cursor-pointer",
+              "px-3 py-1 text-xs font-body transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary active:translate-y-px cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
               viewMode === "3d"
-                ? "bg-retro-primary text-retro-surface font-bold shadow-retro-sm"
+                ? "bg-retro-primary text-retro-surface font-semibold shadow-retro-sm"
                 : "text-retro-text/70 hover:text-retro-text hover:bg-retro-surface/80"
             )}
           >
-            [ 3D TERRAIN ]
+            3D Terrain
           </button>
         </div>
       </div>

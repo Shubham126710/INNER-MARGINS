@@ -54,8 +54,8 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav className="toc">
-      <h4 className="text-xs font-heading font-medium text-retro-text uppercase tracking-wider mb-4 border-b-2 border-retro-border pb-2">
+    <nav className="toc" aria-label="Table of contents">
+      <h4 className="text-xs font-heading font-semibold text-retro-text mb-3 border-b border-retro-border/40 pb-2">
         Index
       </h4>
       <ul className="space-y-1">
@@ -63,8 +63,8 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
           <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className={`toc-link font-mono text-xs uppercase ${item.level === 3 ? 'pl-4' : ''} ${
-                activeId === item.id ? 'active' : ''
+              className={`toc-link font-body text-xs focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary active:translate-y-px transition-colors ${item.level === 3 ? 'pl-4' : ''} ${
+                activeId === item.id ? 'active font-medium text-retro-primary' : 'text-retro-text/70 hover:text-retro-text'
               }`}
               onClick={(e) => {
                 e.preventDefault();

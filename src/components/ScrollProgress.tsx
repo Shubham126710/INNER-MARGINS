@@ -25,7 +25,7 @@ export default function ScrollProgress() {
     <div className="fixed top-0 left-0 right-0 h-[3px] z-[100] pointer-events-none bg-retro-border/20">
       <div
         ref={barRef}
-        className="h-full w-full bg-retro-primary origin-left scale-x-0 shadow-[0_0_8px_rgba(201,65,60,0.6)]"
+        className="h-full w-full bg-retro-primary origin-left scale-x-0"
       />
     </div>
   );

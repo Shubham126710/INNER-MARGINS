@@ -16,30 +16,20 @@ export default function AnalysisView({ stats }: AnalysisViewProps) {
     () => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.from('.analysis-badge', {
-        y: -15,
+      tl.from('.analysis-title', {
+        y: 30,
         opacity: 0,
-        duration: 0.6,
-      })
-        .from(
-          '.analysis-title',
-          {
-            y: 30,
-            opacity: 0,
-            duration: 0.8,
-            ease: 'expo.out',
-          },
-          '-=0.3'
-        )
-        .from(
-          '.analysis-desc',
-          {
-            y: 15,
-            opacity: 0,
-            duration: 0.6,
-          },
-          '-=0.4'
-        );
+        duration: 0.8,
+        ease: 'expo.out',
+      }).from(
+        '.analysis-desc',
+        {
+          y: 15,
+          opacity: 0,
+          duration: 0.6,
+        },
+        '-=0.4'
+      );
 
       // Key metrics staggered entrance
       gsap.from('.analysis-metric-card', {
@@ -75,25 +65,17 @@ export default function AnalysisView({ stats }: AnalysisViewProps) {
   return (
     <div ref={containerRef} className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface">
       {/* Hero Section */}
-      <section className="relative py-16 lg:py-28 overflow-hidden border-b border-retro-border/30 bg-retro-bg">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,65,60,0.05)_0%,transparent_70%)] pointer-events-none" />
-        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none" />
+      <section className="relative py-16 lg:py-24 overflow-hidden border-b border-retro-border/30 bg-retro-bg">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--retro-primary)_0%,transparent_70%)] opacity-[0.05] pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center">
-          <div className="analysis-badge">
-            <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/80 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-8 shadow-retro-sm">
-              <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse" />
-              <span>Analysis Core Active</span>
-            </div>
-          </div>
-
-          <h1 className="analysis-title text-4xl md:text-5xl lg:text-7xl font-heading uppercase text-retro-text mb-6 tracking-tight">
+          <h1 className="analysis-title text-4xl md:text-5xl lg:text-7xl font-heading text-retro-text mb-4 tracking-tight">
             System Analysis
           </h1>
 
           <div className="analysis-desc">
-            <p className="text-sm md:text-base text-retro-text/80 font-mono max-w-xl mx-auto leading-relaxed uppercase tracking-wide">
-              Analyzing memory preservation patterns.
+            <p className="text-sm md:text-base text-retro-text/80 font-body max-w-xl mx-auto leading-relaxed">
+              Analyzing memory preservation patterns, writing cadence, and system health.
             </p>
           </div>
         </div>

@@ -18,8 +18,8 @@ const TOOLBAR_BUTTONS = [
   { icon: 'H3', command: 'h3', title: 'Heading 3' },
   { icon: '•', command: 'insertUnorderedList', title: 'Bullet List' },
   { icon: '1.', command: 'insertOrderedList', title: 'Numbered List' },
-  { icon: '🔗', command: 'link', title: 'Insert Link' },
-  { icon: '🖼️', command: 'image', title: 'Insert Image' },
+  { icon: 'Link', command: 'link', title: 'Insert Link' },
+  { icon: 'Img', command: 'image', title: 'Insert Image' },
 ] as const;
 
 export default function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
@@ -137,7 +137,7 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
               type="button"
               onClick={() => handleToolbarClick(button.command)}
               title={button.title}
-              className="w-8 h-8 flex items-center justify-center border-2 border-transparent hover:border-retro-border hover:bg-retro-text hover:text-retro-surface transition-none text-sm font-mono text-retro-text font-bold"
+              className="px-2 h-8 flex items-center justify-center border-2 border-transparent hover:border-retro-border hover:bg-retro-text hover:text-retro-surface transition-colors duration-150 text-xs font-mono text-retro-text font-bold active:translate-y-px focus-visible:outline-1 focus-visible:outline-retro-primary disabled:opacity-50 cursor-pointer"
             >
               {button.icon}
             </button>
@@ -146,9 +146,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
           <button
             type="button"
             onClick={() => setShowToolbar(false)}
-            className="text-xs font-mono text-retro-text/60 hover:text-retro-text uppercase"
+            className="text-xs font-body text-retro-text/70 hover:text-retro-text active:translate-y-px focus-visible:outline-1 focus-visible:outline-retro-primary disabled:opacity-50 cursor-pointer"
           >
-            [Hide]
+            Hide toolbar
           </button>
         </div>
       )}
@@ -157,9 +157,9 @@ export default function RichTextEditor({ content, onChange, placeholder }: RichT
         <button
           type="button"
           onClick={() => setShowToolbar(true)}
-          className="w-full p-2 text-xs font-mono text-retro-text/60 hover:text-retro-text bg-retro-bg border-b-4 border-retro-border uppercase"
+          className="w-full p-2 text-xs font-body text-retro-text/70 hover:text-retro-text bg-retro-bg border-b-4 border-retro-border active:translate-y-px focus-visible:outline-1 focus-visible:outline-retro-primary disabled:opacity-50 cursor-pointer"
         >
-          [Show toolbar]
+          Show toolbar
         </button>
       )}
 

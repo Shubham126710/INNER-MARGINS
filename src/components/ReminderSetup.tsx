@@ -101,35 +101,36 @@ export default function ReminderSetup() {
 
   return (
     <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro mt-8">
-      <h2 className="text-2xl font-display uppercase mb-6 border-b-2 border-retro-border pb-4">
+      <h2 className="text-2xl font-heading text-retro-text mb-6 border-b-2 border-retro-border pb-4">
         Background Reminders
       </h2>
       <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
         <div className="flex-1 space-y-2">
-          <p className="text-sm font-code text-retro-text/80 mb-2">
+          <p className="text-sm font-body text-retro-text/80 mb-2">
             Get notified globally even when the app is closed if you haven&apos;t written your journal!
           </p>
           <div className="flex items-center gap-4">
-             <label className="text-sm font-code uppercase text-retro-text/80">Time:</label>
+             <label htmlFor="reminder-time" className="text-sm font-body text-retro-text/80">Time:</label>
              <input 
+               id="reminder-time"
                type="time" 
                value={reminderTime}
                onChange={(e) => setReminderTime(e.target.value)}
-               className="p-2 font-code bg-retro-bg border-4 border-retro-border text-retro-text focus:border-retro-primary focus:outline-none"
+               className="p-2 font-mono bg-retro-bg border-4 border-retro-border text-retro-text focus:border-retro-primary focus:outline-none text-sm disabled:opacity-50"
              />
           </div>
         </div>
         <div className="flex gap-4 self-end md:self-auto mt-4 md:mt-0">
           {!enabled ? (
-            <button onClick={handleSave} className="btn-primary">
+            <button onClick={handleSave} className="btn-primary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
               Enable Reminders
             </button>
           ) : (
             <div className="flex gap-2">
-               <button onClick={handleSave} className="btn-primary">
+               <button onClick={handleSave} className="btn-primary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                  Update Time
                </button>
-               <button onClick={handleDisable} className="btn-secondary">
+               <button onClick={handleDisable} className="btn-secondary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                  Disable Push
                </button>
             </div>
@@ -137,7 +138,7 @@ export default function ReminderSetup() {
         </div>
       </div>
       {status && (
-        <div className="font-code text-sm text-retro-primary bg-retro-primary/10 p-3 border-l-4 border-retro-primary animate-fade-in mt-4">
+        <div className="font-body text-sm text-retro-primary bg-retro-primary/10 p-3 border-l-4 border-retro-primary animate-fade-in motion-reduce:animate-none mt-4">
           {status}
         </div>
       )}

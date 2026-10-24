@@ -8,7 +8,7 @@ interface TagInputProps {
   placeholder?: string;
 }
 
-export default function TagInput({ tags, onChange, placeholder = 'Add a tag...' }: TagInputProps) {
+export default function TagInput({ tags, onChange, placeholder = 'Add a tag…' }: TagInputProps) {
   const [input, setInput] = useState('');
 
   const addTag = useCallback((tag: string) => {
@@ -37,13 +37,14 @@ export default function TagInput({ tags, onChange, placeholder = 'Add a tag...' 
       {tags.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center gap-1 px-2 py-1 bg-retro-text text-retro-surface border border-retro-text text-xs font-mono uppercase"
+          className="inline-flex items-center gap-1 px-2 py-0.5 bg-retro-text text-retro-surface border border-retro-text text-xs font-body"
         >
           {tag}
           <button
             type="button"
             onClick={() => removeTag(tag)}
-            className="ml-1 text-retro-surface/60 hover:text-retro-surface"
+            aria-label={`Remove tag ${tag}`}
+            className="ml-1 text-retro-surface/75 hover:text-retro-surface active:translate-y-px focus-visible:outline-1 focus-visible:outline-retro-surface cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             ×
           </button>
@@ -56,7 +57,7 @@ export default function TagInput({ tags, onChange, placeholder = 'Add a tag...' 
         onKeyDown={handleKeyDown}
         onBlur={() => input && addTag(input)}
         placeholder={tags.length === 0 ? placeholder : ''}
-        className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-retro-text placeholder-retro-border/40 text-sm font-mono"
+        className="flex-1 min-w-[120px] bg-transparent border-none outline-none text-retro-text placeholder-retro-border/40 text-sm font-body"
       />
     </div>
   );

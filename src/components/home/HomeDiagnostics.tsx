@@ -49,18 +49,18 @@ export default function HomeDiagnostics({ stats }: HomeDiagnosticsProps) {
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="diag-header flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
-            <span className="text-retro-text/50 text-[10px] font-mono uppercase tracking-widest">
-              Diagnostic Output
-            </span>
-            <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text mt-3">
+            <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text">
               System Status
             </h2>
+            <p className="text-xs text-retro-text/60 font-body mt-1">
+              Diagnostic telemetry &amp; journal cadence
+            </p>
           </div>
           <Link
             href="/analysis"
-            className="hidden sm:block text-xs font-mono uppercase text-retro-text hover:text-retro-primary hover:bg-retro-text/10 px-2 py-1 transition-colors no-underline"
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-body text-retro-text hover:text-retro-primary hover:bg-retro-text/10 px-3 py-1.5 border border-retro-border/30 transition-colors duration-150 no-underline focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5"
           >
-            [ Run Full Analysis ]
+            <span>Run full analysis</span>
           </Link>
         </div>
 
@@ -87,9 +87,9 @@ export default function HomeDiagnostics({ stats }: HomeDiagnosticsProps) {
         <div className="mt-8 sm:hidden text-center">
           <Link
             href="/analysis"
-            className="inline-block text-xs font-mono uppercase text-retro-text hover:text-retro-primary hover:bg-retro-text/10 px-4 py-2 border border-retro-border/30 transition-colors no-underline"
+            className="inline-block text-xs font-body text-retro-text hover:text-retro-primary hover:bg-retro-text/10 px-4 py-2 border border-retro-border/30 transition-colors duration-150 no-underline focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5"
           >
-            Run Full Analysis
+            Run full analysis
           </Link>
         </div>
       </div>

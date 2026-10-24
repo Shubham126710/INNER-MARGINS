@@ -84,7 +84,7 @@ export default function Header() {
               const content = (
                 <Link
                   href={link.href}
-                  className={`text-[10px] md:text-sm font-mono uppercase tracking-widest no-underline transition-all duration-200 px-3 py-1.5 ${
+                  className={`text-xs md:text-sm font-body no-underline transition-colors duration-150 px-3 py-1.5 focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5 ${
                     link.highlight
                       ? 'border-2 border-retro-border bg-retro-surface text-retro-text hover:bg-retro-primary hover:text-retro-surface shadow-retro-sm hover:shadow-retro'
                       : isActive
@@ -110,11 +110,11 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden p-2 text-retro-text hover:bg-retro-text hover:text-retro-surface transition-colors"
+            className="md:hidden p-2 text-retro-text hover:bg-retro-text hover:text-retro-surface transition-colors focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Navigation Menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               {isMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -135,7 +135,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`mobile-nav-item block py-3 px-4 text-sm font-mono uppercase transition-colors no-underline border-2 ${
+                  className={`mobile-nav-item block py-3 px-4 text-sm font-body transition-colors duration-150 no-underline border-2 focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5 ${
                     pathname === link.href
                       ? 'border-retro-border bg-retro-bg text-retro-text shadow-retro-sm'
                       : 'border-transparent hover:border-retro-border hover:bg-retro-bg/50 text-retro-text'

@@ -38,16 +38,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="overflow-x-clip" suppressHydrationWarning>
       <body
-        className={`${pressStart2P.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-retro-bg relative`}
+        className={`${pressStart2P.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased min-h-screen flex flex-col font-body bg-retro-bg text-retro-text selection:bg-retro-primary selection:text-retro-bg relative overflow-x-clip`}
       >
         {/* Grain overlay */}
         <div className="pointer-events-none fixed inset-0 z-50 opacity-10 mix-blend-overlay noise-bg"></div>
-        {/* Scanlines overlay */}
-        <div className="pointer-events-none fixed inset-0 z-40 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]"></div>
         
-        <svg className="absolute w-0 h-0 pointer-events-none" style={{ position: 'absolute', pointerEvents: 'none' }}>
+        <svg aria-hidden="true" className="absolute w-0 h-0 pointer-events-none" style={{ position: 'absolute', pointerEvents: 'none' }}>
           <defs>
             <filter id="pixelate" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" x="-10%" y="-10%" width="120%" height="120%">
               <feFlood x="0" y="0" width="2" height="2" floodColor="white" result="dot" />

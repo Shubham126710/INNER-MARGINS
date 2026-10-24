@@ -15,11 +15,11 @@ export default async function JournalsPage() {
   const allTags = Array.from(new Set(posts.flatMap((p) => p.tags))).sort();
 
   return (
-    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-white pt-4 md:pt-8">
+    <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface pt-4 md:pt-8">
       <Suspense
         fallback={
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 flex justify-center">
-            <div className="w-8 h-8 border border-retro-primary animate-pulse"></div>
+            <div className="w-8 h-8 border border-retro-primary animate-pulse motion-reduce:animate-none"></div>
           </div>
         }
       >
@@ -28,26 +28,22 @@ export default async function JournalsPage() {
       
        {/* CTA Section */}
        <section className="py-24 border-t border-retro-border/30 bg-retro-bg text-retro-text mt-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(201,65,60,0.05)_0%,transparent_50%)] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,var(--retro-primary)_0%,transparent_50%)] opacity-[0.05] pointer-events-none"></div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 text-center relative z-10">
-           <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="mx-auto mb-8 opacity-50">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="mx-auto mb-8 opacity-50" aria-hidden="true">
              <rect x="2" y="2" width="4" height="4" />
              <rect x="18" y="2" width="4" height="4" />
              <rect x="2" y="18" width="4" height="4" />
              <rect x="18" y="18" width="4" height="4" />
            </svg>
-          <div className="inline-flex items-center gap-2 border border-retro-border/40 bg-retro-surface/80 text-retro-text text-[10px] uppercase font-mono tracking-widest px-3 py-1 mb-8 shadow-retro-sm">
-            <div className="w-2 h-2 bg-retro-primary opacity-50"></div>
-            <span>Transmission Ready</span>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-heading uppercase mb-6 tracking-tight">
+          <h2 className="text-3xl lg:text-4xl font-heading mb-4 tracking-tight">
             Initiate New Journal
           </h2>
-          <p className="font-mono text-sm mb-8 max-w-xl mx-auto opacity-70 uppercase tracking-widest">
-            Record current state. Preserve context.
+          <p className="font-body text-sm mb-8 max-w-xl mx-auto opacity-75">
+            Record current state. Preserve context into persistent storage.
           </p>
-          <Link href="/write" className="px-8 py-4 inline-block bg-retro-text text-retro-surface font-heading uppercase text-sm tracking-widest hover:bg-retro-primary transition-colors shadow-retro hover:shadow-retro-hover active:translate-y-0 active:shadow-retro-sm">
-            Begin Transmission
+          <Link href="/write" className="px-8 py-3.5 inline-block bg-retro-text text-retro-surface font-heading text-sm hover:bg-retro-primary transition-colors shadow-retro hover:shadow-retro-hover active:translate-y-px active:shadow-retro-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary">
+            Begin transmission
           </Link>
         </div>
       </section>

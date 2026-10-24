@@ -26,26 +26,26 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
         <div className="flex flex-col gap-4 justify-center flex-1 w-full">
             {data.map((item) => (
                 <div key={item.label} className="flex items-center gap-4 group">
-                    <span className="font-mono w-10 text-retro-text text-xs uppercase tracking-widest group-hover:text-retro-primary transition-colors">{item.label}</span>
+                    <span className="font-body w-10 text-retro-text text-xs group-hover:text-retro-primary transition-colors">{item.label}</span>
                     <div className="flex-1 h-[2px] bg-retro-border/20 relative overflow-hidden border border-retro-border/10">
                         <div 
-                            className="absolute top-0 left-0 h-full bg-retro-primary transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
-                            style={{ width: `${(item.count / maxCount) * 100}%` }}
+                            className="absolute top-0 left-0 h-full w-full bg-retro-primary origin-left transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transform-none"
+                            style={{ transform: `scaleX(${item.count / maxCount})` }}
                         />
                     </div>
-                    <span className="font-heading w-8 text-right text-retro-text/70 text-sm group-hover:text-retro-text transition-colors">{item.count}</span>
+                    <span className="font-mono w-8 text-right text-retro-text/75 text-xs group-hover:text-retro-text transition-colors">{item.count}</span>
                 </div>
             ))}
             
             {data.every(d => d.count === 0) && (
-                <p className="font-mono text-retro-text/50 text-[10px] tracking-widest text-center mt-4">NO ENTRIES FOUND.</p>
+                <p className="font-body text-retro-text/60 text-xs text-center mt-4">No entries found.</p>
             )}
         </div>
     );
 
     const renderPieChart = () => {
         const total = data.reduce((acc, curr) => acc + curr.count, 0);
-        if (total === 0) return <p className="font-mono text-retro-text/50 text-[10px] tracking-widest text-center mt-4">NO ENTRIES FOUND.</p>;
+        if (total === 0) return <p className="font-body text-retro-text/60 text-xs text-center mt-4">No entries found.</p>;
 
         let cumulativePercent = 0;
         
@@ -87,7 +87,7 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
                                 `M ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
 
                             return (
-                                <g key={slice.label} className="group transition-all">
+                                <g key={slice.label} className="group transition-opacity duration-200">
                                     <path 
                                         d={pathData} 
                                         fill={colors[i % colors.length]}
@@ -102,7 +102,7 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
                         <circle cx="0" cy="0" r="0.55" fill="var(--retro-surface)" className="stroke-[0.02] stroke-retro-border/50" />
                         
                         {/* Center decoration */}
-                        <circle cx="0" cy="0" r="0.1" fill="transparent" className="stroke-[0.02] stroke-retro-primary animate-pulse" />
+                        <circle cx="0" cy="0" r="0.1" fill="transparent" className="stroke-[0.02] stroke-retro-primary animate-pulse motion-reduce:animate-none" />
                     </svg>
                     
                     {/* Targeting reticle overlay */}
@@ -117,9 +117,9 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
                     {data.map((slice, i) => (
                         <div key={slice.label} className="flex items-center gap-3 min-w-[120px] group">
                             <div className="w-2 h-2" style={{ backgroundColor: colors[i % colors.length] }}></div>
-                            <span className="font-mono text-[10px] uppercase tracking-widest text-retro-text group-hover:text-retro-primary transition-colors">{slice.label}</span>
+                            <span className="font-body text-xs text-retro-text group-hover:text-retro-primary transition-colors">{slice.label}</span>
                             <div className="h-[1px] flex-1 bg-retro-border/20 border-dashed border-t"></div>
-                            <span className="font-heading text-sm opacity-70 group-hover:opacity-100 transition-opacity">{slice.count}</span>
+                            <span className="font-mono text-xs opacity-80 group-hover:opacity-100 transition-opacity">{slice.count}</span>
                         </div>
                     ))}
                 </div>
@@ -130,17 +130,17 @@ export default function PatternChart({ weeklyPattern, monthlyPattern }: PatternC
     return (
         <div className="flex flex-col h-full w-full">
             <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-8 pb-4 border-b border-retro-border/20">
-                <h2 className="text-xl lg:text-2xl font-heading uppercase m-0 text-retro-text">
+                <h2 className="text-xl lg:text-2xl font-heading m-0 text-retro-text">
                     Distribution
                 </h2>
                 <div className="border border-retro-border/30 bg-retro-surface/50">
                     <select
                         value={view}
                         onChange={(e) => setView(e.target.value as 'day' | 'month')}
-                        className="bg-transparent font-mono text-[10px] tracking-widest uppercase text-retro-text px-3 py-2 outline-none cursor-pointer"
+                        className="bg-transparent font-body text-xs text-retro-text px-3 py-1.5 outline-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary active:translate-y-px disabled:opacity-50"
                     >
-                        <option value="day">SECTOR: BY DAY</option>
-                        <option value="month">SECTOR: BY MONTH</option>
+                        <option value="day">By day</option>
+                        <option value="month">By month</option>
                     </select>
                 </div>
             </div>

@@ -187,36 +187,35 @@ export default function LoadingScreen({
       onTouchMove={(e) => e.stopPropagation()}
       className={`fixed inset-0 min-h-[100dvh] w-full z-[9999] flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-16 bg-retro-bg text-retro-text select-none overflow-hidden touch-none overscroll-contain font-body cursor-pointer ${className}`}
     >
-      {/* Background Ambience: Subtle Noise & Retro Scanlines */}
+      {/* Background Ambience: Subtle Noise */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-10 mix-blend-overlay noise-bg" />
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] bg-[linear-gradient(transparent_50%,rgba(201,65,60,0.5)_50%)] bg-[length:100%_4px]" />
 
       {/* TOP RAIL: Retro Arcade HUD */}
-      <header className="arcade-hud relative z-10 flex items-center justify-between font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-retro-text">
+      <header className="arcade-hud relative z-10 flex items-center justify-between font-body text-xs text-retro-text">
         {/* 1UP & Score */}
         <div className="flex items-center gap-3">
-          <span className="font-heading text-[10px] text-retro-primary animate-pulse">1UP</span>
-          <span className="font-bold tabular-nums text-retro-text tracking-widest">
+          <span className="font-heading text-xs text-retro-primary animate-pulse motion-reduce:animate-none">1UP</span>
+          <span className="font-mono font-bold tabular-nums text-retro-text text-xs">
             {String(score).padStart(6, '0')}
           </span>
           {combo > 1 && (
-            <span className="bg-retro-primary text-white text-[9px] px-1.5 py-0.5 font-bold shadow-retro-sm animate-bounce">
-              x{combo} COMBO!
+            <span className="bg-retro-primary text-[var(--retro-light)] text-xs px-1.5 py-0.5 font-bold shadow-retro-sm">
+              x{combo} Combo
             </span>
           )}
         </div>
 
         {/* High Score */}
-        <div className="hidden sm:flex items-center gap-2 text-retro-text/60">
-          <span className="font-heading text-[9px]">HI-SCORE</span>
-          <span className="tabular-nums font-bold tracking-widest text-retro-text">099990</span>
+        <div className="hidden sm:flex items-center gap-2 text-retro-text/70">
+          <span className="font-heading text-xs">High score</span>
+          <span className="tabular-nums font-mono font-bold text-retro-text text-xs">099990</span>
         </div>
 
         {/* Insert Coin / Free Play */}
-        <div className="flex items-center gap-2 text-retro-text/70">
-          <span className="w-1.5 h-1.5 bg-retro-primary animate-ping" />
-          <span className="font-heading text-[9px] text-retro-primary">
-            {progress >= 100 ? 'READY!' : 'INSERT COIN'}
+        <div className="flex items-center gap-2 text-retro-text/80">
+          <span className="w-1.5 h-1.5 bg-retro-primary animate-ping motion-reduce:animate-none" />
+          <span className="font-heading text-xs text-retro-primary">
+            {progress >= 100 ? 'Ready' : 'Insert coin'}
           </span>
         </div>
       </header>
@@ -228,7 +227,7 @@ export default function LoadingScreen({
           {floaters.map((f) => (
             <span
               key={f.id}
-              className="absolute font-mono font-bold text-xs text-retro-primary tracking-widest bg-retro-surface/90 px-2.5 py-0.5 border border-retro-primary/40 shadow-retro-sm transition-all animate-[floatUp_0.7s_ease-out_forwards]"
+              className="absolute font-mono font-bold text-xs text-retro-primary bg-retro-surface/90 px-2.5 py-0.5 border border-retro-primary/40 shadow-retro-sm animate-[floatUp_0.7s_ease-out_forwards]"
             >
               {f.text}
             </span>
@@ -251,33 +250,33 @@ export default function LoadingScreen({
           <div className="w-full h-5 sm:h-6 border-2 border-retro-border bg-retro-surface/70 p-0.5 shadow-retro-sm relative overflow-hidden">
             {/* Active Progress Fill */}
             <div
-              className="h-full bg-retro-primary transition-all duration-75 ease-out relative"
+              className="h-full bg-retro-primary duration-75 ease-out relative"
               style={{ width: `${progress}%` }}
             >
               {/* Segmented notches overlay */}
-              <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_6px,rgba(247,218,214,0.45)_6px,rgba(247,218,214,0.45)_8px)]" />
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_6px,var(--retro-surface)_6px,var(--retro-surface)_8px)] opacity-50" />
             </div>
           </div>
 
           {/* Interactive Arcade Prompt & Progress Fraction */}
-          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-retro-text/75 pt-0.5">
-            <span className="text-retro-primary font-bold animate-pulse">
-              {progress >= 100 ? '★ STAGE CLEAR ★' : 'TAP SCREEN OR SPACE TO BOOST'}
+          <div className="flex items-center justify-between font-body text-xs text-retro-text/80 pt-0.5">
+            <span className="text-retro-primary font-medium animate-pulse motion-reduce:animate-none">
+              {progress >= 100 ? 'Stage clear' : 'Tap screen or space to boost'}
             </span>
-            <span className="tabular-nums font-bold">[{String(progress).padStart(3, '0')}/100]</span>
+            <span className="font-mono tabular-nums font-bold">[{String(progress).padStart(3, '0')}/100]</span>
           </div>
 
           {/* Mini Arcade Log */}
-          <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-retro-text/50 truncate">
+          <div className="font-mono text-xs text-retro-text/60 truncate">
             &gt; {activeMessage}
           </div>
         </div>
       </main>
 
       {/* BOTTOM RAIL: Credits & Press Start Action */}
-      <footer className="arcade-hud relative z-10 flex items-center justify-between font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-retro-text/60">
+      <footer className="arcade-hud relative z-10 flex items-center justify-between font-body text-xs text-retro-text/70">
         <div>
-          <span>CREDITS: 02</span>
+          <span>Credits: 02</span>
         </div>
 
         {isPreloader && (
@@ -287,9 +286,9 @@ export default function LoadingScreen({
               e.stopPropagation();
               handleDismiss();
             }}
-            className="px-4 py-1.5 border-2 border-retro-border bg-retro-surface hover:bg-retro-primary hover:text-white active:translate-y-0.5 transition-all text-[9px] font-heading uppercase tracking-widest text-retro-text shadow-retro-sm cursor-pointer"
+            className="px-4 py-1.5 border-2 border-retro-border bg-retro-surface hover:bg-retro-primary hover:text-retro-surface active:translate-y-px transition-colors duration-150 text-xs font-body text-retro-text shadow-retro-sm cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-retro-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {progress >= 100 ? 'PRESS START ↵' : 'SKIP ↵'}
+            {progress >= 100 ? 'Press Start ↵' : 'Skip ↵'}
           </button>
         )}
 
