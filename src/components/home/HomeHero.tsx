@@ -26,17 +26,17 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       tl.from('.hero-top-rail', {
-        y: -12,
+        y: -10,
         opacity: 0,
-        duration: 0.5,
+        duration: 0.45,
         ease: 'power2.out',
       })
         .from(
           '.hero-title-part-1',
           {
-            y: 35,
+            y: 25,
             opacity: 0,
-            duration: 0.7,
+            duration: 0.6,
             ease: 'expo.out',
           },
           '-=0.2'
@@ -44,52 +44,44 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
         .from(
           '.hero-title-part-2',
           {
-            x: -25,
+            x: -20,
             opacity: 0,
-            duration: 0.7,
+            duration: 0.6,
             ease: 'expo.out',
           },
-          '-=0.45'
+          '-=0.4'
         )
         .from(
           '.hero-statement',
           {
-            y: 15,
+            y: 12,
             opacity: 0,
-            duration: 0.5,
+            duration: 0.45,
             ease: 'power2.out',
           },
-          '-=0.3'
-        )
-        .from(
-          '.hero-fragment',
-          {
-            y: 25,
-            opacity: 0,
-            scale: 0.99,
-            duration: 0.7,
-            ease: 'expo.out',
-          },
-          '-=0.35'
+          '-=0.25'
         )
         .from(
           ['.hero-action-primary', '.hero-action-secondary'],
           {
-            y: 12,
+            y: 10,
             opacity: 0,
-            duration: 0.45,
-            stagger: 0.08,
+            duration: 0.4,
+            stagger: 0.06,
             ease: 'power2.out',
           },
-          '-=0.3'
+          '-=0.2'
         )
         .from(
-          '.hero-meta',
+          '.hero-fragment',
           {
+            y: 20,
             opacity: 0,
-            duration: 0.5,
+            scale: 0.99,
+            duration: 0.6,
+            ease: 'expo.out',
           },
-          '-=0.2'
+          '-=0.35'
         );
     },
     { scope: containerRef }
@@ -107,7 +99,7 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
   return (
     <section
       ref={containerRef}
-      className="relative py-10 sm:py-14 md:py-16 lg:py-20 border-b border-retro-border/30 bg-retro-bg overflow-hidden"
+      className="relative py-6 sm:py-8 lg:py-10 border-b border-retro-border/30 bg-retro-bg overflow-hidden"
     >
       {/* Subtle CRT Raster Ledger Lines */}
       <div
@@ -115,19 +107,19 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
         aria-hidden="true"
       />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Archival Folio Canvas Container */}
-        <div className="border border-retro-border/30 bg-retro-surface/40 p-5 sm:p-8 md:p-10 shadow-retro-sm relative">
+        <div className="border border-retro-border/30 bg-retro-surface/40 p-4 sm:p-6 lg:p-7 shadow-retro-sm relative">
           
-          {/* Subtle Decorative Archival Registration Marks */}
+          {/* Decorative Corner Registration Marks */}
           <div className="absolute top-2 left-2 text-[10px] font-mono text-retro-text/30 select-none pointer-events-none" aria-hidden="true">+</div>
           <div className="absolute top-2 right-2 text-[10px] font-mono text-retro-text/30 select-none pointer-events-none" aria-hidden="true">+</div>
           <div className="absolute bottom-2 left-2 text-[10px] font-mono text-retro-text/30 select-none pointer-events-none" aria-hidden="true">+</div>
           <div className="absolute bottom-2 right-2 text-[10px] font-mono text-retro-text/30 select-none pointer-events-none" aria-hidden="true">+</div>
 
           {/* Top System Header / Archival Registration Rail */}
-          <div className="hero-top-rail flex flex-wrap items-center justify-between gap-3 pb-5 mb-8 border-b border-retro-border/20 text-xs font-body text-retro-text/75">
+          <div className="hero-top-rail flex flex-wrap items-center justify-between gap-3 pb-3 mb-5 border-b border-retro-border/20 text-xs font-body text-retro-text/75">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-none bg-retro-primary animate-pulse motion-reduce:animate-none" aria-hidden="true" />
               <span className="font-body text-xs text-retro-text/80">Buffer // vol. 01</span>
@@ -135,130 +127,131 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
               <Greeting />
             </div>
             <div className="flex items-center gap-3 text-xs font-body text-retro-text/60">
-              <span className="font-body text-xs">Sys//online</span>
+              <div>
+                <span className="text-retro-text/50">Cycles:</span>{' '}
+                <span className="font-mono text-retro-text font-medium">{stats?.totalEntries ?? 0}</span>
+              </div>
+              <span className="h-3 w-px bg-retro-border/30" aria-hidden="true" />
+              <div>
+                <span className="text-retro-text/50">Streak:</span>{' '}
+                <span className="font-mono text-retro-text font-medium">{stats?.currentStreak ?? 0}</span>d
+              </div>
               <span className="h-3 w-px bg-retro-border/30" aria-hidden="true" />
               <span className="font-body text-xs">Ready</span>
             </div>
           </div>
 
-          {/* Stepped Monumental Typographic Focal Point */}
-          <h1 className="hero-title font-heading tracking-tight text-retro-text mb-6">
-            <span className="hero-title-part-1 block text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] break-words">
-              Inner
-            </span>
-            <span className="hero-title-part-2 block text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] mt-2 sm:mt-3 sm:pl-12 md:pl-20 text-retro-primary break-words">
-              Margins
-            </span>
-          </h1>
+          {/* Two-Column Asymmetric Editorial Composition */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+            
+            {/* Left Column: Heading, Inscription, and Action Controls */}
+            <div className="lg:col-span-7 flex flex-col items-start text-left">
+              <h1 className="hero-title font-heading tracking-tight text-retro-text mb-3">
+                <span className="hero-title-part-1 block text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.05] break-words">
+                  Inner
+                </span>
+                <span className="hero-title-part-2 block text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.05] mt-1.5 sm:mt-2 sm:pl-8 md:pl-12 text-retro-primary break-words">
+                  Margins
+                </span>
+              </h1>
 
-          {/* Introspective Editorial Premise */}
-          <div className="hero-statement max-w-2xl mb-8 pl-4 border-l-2 border-retro-primary">
-            <p className="font-body text-sm sm:text-base text-retro-text/85 leading-relaxed">
-              An emotional operating system preserving lost thoughts and private memories.
-            </p>
-          </div>
+              {/* Introspective Editorial Premise */}
+              <div className="hero-statement max-w-xl mb-6 pl-3 border-l-2 border-retro-primary">
+                <p className="font-body text-xs sm:text-sm text-retro-text/80 leading-relaxed">
+                  An emotional operating system preserving lost thoughts and private memories.
+                </p>
+              </div>
 
-          {/* Recovered Memory Fragment (The Physical-meets-Digital Leaf) */}
-          <div className="hero-fragment w-full mb-8">
-            <div className="border border-retro-border/50 bg-retro-surface/90 shadow-retro-sm transition-shadow duration-200 hover:shadow-retro">
-              
-              {/* Folio Docket Header */}
-              <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-retro-border/30 bg-retro-bg/40 text-xs font-body text-retro-text/75">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-retro-primary inline-block" aria-hidden="true" />
-                  <span className="font-medium text-retro-text">Recovered transmission</span>
-                  {formattedLatestDate && (
-                    <>
-                      <span className="text-retro-border/40 font-mono" aria-hidden="true">/</span>
-                      <time className="font-mono text-xs">{formattedLatestDate}</time>
-                    </>
+              {/* Primary Visual Hierarchy: CTAs immediately accessible */}
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <div className="hero-action-primary w-full sm:w-auto">
+                  <Magnetic strength={0.2}>
+                    <Link
+                      href="/journals"
+                      className="btn-primary no-underline text-xs"
+                    >
+                      Access archive
+                    </Link>
+                  </Magnetic>
+                </div>
+
+                <div className="hero-action-secondary w-full sm:w-auto">
+                  <Magnetic strength={0.2}>
+                    <Link
+                      href="/write"
+                      className="btn-secondary no-underline text-xs inline-flex items-center gap-1.5"
+                    >
+                      <span>Record transmission</span>
+                      <span className="blink-cursor" aria-hidden="true" />
+                    </Link>
+                  </Magnetic>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Compact Recovered Memory Fragment */}
+            <div className="lg:col-span-5 flex flex-col justify-center w-full">
+              <div className="hero-fragment w-full border border-retro-border/50 bg-retro-surface/90 shadow-retro-sm transition-shadow duration-200 hover:shadow-retro">
+                
+                {/* Folio Docket Header */}
+                <div className="flex items-center justify-between px-3.5 py-2 border-b border-retro-border/30 bg-retro-bg/40 text-xs font-body text-retro-text/75">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="w-1.5 h-1.5 bg-retro-primary inline-block shrink-0" aria-hidden="true" />
+                    <span className="font-medium text-retro-text truncate">Recovered transmission</span>
+                    {formattedLatestDate && (
+                      <>
+                        <span className="text-retro-border/40 font-mono" aria-hidden="true">/</span>
+                        <time className="font-mono text-xs shrink-0">{formattedLatestDate}</time>
+                      </>
+                    )}
+                  </div>
+                  {latestPost && (
+                    <span className="font-body text-xs text-retro-text/60 shrink-0 hidden sm:inline-block">
+                      Fragment #<span className="font-mono">{latestPost.id.slice(-4).toUpperCase()}</span>
+                    </span>
                   )}
                 </div>
-                {latestPost && (
-                  <span className="font-body text-xs text-retro-text/60">
-                    Fragment #<span className="font-mono">{latestPost.id.slice(-4).toUpperCase()}</span>
-                  </span>
+
+                {/* Fragment Content */}
+                {latestPost ? (
+                  <Link
+                    href={`/posts/${latestPost.slug}`}
+                    className="block p-4 sm:p-5 no-underline group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
+                  >
+                    <div className="flex items-baseline justify-between gap-2 mb-2">
+                      <h2 className={`font-heading text-base sm:text-lg text-retro-text group-hover:text-retro-primary transition-colors leading-snug line-clamp-1 ${latestPost.isLocked ? 'pixelated-blur' : ''}`}>
+                        {latestPost.title}
+                      </h2>
+                      <span className="font-mono text-xs text-retro-text/60 shrink-0">
+                        {latestPost.readTime}
+                      </span>
+                    </div>
+
+                    <p className={`font-body text-xs text-retro-text/80 leading-relaxed line-clamp-2 mb-3.5 ${latestPost.isLocked ? 'pixelated-blur' : ''}`}>
+                      {cleanExcerpt(latestPost.excerpt)}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-2.5 border-t border-dashed border-retro-border/30 text-xs font-body text-retro-primary">
+                      <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none">
+                        <span>Read recovered fragment</span>
+                        <span aria-hidden="true">→</span>
+                      </span>
+                      <span className="font-body text-xs text-retro-text/50">
+                        Log indexed
+                      </span>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="p-4 text-center">
+                    <p className="font-body text-xs text-retro-text/70 mb-2">No records indexed in buffer.</p>
+                    <Link href="/write" className="btn-secondary text-xs no-underline">
+                      Initialize entry
+                    </Link>
+                  </div>
                 )}
               </div>
-
-              {/* Fragment Content */}
-              {latestPost ? (
-                <Link
-                  href={`/posts/${latestPost.slug}`}
-                  className="block p-5 sm:p-7 no-underline group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-3">
-                    <h2 className={`font-heading text-lg sm:text-xl text-retro-text group-hover:text-retro-primary transition-colors leading-snug ${latestPost.isLocked ? 'pixelated-blur' : ''}`}>
-                      {latestPost.title}
-                    </h2>
-                    <span className="font-mono text-xs text-retro-text/60 shrink-0">
-                      {latestPost.readTime}
-                    </span>
-                  </div>
-
-                  <p className={`font-body text-xs sm:text-sm text-retro-text/80 leading-relaxed line-clamp-3 mb-5 ${latestPost.isLocked ? 'pixelated-blur' : ''}`}>
-                    {cleanExcerpt(latestPost.excerpt)}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-dashed border-retro-border/30 text-xs font-body text-retro-primary">
-                    <span className="inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none">
-                      <span>Read recovered fragment</span>
-                      <span aria-hidden="true">→</span>
-                    </span>
-                    <span className="font-body text-xs text-retro-text/50">
-                      Log indexed
-                    </span>
-                  </div>
-                </Link>
-              ) : (
-                <div className="p-6 sm:p-8 text-center">
-                  <p className="font-body text-xs text-retro-text/70 mb-4">No records indexed in buffer.</p>
-                  <Link href="/write" className="btn-secondary text-xs no-underline">
-                    Initialize entry
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Action Command Deck & Marginalia Telemetry */}
-          <div className="hero-actions flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-2 border-t border-retro-border/20">
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="hero-action-primary">
-                <Magnetic strength={0.2}>
-                  <Link
-                    href="/journals"
-                    className="btn-primary no-underline text-xs"
-                  >
-                    Access archive
-                  </Link>
-                </Magnetic>
-              </div>
-
-              <div className="hero-action-secondary">
-                <Link
-                  href="/write"
-                  className="inline-flex items-center gap-2 text-xs font-body text-retro-text hover:text-retro-primary border border-retro-border/40 bg-retro-surface/70 hover:bg-retro-surface px-4 py-3 shadow-retro-sm hover:shadow-retro transition-colors duration-150 no-underline focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-px"
-                >
-                  <span className="text-retro-primary font-mono text-sm" aria-hidden="true">+</span>
-                  <span>Record transmission</span>
-                  <span className="blink-cursor" aria-hidden="true" />
-                </Link>
-              </div>
             </div>
 
-            {/* Marginalia Telemetry */}
-            <div className="hero-meta flex items-center gap-4 text-xs font-body text-retro-text/65 self-start sm:self-auto">
-              <div>
-                <span className="text-retro-text/50">Cycles:</span>{' '}
-                <span className="font-mono text-retro-text font-medium">{stats?.totalEntries ?? 0}</span>
-              </div>
-              <div className="h-3 w-px bg-retro-border/30" aria-hidden="true" />
-              <div>
-                <span className="text-retro-text/50">Streak:</span>{' '}
-                <span className="font-mono text-retro-text font-medium">{stats?.currentStreak ?? 0}</span> days
-              </div>
-            </div>
           </div>
 
         </div>
