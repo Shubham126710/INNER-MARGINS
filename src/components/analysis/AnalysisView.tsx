@@ -68,8 +68,8 @@ export default function AnalysisView({ stats }: AnalysisViewProps) {
       <section className="relative py-16 lg:py-24 overflow-hidden border-b border-retro-border/30 bg-retro-bg">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--retro-primary)_0%,transparent_70%)] opacity-[0.05] pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center">
-          <h1 className="analysis-title text-4xl md:text-5xl lg:text-7xl font-heading text-retro-text mb-4 tracking-tight">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex flex-col items-center text-center">
+          <h1 className="analysis-title text-3xl sm:text-5xl lg:text-7xl font-heading text-retro-text mb-4 tracking-tight break-words">
             System Analysis
           </h1>
 
@@ -81,11 +81,11 @@ export default function AnalysisView({ stats }: AnalysisViewProps) {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 lg:px-12 py-12 md:py-16 relative">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12 md:py-16 relative">
         <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_right,var(--retro-surface)_0%,transparent_20%)] opacity-30 pointer-events-none" />
 
         {/* Key Metrics */}
-        <div className="analysis-metrics-grid relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16">
+        <div className="analysis-metrics-grid relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-16">
           <div className="analysis-metric-card">
             <StatCard
               label="Current Link Streak"

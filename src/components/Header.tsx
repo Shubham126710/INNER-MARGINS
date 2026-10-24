@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import Magnetic from './Magnetic';
 
@@ -11,6 +11,16 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMenuOpen]);
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -63,7 +73,7 @@ export default function Header() {
       ref={headerRef}
       className="sticky top-0 z-50 bg-retro-surface/95 backdrop-blur-md border-b-4 border-retro-border transition-colors"
     >
-      <nav className="max-w-7xl mx-auto px-6 lg:px-12">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
@@ -113,6 +123,8 @@ export default function Header() {
             className="md:hidden p-2 text-retro-text hover:bg-retro-text hover:text-retro-surface transition-colors focus-visible:outline-2 focus-visible:outline-retro-primary active:translate-y-0.5"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle Navigation Menu"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav-panel"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               {isMenuOpen ? (
@@ -127,6 +139,7 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div
+            id="mobile-nav-panel"
             ref={mobileMenuRef}
             className="absolute top-full left-0 w-full md:hidden border-b-4 border-retro-border bg-retro-surface shadow-retro z-50"
           >

@@ -100,12 +100,12 @@ export default function ReminderSetup() {
   };
 
   return (
-    <div className="border-4 border-retro-border bg-retro-surface p-8 shadow-retro mt-8">
+    <div className="border-4 border-retro-border bg-retro-surface p-5 sm:p-8 shadow-retro mt-8">
       <h2 className="text-2xl font-heading text-retro-text mb-6 border-b-2 border-retro-border pb-4">
         Background Reminders
       </h2>
-      <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
-        <div className="flex-1 space-y-2">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6">
+        <div className="flex-1 space-y-2 w-full">
           <p className="text-sm font-body text-retro-text/80 mb-2">
             Get notified globally even when the app is closed if you haven&apos;t written your journal!
           </p>
@@ -120,17 +120,17 @@ export default function ReminderSetup() {
              />
           </div>
         </div>
-        <div className="flex gap-4 self-end md:self-auto mt-4 md:mt-0">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto self-start md:self-auto mt-2 md:mt-0">
           {!enabled ? (
-            <button onClick={handleSave} className="btn-primary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+            <button onClick={handleSave} className="btn-primary w-full sm:w-auto active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
               Enable Reminders
             </button>
           ) : (
-            <div className="flex gap-2">
-               <button onClick={handleSave} className="btn-primary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+               <button onClick={handleSave} className="btn-primary w-full sm:w-auto active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                  Update Time
                </button>
-               <button onClick={handleDisable} className="btn-secondary active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+               <button onClick={handleDisable} className="btn-secondary w-full sm:w-auto active:translate-y-px disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                  Disable Push
                </button>
             </div>

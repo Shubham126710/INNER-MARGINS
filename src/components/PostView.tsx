@@ -150,7 +150,7 @@ export default function PostView({ post }: PostViewProps) {
             </svg>
           </div>
 
-          <h1 className="post-title text-4xl md:text-5xl lg:text-7xl font-heading text-retro-text mb-6 leading-tight tracking-tight">
+          <h1 className="post-title text-3xl sm:text-5xl lg:text-7xl font-heading text-retro-text mb-6 leading-tight tracking-tight break-words">
             {post.title}
           </h1>
 

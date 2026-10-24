@@ -61,7 +61,7 @@ export default function PinLock({ onUnlock, onUnlockPin }: PinLockProps) {
 
   return (
     <div className="flex-1 w-full min-h-[60vh] flex flex-col items-center justify-center p-4 bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface relative overflow-hidden">
-      <div className="w-full max-w-md bg-retro-surface/80 border border-retro-border/30 p-8 lg:p-12 shadow-retro text-center relative z-20">
+      <div className="w-full max-w-md bg-retro-surface/80 border border-retro-border/30 p-6 sm:p-8 lg:p-12 shadow-retro text-center relative z-20">
         <div className="absolute top-0 right-0 p-4 opacity-30" aria-hidden="true">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="text-retro-text" aria-hidden="true">
             <rect x="2" y="2" width="4" height="4" />

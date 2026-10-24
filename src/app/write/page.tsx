@@ -102,7 +102,7 @@ function WriteForm() {
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8 bg-retro-surface/30 p-6 lg:p-10 border border-retro-border/30 shadow-retro-sm relative">
+        <form onSubmit={handleSubmit} className="space-y-8 bg-retro-surface/30 p-4 sm:p-6 lg:p-10 border border-retro-border/30 shadow-retro-sm relative">
           
           <div className="space-y-6">
             <div className="group">

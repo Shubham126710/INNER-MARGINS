@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="w-full bg-retro-text text-retro-surface py-16 border-t-4 border-retro-border relative overflow-hidden mt-auto">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--retro-surface)_0%,transparent_60%)] opacity-[0.05] pointer-events-none" />
       
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8 relative z-10">
         
         {/* Brand / Archive Status */}
         <div className="space-y-4 md:col-span-2">

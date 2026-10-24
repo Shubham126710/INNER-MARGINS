@@ -443,7 +443,7 @@ export default function AppleActivityCard({
   return (
     <div
       className={cn(
-        "@container relative w-full border border-retro-border/30 bg-retro-surface/50 p-6 lg:p-8 shadow-retro-sm transition-shadow hover:shadow-retro",
+        "@container relative w-full border border-retro-border/30 bg-retro-surface/50 p-4 sm:p-6 lg:p-8 shadow-retro-sm transition-shadow hover:shadow-retro",
         "text-retro-text font-body",
         className
       )}

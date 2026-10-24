@@ -46,7 +46,7 @@ export default function HomeDiagnostics({ stats }: HomeDiagnosticsProps) {
 
   return (
     <section ref={sectionRef} className="py-16 border-b border-retro-border/30 bg-retro-surface/40">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="diag-header flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text">
@@ -64,7 +64,7 @@ export default function HomeDiagnostics({ stats }: HomeDiagnosticsProps) {
           </Link>
         </div>
 
-        <div className="diag-grid grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="diag-grid grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           <div className="diag-card">
             <StatCard
               label="Connection Streak"

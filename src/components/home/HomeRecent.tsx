@@ -43,7 +43,7 @@ export default function HomeRecent({ posts }: HomeRecentProps) {
 
   return (
     <section ref={sectionRef} className="py-16 lg:py-24 relative bg-retro-surface/30">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="recent-header flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4 border-b border-retro-border/20 pb-6">
           <div>
             <h2 className="text-2xl lg:text-3xl font-heading uppercase text-retro-text">

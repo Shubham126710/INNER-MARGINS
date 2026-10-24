@@ -82,7 +82,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn-primary self-start disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:translate-y-px"
+            className="btn-primary w-full sm:w-auto self-start disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:translate-y-px"
           >
             {isSubmitting ? 'Posting…' : 'Post comment'}
           </button>
@@ -91,7 +91,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
 
       <div className="flex flex-col gap-8">
         {comments.map((comment) => (
-          <div key={comment.id} className="border-l-4 border-retro-primary pl-6 py-2">
+          <div key={comment.id} className="border-l-4 border-retro-primary pl-4 sm:pl-6 py-2">
             <div className="flex items-center gap-4 mb-2">
               <span className="font-body font-semibold text-retro-primary">{comment.author}</span>
               <span className="font-mono text-xs text-retro-text/60">
@@ -102,7 +102,7 @@ export default function CommentSection({ postId }: CommentSectionProps) {
                 })}
               </span>
             </div>
-            <p className="font-body text-base leading-relaxed whitespace-pre-wrap text-retro-text/90">{comment.content}</p>
+            <p className="font-body text-base leading-relaxed whitespace-pre-wrap text-retro-text/90 break-words">{comment.content}</p>
           </div>
         ))}
         {comments.length === 0 && (

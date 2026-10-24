@@ -95,12 +95,12 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
       ref={containerRef}
       className="relative py-12 md:py-16 lg:py-24 border-b border-retro-border/30 bg-retro-bg overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left: Asymmetric Editorial Lead */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
-            <h1 className="hero-title text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-heading text-retro-text mb-6 leading-[0.95] tracking-tight">
+            <h1 className="hero-title text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-heading text-retro-text mb-6 leading-[0.95] tracking-tight break-words">
               Inner Margins
             </h1>
 
@@ -144,17 +144,17 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
             </div>
 
             {/* Marginalia Telemetry */}
-            <div className="hero-meta flex items-center gap-6 pt-2 text-xs font-body text-retro-text/60">
+            <div className="hero-meta flex flex-wrap items-center gap-3 sm:gap-6 pt-2 text-xs font-body text-retro-text/60">
               <div>
                 <span className="text-retro-text/50">Cycles:</span>{' '}
                 <span className="font-mono text-retro-text font-medium">{stats?.totalEntries ?? 0}</span>
               </div>
-              <div className="h-3 w-px bg-retro-border/30" aria-hidden="true" />
+              <div className="h-3 w-px bg-retro-border/30 hidden sm:block" aria-hidden="true" />
               <div>
                 <span className="text-retro-text/50">Streak:</span>{' '}
                 <span className="font-mono text-retro-text font-medium">{stats?.currentStreak ?? 0}</span> days
               </div>
-              <div className="h-3 w-px bg-retro-border/30" aria-hidden="true" />
+              <div className="h-3 w-px bg-retro-border/30 hidden sm:block" aria-hidden="true" />
               <div>
                 <span className="text-retro-text/50">Status:</span>{' '}
                 <span className="text-retro-text font-medium">Nominal</span>
@@ -164,7 +164,7 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
 
           {/* Right: Signature Product Proof - Live Terminal Monolith */}
           <div className="lg:col-span-5 flex flex-col justify-center">
-            <div className="hero-terminal w-full border-2 border-retro-border bg-retro-surface/85 p-6 shadow-retro relative group transition-transform duration-200 motion-reduce:transform-none">
+            <div className="hero-terminal w-full border-2 border-retro-border bg-retro-surface/85 p-4 sm:p-6 shadow-retro relative group transition-transform duration-200 motion-reduce:transform-none">
               
               {/* Terminal Viewport Top Bar */}
               <div className="flex items-center justify-between border-b border-retro-border/20 pb-3 mb-4">
