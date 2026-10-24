@@ -6,7 +6,7 @@ import { cleanExcerpt } from '@/lib/utils';
 interface PostCardProps {
   post: BlogPost;
   index?: number;
-  variant?: 'default' | 'featured' | 'compact';
+  variant?: 'default' | 'featured' | 'compact' | 'lead' | 'stacked' | 'wide' | 'editorial';
 }
 
 export default function PostCard({ post, variant = 'default' }: PostCardProps) {
@@ -16,6 +16,189 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
     month: 'short',
     day: 'numeric',
   });
+
+  if (variant === 'lead') {
+    return (
+      <article className="group h-full flex flex-col">
+        <Link
+          href={`/posts/${post.slug}`}
+          className="flex flex-col no-underline h-full border-2 border-retro-border bg-retro-surface shadow-retro hover:shadow-retro-hover hover:-translate-y-0.5 transition-transform duration-200 motion-reduce:transform-none relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
+        >
+          {/* Folio Docket Top Rail */}
+          <div className="flex items-center justify-between px-5 py-3 border-b-2 border-retro-border/20 bg-retro-surface/80 text-xs font-body text-retro-text/75">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-retro-primary inline-block animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+              <time className="font-mono text-xs">{formattedDate}</time>
+            </div>
+            {post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {post.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-0.5 border border-retro-border/30 bg-retro-bg/50 text-[11px] font-body text-retro-text/80"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Optional Cover Image */}
+          {post.coverImage && (
+            <div className="relative aspect-[16/9] border-b-2 border-retro-border/20 overflow-hidden bg-retro-bg/40">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                className={`object-cover mix-blend-multiply opacity-90 group-hover:opacity-100 transition-opacity duration-300 ${
+                  post.isLocked ? 'pixelated-blur' : ''
+                }`}
+              />
+            </div>
+          )}
+
+          {/* Lead Content */}
+          <div className="p-6 lg:p-8 flex-1 flex flex-col">
+            <h2
+              className={`text-xl sm:text-2xl lg:text-3xl font-heading text-retro-text group-hover:text-retro-primary transition-colors leading-snug mb-3.5 break-words ${
+                post.isLocked ? 'pixelated-blur' : ''
+              }`}
+            >
+              {post.title}
+            </h2>
+
+            <p
+              className={`font-body text-xs sm:text-sm text-retro-text/85 leading-relaxed line-clamp-4 mb-6 flex-1 ${
+                post.isLocked ? 'pixelated-blur' : ''
+              }`}
+            >
+              {cleanExcerpt(post.excerpt)}
+            </p>
+
+            <div className="mt-auto pt-4 border-t border-dashed border-retro-border/30 flex items-center justify-between text-xs font-body text-retro-primary">
+              <span className="inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none font-medium">
+                <span>{post.isLocked ? 'Decrypt record' : 'Read transmission'}</span>
+                <span aria-hidden="true">→</span>
+              </span>
+              <div className="flex items-center gap-2 text-retro-text/60 font-mono text-xs">
+                <span>{post.readTime}</span>
+                <span className="text-retro-border/40 font-body" aria-hidden="true">/</span>
+                <span>#{post.id.slice(-4).toUpperCase()}</span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      </article>
+    );
+  }
+
+  if (variant === 'stacked') {
+    return (
+      <article className="group h-full flex flex-col">
+        <Link
+          href={`/posts/${post.slug}`}
+          className="flex flex-col justify-between no-underline h-full border-2 border-retro-border bg-retro-surface/80 hover:bg-retro-surface shadow-retro-sm hover:shadow-retro hover:-translate-y-0.5 transition-transform duration-200 motion-reduce:transform-none p-5 relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
+        >
+          <div>
+            <div className="flex items-center justify-between text-xs font-body text-retro-text/70 mb-2.5">
+              <time className="font-mono text-xs">{formattedDate}</time>
+              {post.tags.length > 0 && (
+                <span className="px-1.5 py-0.5 border border-retro-border/30 bg-retro-bg/50 text-[11px] font-body text-retro-text/80">
+                  #{post.tags[0]}
+                </span>
+              )}
+            </div>
+
+            <h3
+              className={`font-heading text-base sm:text-lg text-retro-text group-hover:text-retro-primary transition-colors leading-snug mb-2.5 line-clamp-2 ${
+                post.isLocked ? 'pixelated-blur' : ''
+              }`}
+            >
+              {post.title}
+            </h3>
+
+            <p
+              className={`font-body text-xs text-retro-text/80 leading-relaxed line-clamp-2 mb-4 ${
+                post.isLocked ? 'pixelated-blur' : ''
+              }`}
+            >
+              {cleanExcerpt(post.excerpt)}
+            </p>
+          </div>
+
+          <div className="pt-3 border-t border-dashed border-retro-border/30 flex items-center justify-between text-xs font-body text-retro-primary">
+            <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none font-medium">
+              <span>Open log</span>
+              <span aria-hidden="true">→</span>
+            </span>
+            <span className="font-mono text-xs text-retro-text/60">{post.readTime}</span>
+          </div>
+        </Link>
+      </article>
+    );
+  }
+
+  if (variant === 'wide') {
+    return (
+      <article className="group h-full flex flex-col">
+        <Link
+          href={`/posts/${post.slug}`}
+          className="flex flex-col md:flex-row no-underline h-full border-2 border-retro-border bg-retro-surface shadow-retro-sm hover:shadow-retro hover:-translate-y-0.5 transition-transform duration-200 motion-reduce:transform-none relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
+        >
+          {post.coverImage ? (
+            <div className="relative md:w-5/12 min-h-[180px] border-b-2 md:border-b-0 md:border-r-2 border-retro-border/30 overflow-hidden bg-retro-bg/40">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                className={`object-cover mix-blend-multiply opacity-90 group-hover:opacity-100 transition-opacity duration-300 ${
+                  post.isLocked ? 'pixelated-blur' : ''
+                }`}
+              />
+            </div>
+          ) : null}
+
+          <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-xs font-body text-retro-text/70 mb-2.5">
+                <time className="font-mono text-xs">{formattedDate}</time>
+                {post.tags.length > 0 && (
+                  <span className="px-1.5 py-0.5 border border-retro-border/30 bg-retro-bg/50 text-[11px] font-body text-retro-text/80">
+                    #{post.tags[0]}
+                  </span>
+                )}
+              </div>
+
+              <h2
+                className={`font-heading text-lg sm:text-xl text-retro-text group-hover:text-retro-primary transition-colors leading-snug mb-3 ${
+                  post.isLocked ? 'pixelated-blur' : ''
+                }`}
+              >
+                {post.title}
+              </h2>
+
+              <p
+                className={`font-body text-xs sm:text-[13px] text-retro-text/80 leading-relaxed line-clamp-3 mb-4 ${
+                  post.isLocked ? 'pixelated-blur' : ''
+                }`}
+              >
+                {cleanExcerpt(post.excerpt)}
+              </p>
+            </div>
+
+            <div className="pt-3 border-t border-dashed border-retro-border/30 flex items-center justify-between text-xs font-body text-retro-primary">
+              <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none font-medium">
+                <span>Read transmission</span>
+                <span aria-hidden="true">→</span>
+              </span>
+              <span className="font-mono text-xs text-retro-text/60">{post.readTime}</span>
+            </div>
+          </div>
+        </Link>
+      </article>
+    );
+  }
 
   if (variant === 'featured') {
     return (
@@ -89,9 +272,9 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
               {post.title}
             </h3>
             <div className="flex items-center gap-2 mt-2 text-xs font-body text-retro-text/60">
-              <time className="font-mono">{formattedDate}</time>
-              <span aria-hidden="true">·</span>
-              <span className="font-mono">{post.readTime}</span>
+              <time className="font-mono text-xs">{formattedDate}</time>
+              <span className="font-body" aria-hidden="true">/</span>
+              <span className="font-mono text-xs">{post.readTime}</span>
             </div>
           </div>
         </Link>
@@ -103,44 +286,37 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
     <article className="group h-full flex flex-col">
       <Link
         href={`/posts/${post.slug}`}
-        className="flex flex-col no-underline h-full border border-retro-border/30 bg-retro-surface/50 hover:bg-retro-surface hover:border-retro-border/60 hover:-translate-y-1 transition-transform duration-200 motion-reduce:transform-none shadow-retro-sm hover:shadow-retro relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
+        className="flex flex-col no-underline h-full border-2 border-retro-border bg-retro-surface/75 hover:bg-retro-surface hover:-translate-y-0.5 transition-transform duration-200 motion-reduce:transform-none shadow-retro-sm hover:shadow-retro relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
       >
-        <div className="flex-1 flex flex-col relative z-10 w-full h-full">
-          {/* Top section: date and tags to mimic metadata */}
-          <div className="flex items-start justify-between flex-wrap gap-2 text-xs font-body text-retro-text/70 p-5 pb-0">
-            <time className="pt-1 whitespace-nowrap font-mono">{formattedDate}</time>
-            {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 justify-end max-w-[60%]">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-retro-bg/50 px-1.5 py-0.5 border border-retro-border/20 text-xs lowercase text-retro-text/80 hover:text-retro-primary transition-colors"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Optional cover image strip below metadata */}
-          {post.coverImage && (
-            <div className="relative h-36 mt-4 mx-5 border-y border-retro-border/20 overflow-hidden shrink-0 bg-retro-bg/30">
-              <Image
-                src={post.coverImage}
-                alt={post.title}
-                fill
-                className={`object-cover mix-blend-multiply opacity-85 group-hover:opacity-100 transition-opacity duration-300 ${
-                  post.isLocked ? 'pixelated-blur' : ''
-                }`}
-              />
-            </div>
+        {/* Top section: date and tags to mimic metadata */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-retro-border/20 bg-retro-surface/50 text-xs font-body text-retro-text/70">
+          <time className="font-mono text-xs">{formattedDate}</time>
+          {post.tags.length > 0 && (
+            <span className="bg-retro-bg/60 px-1.5 py-0.5 border border-retro-border/20 text-[11px] font-body text-retro-text/80">
+              #{post.tags[0]}
+            </span>
           )}
+        </div>
 
-          {/* Content block */}
-          <div className="p-5 flex-1 flex flex-col">
+        {/* Optional cover image strip below metadata */}
+        {post.coverImage && (
+          <div className="relative aspect-[16/9] border-b border-retro-border/20 overflow-hidden bg-retro-bg/30">
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              fill
+              className={`object-cover mix-blend-multiply opacity-85 group-hover:opacity-100 transition-opacity duration-300 ${
+                post.isLocked ? 'pixelated-blur' : ''
+              }`}
+            />
+          </div>
+        )}
+
+        {/* Content block */}
+        <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+          <div>
             <h2
-              className={`text-lg font-heading text-retro-text mb-3 group-hover:text-retro-primary leading-tight transition-colors ${
+              className={`text-base sm:text-lg font-heading text-retro-text mb-2.5 group-hover:text-retro-primary leading-tight transition-colors line-clamp-2 ${
                 post.isLocked ? 'pixelated-blur' : ''
               }`}
             >
@@ -148,32 +324,23 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
             </h2>
 
             <p
-              className={`text-retro-text/80 font-body text-sm leading-relaxed mb-6 line-clamp-4 flex-1 ${
+              className={`text-retro-text/80 font-body text-xs sm:text-[13px] leading-relaxed mb-4 line-clamp-3 ${
                 post.isLocked ? 'pixelated-blur' : ''
               }`}
             >
               {cleanExcerpt(post.excerpt)}
             </p>
+          </div>
 
-            {/* Footer block */}
-            <div className="mt-auto pt-4 border-t border-retro-border/20 group-hover:border-retro-primary/30 transition-colors flex justify-between items-center text-xs font-body">
-              <span className="text-retro-primary group-hover:text-retro-primary flex items-center gap-1.5 transition-colors">
-                {post.isLocked ? (
-                  'Decrypt content'
-                ) : (
-                  <>
-                    <span>Extract log</span>
-                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none" aria-hidden="true">→</span>
-                  </>
-                )}
-              </span>
-              <span className="text-retro-text/60 font-mono">{post.readTime}</span>
-            </div>
+          {/* Footer block */}
+          <div className="pt-3 border-t border-retro-border/20 flex justify-between items-center text-xs font-body text-retro-primary">
+            <span className="inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-150 motion-reduce:transform-none font-medium">
+              <span>{post.isLocked ? 'Decrypt log' : 'Read log'}</span>
+              <span aria-hidden="true">→</span>
+            </span>
+            <span className="text-retro-text/60 font-mono text-xs">{post.readTime}</span>
           </div>
         </div>
-
-        {/* Subtle hover background decoration */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--retro-primary)_0%,transparent_50%)] opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
       </Link>
     </article>
   );
