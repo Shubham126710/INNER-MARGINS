@@ -113,10 +113,10 @@ export default function HomeHero({ latestPost, stats }: HomeHeroProps) {
               </div>
 
               <h1 className="font-heading tracking-tight text-retro-text leading-[1.08]">
-                <span className="block text-3xl sm:text-4xl lg:text-[2.85rem] break-words">
+                <span className="block text-2xl sm:text-4xl lg:text-[2.85rem] break-words">
                   Inner
                 </span>
-                <span className="block text-3xl sm:text-4xl lg:text-[2.85rem] text-retro-primary mt-1 sm:pl-4 break-words">
+                <span className="block text-2xl sm:text-4xl lg:text-[2.85rem] text-retro-primary mt-1 sm:pl-4 break-words">
                   Margins
                 </span>
               </h1>

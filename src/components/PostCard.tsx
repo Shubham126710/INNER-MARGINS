@@ -25,7 +25,7 @@ export default function PostCard({ post, variant = 'default' }: PostCardProps) {
           className="flex flex-col no-underline h-full border-2 border-retro-border bg-retro-surface shadow-retro hover:shadow-retro-hover hover:-translate-y-0.5 transition-transform duration-200 motion-reduce:transform-none relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary active:opacity-95"
         >
           {/* Folio Docket Top Rail */}
-          <div className="flex items-center justify-between px-5 py-3 border-b-2 border-retro-border/20 bg-retro-surface/80 text-xs font-body text-retro-text/75">
+          <div className="flex items-center justify-between flex-wrap gap-2 px-4 sm:px-5 py-2.5 sm:py-3 border-b-2 border-retro-border/20 bg-retro-surface/80 text-xs font-body text-retro-text/75">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-retro-primary inline-block animate-pulse motion-reduce:animate-none" aria-hidden="true" />
               <time className="font-mono text-xs">{formattedDate}</time>

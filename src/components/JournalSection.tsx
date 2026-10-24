@@ -123,7 +123,7 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
 
         {/* Compact Tag-Filter Rail */}
         <div className="archive-header-element mb-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar flex-wrap">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar overscroll-contain touch-pan-x flex-wrap sm:flex-nowrap">
             <span className="text-xs font-body text-retro-text/50 mr-1 hidden sm:inline-block">Filter:</span>
             
             {/* All Records Pill */}
