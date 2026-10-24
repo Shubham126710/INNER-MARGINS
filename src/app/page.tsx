@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface">
-      <HomeHero />
+      <HomeHero latestPost={posts[0]} stats={stats} />
       <HomeDiagnostics stats={stats} />
       {featuredPosts.length > 0 && <HomeFeatured posts={featuredPosts} />}
       <HomeRecent posts={posts} />
