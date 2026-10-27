@@ -196,6 +196,37 @@ a:not([class]):hover {
 /* Rich text editor styles */
 .prose-editor {
   line-height: 1.6;
+  font-family: var(--font-body), monospace;
+}
+
+.prose-editor,
+.prose-editor p,
+.prose-editor span,
+.prose-editor div,
+.prose-editor li,
+.prose-editor font,
+.prose-editor code,
+.prose-editor blockquote {
+  font-family: var(--font-body), monospace !important;
+}
+
+.prose-editor h1,
+.prose-editor h2,
+.prose-editor h3 {
+  font-family: var(--font-heading), monospace !important;
+}
+
+/* Neutralize pasted foreign font-family, color, and background inline styles */
+.prose-editor [style*="font-family"] {
+  font-family: var(--font-body), monospace !important;
+}
+
+.prose-editor [style*="color"] {
+  color: inherit !important;
+}
+
+.prose-editor [style*="background"] {
+  background-color: transparent !important;
 }
 
 .prose-editor h2 {
