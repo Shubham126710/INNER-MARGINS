@@ -73,12 +73,132 @@ function mapToBlogPost(
   };
 }
 
+export type TagWithCount = {
+  name: string;
+  count: number;
+};
+
+export type PaginatedPostsResult = {
+  posts: BlogPost[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+};
+
+export const getPublishedPostSlugs = unstable_cache(
+  async (limit = 30): Promise<string[]> => {
+    const posts = await db.post.findMany({
+      where: { isPublished: true },
+      select: { slug: true },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+    return posts.map((p) => p.slug);
+  },
+  ['get-published-post-slugs'],
+  { revalidate: 86400, tags: ['posts'] }
+);
+
+export const getAllTagsWithCounts = unstable_cache(
+  async (): Promise<TagWithCount[]> => {
+    const tags = await db.tag.findMany({
+      where: { posts: { some: { isPublished: true } } },
+      select: {
+        name: true,
+        _count: {
+          select: {
+            posts: { where: { isPublished: true } },
+          },
+        },
+      },
+      orderBy: {
+        posts: { _count: 'desc' },
+      },
+    });
+    return tags.map((t) => ({
+      name: t.name,
+      count: t._count.posts,
+    }));
+  },
+  ['get-all-tags-with-counts'],
+  { revalidate: 86400, tags: ['posts', 'tags'] }
+);
+
+const getCachedPublishedPostsPaginated = unstable_cache(
+  async (
+    page: number,
+    pageSize: number,
+    tag: string,
+    search: string,
+    sort: 'newest' | 'oldest' | 'alphabetical'
+  ): Promise<PaginatedPostsResult> => {
+    const where: Record<string, unknown> = {
+      isPublished: true,
+    };
+    if (tag) {
+      where.tags = { some: { name: tag } };
+    }
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { excerpt: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    let orderBy: Record<string, 'asc' | 'desc'> = { createdAt: 'desc' };
+    if (sort === 'oldest') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'alphabetical') {
+      orderBy = { title: 'asc' };
+    }
+
+    const skip = (page - 1) * pageSize;
+    const [posts, total] = await Promise.all([
+      db.post.findMany({
+        where,
+        select: postCardSelect,
+        orderBy,
+        skip,
+        take: pageSize,
+      }),
+      db.post.count({ where }),
+    ]);
+
+    return {
+      posts: posts.map((p) => mapToBlogPost(p, false)),
+      total,
+      page,
+      pageSize,
+      totalPages: Math.max(1, Math.ceil(total / pageSize)),
+    };
+  },
+  ['get-published-posts-paginated'],
+  { revalidate: 3600, tags: ['posts'] }
+);
+
+export async function getPublishedPostsPaginated(params?: {
+  page?: number;
+  pageSize?: number;
+  tag?: string;
+  search?: string;
+  sort?: 'newest' | 'oldest' | 'alphabetical';
+}): Promise<PaginatedPostsResult> {
+  const page = Math.max(1, params?.page || 1);
+  const pageSize = Math.max(1, Math.min(params?.pageSize || 15, 50));
+  const tag = params?.tag?.trim() || '';
+  const search = params?.search?.trim() || '';
+  const sort = params?.sort || 'newest';
+
+  return getCachedPublishedPostsPaginated(page, pageSize, tag, search, sort);
+}
+
 export const getPosts = unstable_cache(
-  async (limit?: number): Promise<BlogPost[]> => {
+  async (limit = 15): Promise<BlogPost[]> => {
     const posts = await db.post.findMany({
       select: postCardSelect,
       orderBy: { createdAt: 'desc' },
-      ...(limit ? { take: limit } : {}),
+      take: limit,
     });
     return posts.map((p) => mapToBlogPost(p, false));
   },
@@ -87,12 +207,12 @@ export const getPosts = unstable_cache(
 );
 
 export const getPublishedPosts = unstable_cache(
-  async (limit?: number): Promise<BlogPost[]> => {
+  async (limit = 15): Promise<BlogPost[]> => {
     const posts = await db.post.findMany({
       where: { isPublished: true },
       select: postCardSelect,
       orderBy: { createdAt: 'desc' },
-      ...(limit ? { take: limit } : {}),
+      take: limit,
     });
     return posts.map((p) => mapToBlogPost(p, false));
   },
@@ -211,6 +331,7 @@ export async function savePost(post: Partial<BlogPost> & { title: string; conten
   }
 
   updateTag('posts');
+  updateTag('tags');
   updateTag('analysis');
   revalidatePath('/', 'page');
   revalidatePath('/journals', 'page');
@@ -229,6 +350,7 @@ export async function deletePost(id: string): Promise<void> {
   await db.post.delete({ where: { id } });
 
   updateTag('posts');
+  updateTag('tags');
   updateTag('analysis');
   revalidatePath('/', 'page');
   revalidatePath('/journals', 'page');

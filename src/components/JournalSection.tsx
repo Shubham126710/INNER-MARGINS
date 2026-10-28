@@ -1,83 +1,107 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { BlogPost } from '@/lib/types';
+import { TagWithCount } from '@/actions/post.actions';
 import PostCard from './PostCard';
+
+export type SortOption = 'newest' | 'oldest' | 'alphabetical';
 
 interface JournalSectionProps {
   posts: BlogPost[];
-  allTags: string[];
+  total: number;
+  currentPage?: number;
+  totalPages?: number;
+  pageSize?: number;
+  tagsWithCounts?: TagWithCount[];
+  allTags?: string[];
   activeTag?: string;
+  initialQuery?: string;
+  initialSort?: SortOption;
 }
 
-type SortOption = 'newest' | 'oldest' | 'alphabetical';
-
-export default function JournalSection({ posts, allTags, activeTag: propActiveTag }: JournalSectionProps) {
-  const searchParams = useSearchParams();
-  const activeTag = propActiveTag !== undefined ? propActiveTag : (searchParams?.get('tag') || undefined);
-  const [sortOption, setSortOption] = useState<SortOption>('newest');
-  const [searchQuery, setSearchQuery] = useState('');
+export default function JournalSection({
+  posts,
+  total,
+  currentPage = 1,
+  totalPages = 1,
+  pageSize = 15,
+  tagsWithCounts = [],
+  allTags = [],
+  activeTag,
+  initialQuery = '',
+  initialSort = 'newest',
+}: JournalSectionProps) {
+  const router = useRouter();
+  const [searchInput, setSearchInput] = useState(initialQuery);
   const [showAllTags, setShowAllTags] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Calculate tag frequencies to display the most useful tags in the primary quick-rail
-  const tagCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const p of posts) {
-      for (const t of p.tags) {
-        counts.set(t, (counts.get(t) || 0) + 1);
-      }
+  // Sync search input if URL changes externally
+  useEffect(() => {
+    setSearchInput(initialQuery);
+  }, [initialQuery]);
+
+  // Normalize tags list with counts
+  const normalizedTags = useMemo(() => {
+    if (tagsWithCounts.length > 0) {
+      return tagsWithCounts;
     }
-    return counts;
-  }, [posts]);
+    return allTags.map((name) => ({ name, count: 0 }));
+  }, [tagsWithCounts, allTags]);
 
-  const sortedTags = useMemo(() => {
-    return [...allTags].sort((a, b) => {
-      const diff = (tagCounts.get(b) || 0) - (tagCounts.get(a) || 0);
-      return diff !== 0 ? diff : a.localeCompare(b);
-    });
-  }, [allTags, tagCounts]);
+  const primaryTags = useMemo(() => normalizedTags.slice(0, 8), [normalizedTags]);
+  const remainingTags = useMemo(() => normalizedTags.slice(8), [normalizedTags]);
 
-  const primaryTags = useMemo(() => sortedTags.slice(0, 8), [sortedTags]);
-  const remainingTags = useMemo(() => sortedTags.slice(8), [sortedTags]);
+  // Helper to build archive URLs preserving active filters
+  const createArchiveUrl = (params: {
+    page?: number | null;
+    tag?: string | null;
+    q?: string | null;
+    sort?: SortOption | null;
+  }) => {
+    const sp = new URLSearchParams();
 
-  // Filter & sort posts based on activeTag, searchQuery, and sortOption
-  const filteredAndSortedPosts = useMemo(() => {
-    let result = posts;
-
-    // Filter by tag if selected
-    if (activeTag) {
-      result = result.filter((p) => p.tags.includes(activeTag));
-    }
-
-    // Filter by search query if typed
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.excerpt.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q))
-      );
+    const targetPage = params.page !== undefined ? params.page : currentPage;
+    if (targetPage && targetPage > 1) {
+      sp.set('page', String(targetPage));
     }
 
-    // Sort posts
-    return [...result].sort((a, b) => {
-      switch (sortOption) {
-        case 'newest':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        case 'oldest':
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        case 'alphabetical':
-          return a.title.localeCompare(b.title);
-        default:
-          return 0;
-      }
-    });
-  }, [posts, activeTag, searchQuery, sortOption]);
+    const targetTag = params.tag !== undefined ? params.tag : activeTag;
+    if (targetTag) {
+      sp.set('tag', targetTag);
+    }
+
+    const targetQuery = params.q !== undefined ? params.q : initialQuery;
+    if (targetQuery && targetQuery.trim()) {
+      sp.set('q', targetQuery.trim());
+    }
+
+    const targetSort = params.sort !== undefined ? params.sort : initialSort;
+    if (targetSort && targetSort !== 'newest') {
+      sp.set('sort', targetSort);
+    }
+
+    const qs = sp.toString();
+    return qs ? `/journals?${qs}` : '/journals';
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push(createArchiveUrl({ q: searchInput, page: 1 }));
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    router.push(createArchiveUrl({ q: null, page: 1 }));
+  };
+
+  const handleSortChange = (newSort: SortOption) => {
+    router.push(createArchiveUrl({ sort: newSort, page: 1 }));
+  };
 
   // Entrance animation for header and toolbar on initial mount
   useGSAP(
@@ -128,8 +152,7 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
             
             {/* All Records Pill */}
             <Link
-              href="/journals"
-              onClick={() => setSearchQuery('')}
+              href={createArchiveUrl({ tag: null, page: 1 })}
               className={`px-3 py-1 text-xs font-body border transition-colors shadow-retro-sm active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary ${
                 !activeTag
                   ? 'bg-retro-primary text-[var(--retro-light)] border-retro-primary font-medium'
@@ -142,24 +165,25 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
             {/* Primary Top Tags */}
             {primaryTags.map((t) => (
               <Link
-                key={t}
-                href={`/journals?tag=${encodeURIComponent(t)}`}
+                key={t.name}
+                href={createArchiveUrl({ tag: t.name, page: 1 })}
                 className={`px-2.5 py-1 text-xs font-body border transition-colors shadow-retro-sm active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary ${
-                  activeTag === t
+                  activeTag === t.name
                     ? 'bg-retro-primary text-[var(--retro-light)] border-retro-primary font-medium'
                     : 'bg-retro-surface/70 text-retro-text border-retro-border/40 hover:border-retro-primary hover:text-retro-primary hover:bg-retro-surface'
                 }`}
               >
-                #{t}
+                <span>#{t.name}</span>
+                {t.count > 0 && <span className="ml-1 opacity-60 text-[10px] font-mono">({t.count})</span>}
               </Link>
             ))}
 
             {/* If an active tag is from the remaining list, show it prominently here */}
-            {activeTag && remainingTags.includes(activeTag) && (
+            {activeTag && remainingTags.some((t) => t.name === activeTag) && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-body border border-retro-primary bg-retro-primary text-[var(--retro-light)] shadow-retro-sm font-medium">
                 <span>#{activeTag}</span>
                 <Link
-                  href="/journals"
+                  href={createArchiveUrl({ tag: null, page: 1 })}
                   className="ml-0.5 text-[var(--retro-light)]/80 hover:text-[var(--retro-light)] font-mono text-xs focus-visible:outline-1 focus-visible:outline-retro-primary"
                   aria-label="Remove filter"
                 >
@@ -187,15 +211,16 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
               <span className="text-[11px] font-body text-retro-text/50 w-full mb-1">Additional archive sectors:</span>
               {remainingTags.map((t) => (
                 <Link
-                  key={t}
-                  href={`/journals?tag=${encodeURIComponent(t)}`}
+                  key={t.name}
+                  href={createArchiveUrl({ tag: t.name, page: 1 })}
                   className={`px-2 py-0.5 text-xs font-body border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary ${
-                    activeTag === t
+                    activeTag === t.name
                       ? 'bg-retro-primary text-[var(--retro-light)] border-retro-primary font-medium'
                       : 'bg-retro-surface text-retro-text/80 border-retro-border/30 hover:border-retro-primary hover:text-retro-primary'
                   }`}
                 >
-                  #{t}
+                  <span>#{t.name}</span>
+                  {t.count > 0 && <span className="ml-1 opacity-60 text-[10px] font-mono">({t.count})</span>}
                 </Link>
               ))}
             </div>
@@ -205,27 +230,44 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
         {/* Archive Command Toolbar */}
         <div className="archive-header-element flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 mb-8 border border-retro-border/30 bg-retro-surface/50 shadow-retro-sm">
           
-          {/* Search Field */}
-          <div className="relative flex-1 max-w-sm">
+          {/* Search Form */}
+          <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-sm">
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-retro-text/40 font-body text-xs" aria-hidden="true">
               ⌕
             </span>
             <input
               type="text"
-              placeholder="Search archive (title, excerpt, tag)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-7 pr-3 py-1.5 bg-retro-surface border border-retro-border/30 text-xs font-body text-retro-text placeholder:text-retro-text/40 focus:border-retro-primary focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+              placeholder="Search archive (title, excerpt)..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full pl-7 pr-16 py-1.5 bg-retro-surface border border-retro-border/30 text-xs font-body text-retro-text placeholder:text-retro-text/40 focus:border-retro-primary focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
               aria-label="Search archive transmissions"
             />
-          </div>
+            {searchInput && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="absolute right-9 top-1/2 -translate-y-1/2 text-retro-text/50 hover:text-retro-text text-xs font-mono px-1 py-0.5 focus-visible:outline-1 focus-visible:outline-retro-primary cursor-pointer"
+                title="Clear query"
+                aria-label="Clear query"
+              >
+                ×
+              </button>
+            )}
+            <button
+              type="submit"
+              className="absolute right-1 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-retro-bg text-retro-text hover:bg-retro-primary hover:text-[var(--retro-light)] border border-retro-border/40 text-[11px] font-body transition-colors cursor-pointer focus-visible:outline-1 focus-visible:outline-retro-primary"
+              title="Execute search"
+            >
+              Go
+            </button>
+          </form>
 
           <div className="flex items-center gap-3 justify-between sm:justify-end flex-wrap">
             {/* Active filter reset */}
-            {(activeTag || searchQuery) && (
+            {(activeTag || initialQuery) && (
               <Link
                 href="/journals"
-                onClick={() => setSearchQuery('')}
                 className="text-xs font-body text-retro-primary hover:underline underline-offset-2 flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-retro-primary"
               >
                 <span>Reset filter</span>
@@ -235,8 +277,10 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
 
             {/* Total entries indicator */}
             <span className="text-xs text-retro-text/75 bg-retro-surface border border-retro-border/30 px-2.5 py-1">
-              <span className="font-mono font-bold text-retro-text">{filteredAndSortedPosts.length}</span>
-              <span className="text-retro-text/50 font-body ml-1.5">transmissions</span>
+              <span className="font-mono font-bold text-retro-text">{total}</span>
+              <span className="text-retro-text/50 font-body ml-1.5">
+                transmissions {totalPages > 1 ? `(sector ${currentPage}/${totalPages})` : ''}
+              </span>
             </span>
 
             {/* Sort Control */}
@@ -244,8 +288,8 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
               <label htmlFor="journal-sort" className="text-xs font-body text-retro-text/60">Sort:</label>
               <select
                 id="journal-sort"
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                value={initialSort}
+                onChange={(e) => handleSortChange(e.target.value as SortOption)}
                 className="bg-transparent font-body text-xs text-retro-text outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
               >
                 <option value="newest">Latest first</option>
@@ -258,7 +302,7 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
         </div>
 
         {/* Empty State */}
-        {filteredAndSortedPosts.length === 0 ? (
+        {posts.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-retro-border/30 bg-retro-surface/50 shadow-retro-sm">
             <div className="w-12 h-12 mx-auto mb-4 border border-retro-border/60 bg-retro-surface flex items-center justify-center text-retro-primary" aria-hidden="true">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -274,10 +318,9 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
               No memory fragments found matching current query parameters.
             </p>
             <div className="flex justify-center gap-3">
-              {(activeTag || searchQuery) && (
+              {(activeTag || initialQuery) && (
                 <Link
                   href="/journals"
-                  onClick={() => setSearchQuery('')}
                   className="px-4 py-2 border border-retro-border bg-retro-surface text-retro-text font-body text-xs hover:border-retro-primary hover:text-retro-primary transition-colors shadow-retro-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
                 >
                   Clear all filters
@@ -293,12 +336,135 @@ export default function JournalSection({ posts, allTags, activeTag: propActiveTa
           </div>
         ) : (
           /* Asymmetric Editorial Grid Spread */
-          <EditorialArchiveLayout posts={filteredAndSortedPosts} />
+          <>
+            <EditorialArchiveLayout posts={posts} />
+
+            {/* Retro Sector Navigator (Pagination) */}
+            {totalPages > 1 && (
+              <nav
+                aria-label="Archive sector navigation"
+                className="mt-12 pt-8 border-t-2 border-retro-border/25 flex flex-col md:flex-row items-center justify-between gap-4"
+              >
+                {/* Sector Status Docket */}
+                <div className="flex items-center gap-2 text-xs font-body text-retro-text/75 flex-wrap">
+                  <span className="w-2 h-2 bg-retro-primary inline-block" aria-hidden="true" />
+                  <span className="font-medium text-retro-text">
+                    Sector <span className="font-mono">{String(currentPage).padStart(2, '0')}</span> / <span className="font-mono">{String(totalPages).padStart(2, '0')}</span>
+                  </span>
+                  <span className="text-retro-border/40 font-body" aria-hidden="true">/</span>
+                  <span className="text-retro-text/65 font-body text-xs">
+                    Showing {Math.min((currentPage - 1) * pageSize + 1, total)} to {Math.min(currentPage * pageSize, total)} of {total} records
+                  </span>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                  {/* First page button */}
+                  {currentPage > 2 && (
+                    <Link
+                      href={createArchiveUrl({ page: 1 })}
+                      className="px-2.5 py-1 text-xs font-body border border-retro-border/30 bg-retro-surface hover:border-retro-primary hover:text-retro-primary text-retro-text shadow-retro-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+                      title="First sector"
+                    >
+                      Sector 01
+                    </Link>
+                  )}
+
+                  {/* Previous sector button */}
+                  {currentPage > 1 ? (
+                    <Link
+                      href={createArchiveUrl({ page: currentPage - 1 })}
+                      className="px-3 py-1 text-xs font-body border border-retro-border bg-retro-surface hover:border-retro-primary hover:text-retro-primary text-retro-text shadow-retro-sm transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+                      rel="prev"
+                    >
+                      Previous
+                    </Link>
+                  ) : (
+                    <span className="px-3 py-1 text-xs font-body border border-retro-border/20 bg-retro-surface/40 text-retro-text/30 cursor-not-allowed">
+                      Previous
+                    </span>
+                  )}
+
+                  {/* Numeric Sector Buttons */}
+                  {getPageNumbers(currentPage, totalPages).map((p, idx) => {
+                    if (p === '…') {
+                      return (
+                        <span key={`ellipsis-${idx}`} className="px-1.5 py-1 text-xs font-mono text-retro-text/40">
+                          …
+                        </span>
+                      );
+                    }
+                    const pageNum = p as number;
+                    const isCurrent = pageNum === currentPage;
+                    return isCurrent ? (
+                      <span
+                        key={`sector-${pageNum}`}
+                        aria-current="page"
+                        className="px-2.5 sm:px-3 py-1 text-xs font-mono font-bold bg-retro-primary text-[var(--retro-light)] border border-retro-primary shadow-retro-sm"
+                      >
+                        {String(pageNum).padStart(2, '0')}
+                      </span>
+                    ) : (
+                      <Link
+                        key={`sector-${pageNum}`}
+                        href={createArchiveUrl({ page: pageNum })}
+                        className="px-2.5 sm:px-3 py-1 text-xs font-mono border border-retro-border/40 bg-retro-surface text-retro-text hover:border-retro-primary hover:text-retro-primary transition-colors shadow-retro-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+                      >
+                        {String(pageNum).padStart(2, '0')}
+                      </Link>
+                    );
+                  })}
+
+                  {/* Next sector button */}
+                  {currentPage < totalPages ? (
+                    <Link
+                      href={createArchiveUrl({ page: currentPage + 1 })}
+                      className="px-3 py-1 text-xs font-body border border-retro-border bg-retro-surface hover:border-retro-primary hover:text-retro-primary text-retro-text shadow-retro-sm transition-colors flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+                      rel="next"
+                    >
+                      Next
+                    </Link>
+                  ) : (
+                    <span className="px-3 py-1 text-xs font-body border border-retro-border/20 bg-retro-surface/40 text-retro-text/30 cursor-not-allowed">
+                      Next
+                    </span>
+                  )}
+
+                  {/* Last page button */}
+                  {currentPage < totalPages - 1 && (
+                    <Link
+                      href={createArchiveUrl({ page: totalPages })}
+                      className="px-2.5 py-1 text-xs font-body border border-retro-border/30 bg-retro-surface hover:border-retro-primary hover:text-retro-primary text-retro-text shadow-retro-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-retro-primary"
+                      title="Last sector"
+                    >
+                      Sector {String(totalPages).padStart(2, '0')}
+                    </Link>
+                  )}
+                </div>
+              </nav>
+            )}
+          </>
         )}
 
       </div>
     </section>
   );
+}
+
+/**
+ * Computes windowed sector pagination numbers with ellipses.
+ */
+function getPageNumbers(current: number, total: number): Array<number | '…'> {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    return [1, 2, 3, 4, 5, '…', total];
+  }
+  if (current >= total - 3) {
+    return [1, '…', total - 4, total - 3, total - 2, total - 1, total];
+  }
+  return [1, '…', current - 1, current, current + 1, '…', total];
 }
 
 /**

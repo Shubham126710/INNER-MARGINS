@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { getPostBySlug, getPublishedPosts } from '@/actions/post.actions';
+import { getPostBySlug, getPublishedPostSlugs } from '@/actions/post.actions';
 import { PostView, LockedPostView } from '@/components';
 
 interface PostPageProps {
@@ -13,9 +13,9 @@ export const revalidate = 86400;
 
 export async function generateStaticParams() {
   try {
-    const posts = await getPublishedPosts(30);
-    return posts.map((post) => ({
-      slug: post.slug,
+    const slugs = await getPublishedPostSlugs(30);
+    return slugs.map((slug) => ({
+      slug,
     }));
   } catch (err) {
     console.warn('generateStaticParams: DB unreachable at build time, using on-demand ISR fallback.', err);

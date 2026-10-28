@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { JournalSection } from '@/components';
-import { getPublishedPosts } from '@/actions/post.actions';
+import { getPublishedPostsPaginated, getAllTagsWithCounts } from '@/actions/post.actions';
+import { SortOption } from '@/components/JournalSection';
 
 export const revalidate = 3600;
 
@@ -10,9 +11,32 @@ export const metadata = {
   description: 'Journal archive and memory retrieval.',
 };
 
-export default async function JournalsPage() {
-  const posts = await getPublishedPosts();
-  const allTags = Array.from(new Set(posts.flatMap((p) => p.tags))).sort();
+interface JournalsPageProps {
+  searchParams?: Promise<{
+    page?: string;
+    tag?: string;
+    q?: string;
+    sort?: string;
+  }>;
+}
+
+export default async function JournalsPage({ searchParams }: JournalsPageProps) {
+  const params = searchParams ? await searchParams : {};
+  const page = Math.max(1, parseInt(params.page || '1', 10) || 1);
+  const tag = params.tag?.trim() || undefined;
+  const q = params.q?.trim() || undefined;
+  const sort = (params.sort as SortOption) || 'newest';
+
+  const [{ posts, total, totalPages, pageSize }, tagsWithCounts] = await Promise.all([
+    getPublishedPostsPaginated({
+      page,
+      pageSize: 15,
+      tag,
+      search: q,
+      sort,
+    }),
+    getAllTagsWithCounts(),
+  ]);
 
   return (
     <div className="min-h-screen bg-retro-bg font-body selection:bg-retro-primary selection:text-retro-surface pt-4 md:pt-8">
@@ -23,7 +47,17 @@ export default async function JournalsPage() {
           </div>
         }
       >
-        <JournalSection posts={posts} allTags={allTags} />
+        <JournalSection
+          posts={posts}
+          total={total}
+          currentPage={page}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          tagsWithCounts={tagsWithCounts}
+          activeTag={tag}
+          initialQuery={q}
+          initialSort={sort}
+        />
       </Suspense>
       
        {/* CTA Section */}
